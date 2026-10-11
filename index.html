@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Planner</title>
 <meta name="description" content="Planner — study tasks, a focus timer, shared files and group chat.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%93%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#F1F1FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14151C" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Planner">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -439,6 +444,14 @@
   .btn-accent:disabled { opacity: 0.6; cursor: default; }
   .storage-note { font-size: 0.72rem; color: var(--ink-faint); margin: 0.6rem 0 0; text-align: center; }
 
+  .install-banner {
+    display: flex; align-items: center; gap: 0.6rem; margin: 0 0 0.9rem; padding: 0.7rem 0.75rem 0.7rem 0.9rem;
+    border-radius: 16px; background: var(--accent-soft); border: 1px solid var(--surface-border);
+  }
+  .install-banner-text { flex: 1; min-width: 0; font-size: 0.8rem; line-height: 1.35; color: var(--ink-soft); }
+  .install-banner-text strong { display: block; font-size: 0.88rem; color: var(--ink); }
+  .install-x { background: none; border: none; color: var(--ink-soft); font-size: 0.95rem; cursor: pointer; padding: 0.25rem 0.35rem; }
+
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
     background: var(--mark-bg); color: var(--mark-ink); padding: 0.55rem 0.95rem; border-radius: 999px;
@@ -455,6 +468,127 @@
   :focus-visible { outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
 </style>
+<script>
+/* Planner: makes the page installable ("Add to home screen") using nothing but this script.
+   On load it draws the app icon on a canvas, builds the web-app manifest in memory and links both
+   to the page, then registers the service worker (sw.js) when the site is served over https.
+   To change the look of the install: edit the values just below. */
+(function () {
+  "use strict";
+
+  var APP_NAME = "Planner";
+  var APP_DESCRIPTION = "Study tasks, a focus timer, shared files and group chat.";
+  var ICON_BACKGROUND = "#14161F";   // same dark tile as the "P" logo in the app header
+  var ICON_LETTER = "#FFFFFF";
+  var PAGE_BACKGROUND = "#F1F1FA";   // splash-screen colour while the installed app opens
+
+  // Draws a square icon with a geometric "P". letterHeight is the P's height as a share of the icon size.
+  function drawIcon(size, rounded, letterHeight) {
+    var canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    var g = canvas.getContext && canvas.getContext("2d");
+    if (!g) return null;
+
+    g.fillStyle = ICON_BACKGROUND;
+    if (rounded) {
+      var r = size * 0.22;
+      g.beginPath();
+      g.moveTo(r, 0);
+      g.arcTo(size, 0, size, size, r);
+      g.arcTo(size, size, 0, size, r);
+      g.arcTo(0, size, 0, 0, r);
+      g.arcTo(0, 0, size, 0, r);
+      g.closePath();
+      g.fill();
+    } else {
+      g.fillRect(0, 0, size, size);
+    }
+
+    var u = size * letterHeight;          // height of the P
+    var w = u * 0.6;                      // width of the P
+    var t = u * 0.2;                      // stroke thickness
+    var R = u * 0.32;                     // radius of the P's bowl
+    var x0 = (size - w) / 2;
+    var y0 = (size - u) / 2;
+
+    g.fillStyle = ICON_LETTER;
+    g.beginPath();                        // outer bowl
+    g.moveTo(x0, y0);
+    g.lineTo(x0 + w - R, y0);
+    g.arc(x0 + w - R, y0 + R, R, -Math.PI / 2, Math.PI / 2);
+    g.lineTo(x0, y0 + 2 * R);
+    g.closePath();
+    g.fill();
+    g.fillRect(x0, y0, t, u);             // stem
+
+    g.fillStyle = ICON_BACKGROUND;
+    g.beginPath();                        // hole inside the bowl
+    g.moveTo(x0 + t, y0 + t);
+    g.lineTo(x0 + w - R, y0 + t);
+    g.arc(x0 + w - R, y0 + R, R - t, -Math.PI / 2, Math.PI / 2);
+    g.lineTo(x0 + t, y0 + 2 * R - t);
+    g.closePath();
+    g.fill();
+
+    return canvas.toDataURL("image/png");
+  }
+
+  function setLink(rel, attrs) {
+    var link = document.createElement("link");
+    link.rel = rel;
+    for (var k in attrs) link.setAttribute(k, attrs[k]);
+    document.head.appendChild(link);
+    return link;
+  }
+
+  function buildInstallFiles() {
+    var icon192 = drawIcon(192, true, 0.5);
+    var icon512 = drawIcon(512, true, 0.5);
+    var iconMaskable = drawIcon(512, false, 0.38);   // full-bleed, letter kept inside the safe zone
+    var iconApple = drawIcon(180, false, 0.46);      // iPhones round the corners themselves
+    if (!icon192 || !icon512 || !iconMaskable || !iconApple) return;   // no canvas support: skip quietly
+
+    setLink("icon", { type: "image/png", sizes: "192x192", href: icon192 });
+    setLink("apple-touch-icon", { href: iconApple });
+
+    var here = location.origin + location.pathname;                     // the manifest must use full web addresses
+    var folder = here.slice(0, here.lastIndexOf("/") + 1);
+    var manifest = {
+      name: APP_NAME,
+      short_name: APP_NAME,
+      description: APP_DESCRIPTION,
+      id: here,
+      start_url: here,
+      scope: folder,
+      display: "standalone",
+      background_color: PAGE_BACKGROUND,
+      theme_color: PAGE_BACKGROUND,
+      categories: ["productivity", "education"],
+      icons: [
+        { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: icon512, sizes: "512x512", type: "image/png", purpose: "any" },
+        { src: iconMaskable, sizes: "512x512", type: "image/png", purpose: "maskable" }
+      ]
+    };
+    var blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+    setLink("manifest", { href: URL.createObjectURL(blob) });
+  }
+
+  function start() {
+    try { buildInstallFiles(); } catch (e) { /* the app still works without install support */ }
+    // Service workers only run on https (or localhost), never when the page is opened as a file.
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    }
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+
+  window.PlannerPwa = { drawIcon: drawIcon };   // exposed so the icon can be previewed or tweaked
+})();
+</script>
 </head>
 <body>
 <!-- Sign-in: phone number -> one-time code -> (first visit only) name -->
@@ -528,6 +662,11 @@
   <main class="app-main" id="appMain">
 
     <section class="tab-view" data-tab="home" id="view-home">
+      <div class="install-banner hidden" id="installBanner">
+        <div class="install-banner-text"><strong>Install Planner</strong><span id="installBannerSub">Add it to your home screen for one-tap access.</span></div>
+        <button class="btn-accent" id="installBtn" type="button">Install</button>
+        <button class="install-x" id="installDismiss" type="button" aria-label="Dismiss">&#10005;</button>
+      </div>
       <div class="home-hero">
         <p class="greeting-line" id="greetingLine">Good morning,</p>
         <h1 class="greeting-title">Let's make today count!</h1>
@@ -738,6 +877,9 @@
       </div>
       <p class="hint-text hidden" id="accountMsg"></p>
       <p class="storage-note">Your name shows on the chat messages and files you share from now on.</p>
+      <div class="backup-row hidden" id="installRow">
+        <button class="btn-ghost" id="installRowBtn" type="button">Add to home screen</button>
+      </div>
       <div class="backup-row">
         <button class="btn-ghost danger" id="signOutBtn" type="button">Sign out</button>
       </div>
@@ -749,8 +891,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!--
-  SIGN-IN SETUP (one-time)
+<script>
+/* Planner app logic.
+
+   SIGN-IN SETUP (one-time)
   1. Supabase dashboard > SQL Editor: run supabase-setup.sql, then supabase-update.sql.
   2. PHONE option: Authentication > Providers > Phone: enable it and connect an SMS provider (Twilio, Vonage, MessageBird...).
   2b. EMAIL option: Authentication > SMTP Settings > connect an email service (e.g. Brevo), then
@@ -758,8 +902,9 @@
       (for example: <p>Your Planner code: {{ .Token }}</p>) so people get a 6-digit code instead of a link.
   3. Project Settings > API: copy the Project URL and the anon / publishable key into the two lines below.
      (The anon key is meant to be public; Row Level Security in the SQL files is what protects the data.)
--->
-<script>
+*/
+
+/* ---- Your Supabase project + which sign-in options to show ---- */
   var SUPABASE_URL = "https://gwcgggsshaokrnxerllc.supabase.co";
   var SUPABASE_ANON_KEY = "sb_publishable_5a-rI2txiRAlVNf0K_meGQ_Ocx4bkQk";
 
@@ -767,9 +912,7 @@
   var SIGNIN_EMAIL = true;
   var SIGNIN_PHONE = true;
   var DEFAULT_SIGNIN = "email";   // which option opens first: "email" or "phone"
-</script>
 
-<script>
 (function () {
   "use strict";
 
@@ -1448,6 +1591,75 @@
     accountPhone.textContent = (me && (me.email || me.phone)) || "";
     accountHint.textContent = me && me.email ? "Signed in with this email" : "Signed in with this number";
   }
+
+  // ---- Install to home screen (PWA) ----
+  var deferredInstall = null;   // Chrome/Edge/Android hand us this when the app can be installed
+  var androidFallback = false;  // set after a few seconds if Android Chrome never offered the install prompt
+  var INSTALL_DISMISS_KEY = "plannerInstallDismissedAt";
+  var installBanner = document.getElementById("installBanner");
+  var installBannerSub = document.getElementById("installBannerSub");
+  var installBtn = document.getElementById("installBtn");
+  var installDismiss = document.getElementById("installDismiss");
+  var installRow = document.getElementById("installRow");
+  var installRowBtn = document.getElementById("installRowBtn");
+
+  function isStandalone() {
+    return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+  }
+  function isIos() {
+    var ua = navigator.userAgent || "";
+    return /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  }
+  function installDismissedRecently() {
+    try {
+      var t = Number(localStorage.getItem(INSTALL_DISMISS_KEY) || 0);
+      return !!t && Date.now() - t < 14 * 24 * 60 * 60 * 1000;
+    } catch (e) { return false; }
+  }
+  var IOS_STEPS = "Tap the Share button, then \u201CAdd to Home Screen\u201D.";
+  var ANDROID_STEPS = "Open the \u22EE menu, then tap \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.";
+  function isAndroid() { return /android/i.test(navigator.userAgent || ""); }
+  function renderInstallUi() {
+    var canPrompt = !!deferredInstall;
+    var iosHowTo = isIos() && !isStandalone();            // iPhone/iPad Safari has no install button: show how-to instead
+    var androidHowTo = androidFallback && isAndroid() && !canPrompt && !isStandalone();
+    var available = !isStandalone() && (canPrompt || iosHowTo || androidHowTo);
+    installRow.classList.toggle("hidden", !available);
+    installBanner.classList.toggle("hidden", !(available && !installDismissedRecently()));
+    installBtn.classList.toggle("hidden", !canPrompt);
+    installBannerSub.textContent = canPrompt
+      ? "Add it to your home screen for one-tap access."
+      : (iosHowTo ? IOS_STEPS : ANDROID_STEPS);
+  }
+  function doInstall() {
+    if (deferredInstall) {
+      var ev = deferredInstall;
+      deferredInstall = null;            // a captured prompt can only be used once
+      ev.prompt();
+      Promise.resolve(ev.userChoice).then(renderInstallUi, renderInstallUi);
+      renderInstallUi();
+    } else {
+      showHowTo();
+    }
+  }
+  function showHowTo() {
+    if (isIos()) showAccountMsg("On iPhone or iPad: " + IOS_STEPS.charAt(0).toLowerCase() + IOS_STEPS.slice(1));
+    else if (isAndroid()) showAccountMsg(ANDROID_STEPS);
+  }
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; renderInstallUi(); });
+  window.addEventListener("appinstalled", function () { deferredInstall = null; renderInstallUi(); showToast("Planner was added to your home screen."); });
+  installBtn.addEventListener("click", doInstall);
+  installRowBtn.addEventListener("click", function () {
+    if (deferredInstall) doInstall();
+    else showHowTo();
+  });
+  installDismiss.addEventListener("click", function () {
+    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch (e) {}
+    renderInstallUi();
+  });
+  renderInstallUi();
+  setTimeout(function () { androidFallback = true; renderInstallUi(); }, 5000);
+
 
   function memberLabel() {
     return memberCount > 0 ? memberCount + " member" + (memberCount === 1 ? "" : "s") : "";
