@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planner</title>
+<meta name="description" content="Planner — study tasks, a focus timer, shared files and group chat.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%93%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #F1F1FA;
+    --bg-2: #E6E7F7;
+    --surface: #FFFFFF;
+    --surface-border: rgba(31,36,56,0.08);
+    --shadow: rgba(31,36,56,0.10);
+    --ink: #1E2233;
+    --ink-soft: #6C7089;
+    --ink-faint: #A3A6BA;
+    --accent: #6C5CE7;
+    --accent-strong: #5B4BD6;
+    --accent-soft: #ECE9FD;
+    --grad-a: #9B8CF9;
+    --grad-b: #5B4FE9;
+    --mark-bg: #14161F;
+    --mark-ink: #FFFFFF;
+    --chip-bg: #ECE9FD;
+    --track: #E7E9F4;
+    --danger: #C0524A;
+    --nav-bg: #FFFFFF;
+    --nav-ink: #9497AE;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-1: #14151C; --bg-2: #191B24; --surface: #1E212B;
+      --surface-border: rgba(255,255,255,0.08); --shadow: rgba(0,0,0,0.4);
+      --ink: #EDEEF6; --ink-soft: #9A9DB3; --ink-faint: #6E7188;
+      --accent: #9187F5; --accent-strong: #A29AF7; --accent-soft: #2B2D55;
+      --grad-a: #9187F5; --grad-b: #6B5EE0;
+      --mark-bg: #EDEEF6; --mark-ink: #14151C; --chip-bg: #2A2C46;
+      --track: #2A2D3C; --danger: #E08880; --nav-bg: #1B1D27; --nav-ink: #6E7188;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg-1: #14151C; --bg-2: #191B24; --surface: #1E212B;
+    --surface-border: rgba(255,255,255,0.08); --shadow: rgba(0,0,0,0.4);
+    --ink: #EDEEF6; --ink-soft: #9A9DB3; --ink-faint: #6E7188;
+    --accent: #9187F5; --accent-strong: #A29AF7; --accent-soft: #2B2D55;
+    --grad-a: #9187F5; --grad-b: #6B5EE0;
+    --mark-bg: #EDEEF6; --mark-ink: #14151C; --chip-bg: #2A2C46;
+    --track: #2A2D3C; --danger: #E08880; --nav-bg: #1B1D27; --nav-ink: #6E7188;
+  }
+
+  * { box-sizing: border-box; }
+  .hidden { display: none !important; }
+
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg-1);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app-shell {
+    max-width: 520px; margin: 0 auto; min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column; background: var(--bg-1);
+    box-shadow: 0 0 40px var(--shadow);
+  }
+
+  .mono-stat { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); letter-spacing: 0.01em; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--surface-border); border-radius: 20px;
+    box-shadow: 0 1px 3px var(--shadow); padding: 1.05rem 1.2rem;
+  }
+
+  /* ---- top header (shared across tabs, title/subtitle swap by JS) ---- */
+  .top-header { flex-shrink: 0; background: var(--surface); border-bottom: 1px solid var(--surface-border); padding: 0.9rem 1.15rem; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .brand-mini { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 11px; background: var(--mark-bg); color: var(--mark-ink);
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0;
+  }
+  .brand-title { font-weight: 800; font-size: 1.02rem; line-height: 1.2; }
+  .brand-sub { font-size: 0.72rem; color: var(--ink-soft); }
+  .header-actions { display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0; }
+  .chip {
+    display: flex; align-items: center; gap: 0.4rem; background: var(--chip-bg); border-radius: 999px;
+    padding: 0.3rem 0.65rem 0.3rem 0.3rem; cursor: pointer; border: none;
+  }
+  .chip-avatar {
+    width: 20px; height: 20px; border-radius: 999px; background: var(--surface); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; flex-shrink: 0;
+  }
+  .chip-name { font-size: 0.8rem; font-weight: 600; color: var(--ink); max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gear-btn {
+    width: 34px; height: 34px; border-radius: 999px; background: var(--bg-1); border: none; color: var(--ink);
+    font-size: 1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .gear-btn:hover, .chip:hover { background: var(--accent-soft); }
+
+  /* ---- main scroll area ---- */
+  .app-main { flex: 1; overflow-y: auto; padding: 1rem 1.1rem 1.5rem; }
+  .tab-view { display: flex; flex-direction: column; gap: 0.9rem; }
+
+  /* ---- Home ---- */
+  .home-hero {
+    background: linear-gradient(160deg, var(--grad-a), var(--grad-b));
+    border-radius: 20px; padding: 1.1rem 1.15rem; color: #fff;
+  }
+  .greeting-line { margin: 0; font-size: 0.92rem; opacity: 0.9; }
+  .greeting-title { margin: 0.1rem 0 0.35rem; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.01em; }
+  .greeting-meta { margin: 0 0 0.9rem; font-size: 0.78rem; opacity: 0.85; }
+  .hero-task-card { background: rgba(255,255,255,0.14); border-radius: 16px; padding: 0.9rem 1rem; }
+  .hero-task-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.55rem; font-weight: 700; font-size: 0.95rem; }
+  .hero-check-icon {
+    width: 24px; height: 24px; border-radius: 999px; background: #fff; color: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+  }
+  .hero-task-bottom { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+  .hero-stat { display: flex; flex-direction: column; line-height: 1.15; }
+  .hero-stat strong { font-size: 1.5rem; font-weight: 800; }
+  .hero-stat span { font-size: 0.7rem; opacity: 0.85; }
+  .hero-divider { width: 1px; align-self: stretch; background: rgba(255,255,255,0.3); }
+  .hero-add-btn {
+    margin-left: auto; background: linear-gradient(135deg, #fff, #E9E6FF); color: var(--accent-strong); border: none;
+    border-radius: 999px; padding: 0.55rem 1rem; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: var(--font-sans);
+    white-space: nowrap;
+  }
+  .hero-add-btn.full-width { display: block; width: 100%; margin: 0; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; padding: 0.7rem; font-size: 0.88rem; }
+
+  .home-nav-cards { display: flex; flex-direction: column; gap: 0.6rem; }
+  .nav-card, .home-banner {
+    display: flex; align-items: center; gap: 0.75rem; background: var(--surface); border: 1px solid var(--surface-border);
+    border-radius: 18px; padding: 0.85rem 0.9rem; cursor: pointer; text-align: left; font-family: var(--font-sans); width: 100%;
+  }
+  .nav-card-icon {
+    width: 42px; height: 42px; border-radius: 13px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem; color: #fff;
+  }
+  .nav-card-icon.small { width: 34px; height: 34px; font-size: 1rem; }
+  .grad-purple { background: linear-gradient(135deg, #B7A6FB, #7C4FE0); }
+  .grad-blue { background: linear-gradient(135deg, #8FD3F4, #3E7BF0); }
+  .grad-pink { background: linear-gradient(135deg, #F3A6E8, #B23FD6); }
+  .nav-card-body { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; flex: 1; }
+  .nav-card-title { font-weight: 700; font-size: 0.95rem; }
+  .nav-card-desc { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.3; }
+  .nav-card-stat { font-size: 0.74rem; color: var(--ink-soft); display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.1rem; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; }
+  .dot-purple { background: var(--accent); }
+  .dot-green { background: #22B07D; }
+  .nav-card-chevron { color: var(--ink-faint); font-size: 1.2rem; flex-shrink: 0; }
+
+  .home-banner { background: linear-gradient(120deg, #2C2A55, #4A3F9E); color: #fff; margin-top: 0.1rem; }
+  .home-banner-icon {
+    width: 38px; height: 38px; border-radius: 999px; background: rgba(255,255,255,0.16); display: flex; align-items: center;
+    justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .home-banner-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+  .home-banner-title { font-weight: 700; font-size: 0.92rem; }
+  .home-banner-sub { font-size: 0.75rem; opacity: 0.8; }
+  .home-banner .nav-card-chevron { color: rgba(255,255,255,0.7); }
+
+  /* ---- Planner ---- */
+  .date-heading { font-size: 1.2rem; font-weight: 800; margin: 0.1rem 0 0; letter-spacing: -0.01em; }
+  .day-strip { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.2rem; }
+  .day-pill {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; width: 3.1rem;
+    padding: 0.5rem 0; border-radius: 14px; border: none; background: var(--surface); color: var(--ink); cursor: pointer;
+    font-family: var(--font-sans);
+  }
+  .day-pill-wd { font-size: 0.66rem; color: var(--ink-faint); text-transform: uppercase; }
+  .day-pill.active .day-pill-wd { color: rgba(255,255,255,0.8); }
+  .day-pill-num { font-size: 0.95rem; font-weight: 700; }
+  .day-pill.active { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; }
+
+  .progress-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; gap: 0.4rem; flex-wrap: wrap; }
+  .progress-head h2 { font-size: 0.98rem; font-weight: 700; margin: 0; }
+  .progress-track { height: 8px; background: var(--track); border-radius: 5px; overflow: hidden; }
+  .progress-card .hero-add-btn { margin-top: 0.85rem; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--grad-a), var(--grad-b)); border-radius: 5px; width: 0%; transition: width 0.35s ease; }
+
+  .task-add-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .subject-select, .subject-other-input, .search-input {
+    background: var(--bg-1); border: 1px solid var(--surface-border); border-radius: 10px;
+    padding: 0.55rem 0.65rem; font-family: var(--font-sans); font-size: 0.86rem; color: var(--ink); flex-shrink: 0;
+  }
+  .subject-select { width: 8.6rem; }
+  .subject-other-input { width: 8.6rem; }
+  .task-add-row .add-input { min-width: 8rem; flex: 1; }
+  .add-input {
+    flex: 1; min-width: 0; background: var(--bg-1); border: 1px solid var(--surface-border); border-radius: 10px;
+    padding: 0.55rem 0.75rem; font-family: var(--font-sans); font-size: 0.86rem; color: var(--ink);
+  }
+  .add-input::placeholder, .search-input::placeholder { color: var(--ink-faint); }
+  .add-btn {
+    width: 2.4rem; height: 2.4rem; border-radius: 10px; background: linear-gradient(135deg, var(--grad-a), var(--grad-b));
+    color: #fff; border: none; font-size: 1.15rem; font-weight: 600; cursor: pointer; flex-shrink: 0; line-height: 1;
+  }
+
+  .pills-row { display: flex; align-items: center; gap: 0.5rem; }
+  .filter-pills { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.1rem; flex: 1; }
+  .sort-btn {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--surface-border);
+    background: var(--surface); color: var(--ink-soft); display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .sort-btn svg { width: 16px; height: 16px; }
+  .sort-btn:hover { color: var(--accent); }
+  .pill {
+    flex-shrink: 0; border: none; background: var(--surface); color: var(--ink); border-radius: 999px;
+    padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: var(--font-sans);
+  }
+  .pill.active { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; }
+
+  .task-list, .notes-list, .lap-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .empty-msg { color: var(--ink-faint); font-size: 0.86rem; padding: 0.4rem 0.1rem; }
+
+  .task-row {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; border-radius: 18px;
+    background: var(--surface); border: 1px solid var(--surface-border); box-shadow: 0 1px 3px var(--shadow);
+  }
+  .task-checkbox {
+    appearance: none; -webkit-appearance: none; width: 30px; height: 30px; border-radius: 999px;
+    border: 2px solid var(--surface-border); background: var(--surface); flex-shrink: 0; cursor: pointer;
+    margin: 0; position: relative;
+  }
+  .task-checkbox:checked { background: #22B07D; border-color: #22B07D; }
+  .task-checkbox:checked::after {
+    content: "\2713"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: #fff; font-size: 0.85rem; font-weight: 700;
+  }
+  .task-body { flex: 1; min-width: 0; }
+  .task-text { display: block; font-size: 0.95rem; font-weight: 700; line-height: 1.3; word-break: break-word; color: var(--ink); }
+  .task-text.done { color: var(--ink-faint); text-decoration: line-through; font-weight: 600; }
+  .task-meta-line { font-size: 0.84rem; margin-top: 0.15rem; }
+  .subject-label { font-weight: 700; color: var(--accent); }
+  .task-when { color: var(--ink-soft); }
+  .task-deadline-edit { margin-top: 0.3rem; font-size: 0.8rem; border: 1px solid var(--surface-border); border-radius: 8px; padding: 0.2rem 0.4rem; background: var(--bg-1); color: var(--ink); }
+  .task-del {
+    background: none; border: none; color: var(--ink-soft); cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; padding: 0.2rem;
+  }
+  .task-del svg { width: 19px; height: 19px; }
+  .task-del:hover { color: var(--danger); }
+
+  /* ---- Focus Timer ---- */
+  .tab-switch { display: flex; gap: 0.25rem; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 999px; padding: 0.22rem; align-self: center; }
+  .tab-btn {
+    border: none; background: transparent; font-family: var(--font-sans); font-size: 0.78rem; font-weight: 600;
+    color: var(--ink-soft); padding: 0.32rem 0.9rem; border-radius: 999px; cursor: pointer;
+  }
+  .tab-btn.active { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; }
+
+  .timer-scenic {
+    background: radial-gradient(ellipse at 50% 0%, #E9D8FB 0%, #C9B8F5 35%, #8C9EEB 70%, #6A7BDB 100%);
+    border-radius: 22px; padding: 1.6rem 1rem; display: flex; align-items: center; justify-content: center;
+  }
+  .timer-ring-wrap { position: relative; width: 190px; height: 190px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  .timer-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 2px 10px rgba(76,60,150,0.25)); }
+  .ring-track { fill: rgba(255,255,255,0.55); stroke: rgba(255,255,255,0.6); stroke-width: 8; }
+  .ring-fill {
+    fill: none; stroke: var(--accent-strong); stroke-width: 8; stroke-linecap: round;
+    stroke-dasharray: 326.7256; stroke-dashoffset: 0; transition: stroke-dashoffset 0.25s linear;
+  }
+  .timer-ring-label { font-size: 0.72rem; color: var(--ink-soft); font-weight: 600; margin-bottom: 0.1rem; }
+  .timer-display {
+    font-family: var(--font-mono); font-size: 1.9rem; font-weight: 700; letter-spacing: 0.01em; text-align: center;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .timer-display.finished { color: var(--accent-strong); }
+  .ring-play-btn {
+    position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; border: 3px solid var(--bg-1);
+    font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .timer-presets { display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .preset-btn {
+    border: 1px solid var(--surface-border); background: var(--surface); color: var(--ink-soft); border-radius: 999px;
+    padding: 0.3rem 0.7rem; font-family: var(--font-mono); font-size: 0.74rem; cursor: pointer;
+  }
+  .preset-btn.active { background: var(--accent-soft); color: var(--accent-strong); border-color: var(--accent-soft); }
+  .custom-min-input {
+    width: 3.6rem; text-align: center; border: 1px solid var(--surface-border); border-radius: 999px;
+    background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-size: 0.72rem; padding: 0.26rem 0.3rem;
+  }
+  .tip-card { display: flex; align-items: center; gap: 0.7rem; }
+  .lap-list.hidden { display: none; }
+  .lap-row {
+    display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.74rem;
+    color: var(--ink-soft); padding: 0.35rem 0.6rem; border-radius: 10px; background: var(--surface);
+  }
+  .lap-row .lap-num { color: var(--ink-faint); }
+  .timer-controls { display: flex; gap: 0.5rem; }
+  .timer-btn { flex: 1; border: none; border-radius: 14px; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; cursor: pointer; font-family: var(--font-sans); }
+  .timer-btn.primary { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; }
+  .timer-btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--surface-border); }
+
+  /* ---- Files ---- */
+  .search-input { width: 100%; flex: 1; min-width: 0; }
+  .note-row {
+    display: flex; align-items: center; gap: 0.65rem; padding: 0.7rem 0.8rem; border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--surface-border);
+  }
+  .note-icon {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; background: var(--accent-soft);
+  }
+  .note-icon.cat-images { background: linear-gradient(135deg, #8FE0C7, #2FAE8B); }
+  .note-icon.cat-documents { background: linear-gradient(135deg, #F3A6A0, #D6433A); }
+  .note-icon.cat-others { background: linear-gradient(135deg, #9BB8F5, #3E6BE0); }
+  .note-body { flex: 1; min-width: 0; }
+  .note-name { font-size: 0.88rem; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .note-name a { color: var(--ink); text-decoration: none; }
+  .note-name a:hover { color: var(--accent); text-decoration: underline; }
+  .note-meta { font-size: 0.74rem; color: var(--ink-soft); }
+  .note-del { background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 0 0.2rem; flex-shrink: 0; font-size: 1rem; }
+  .note-del:hover { color: var(--danger); }
+  .hint-text { font-size: 0.76rem; color: var(--ink-faint); margin: 0; text-align: center; }
+  .hint-text.hidden { display: none; }
+
+  /* ---- Chat ---- */
+  .group-info-card { display: flex; align-items: center; gap: 0.7rem; width: 100%; text-align: left; font-family: var(--font-sans); }
+  .chat-messages { display: flex; flex-direction: column; gap: 0.7rem; padding: 0.1rem; flex: 1; }
+  .chat-row { display: flex; gap: 0.55rem; max-width: 86%; }
+  .chat-row.mine { align-self: flex-end; flex-direction: row-reverse; }
+  .chat-avatar {
+    width: 30px; height: 30px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .chat-bubble-wrap { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .chat-row-head { display: flex; align-items: baseline; gap: 0.45rem; }
+  .chat-row.mine .chat-row-head { flex-direction: row-reverse; }
+  .chat-name { font-weight: 700; font-size: 0.76rem; color: var(--ink-soft); }
+  .chat-time { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-faint); flex-shrink: 0; }
+  .chat-text {
+    font-size: 0.87rem; line-height: 1.35; color: var(--ink); word-break: break-word; background: var(--surface);
+    border: 1px solid var(--surface-border); border-radius: 14px 14px 14px 4px; padding: 0.5rem 0.75rem;
+  }
+  .chat-row.mine .chat-text { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; border: none; border-radius: 14px 14px 4px 14px; }
+  .chat-input-row { position: sticky; bottom: 0; background: var(--bg-1); padding-top: 0.4rem; }
+
+  /* ---- bottom nav ---- */
+  .bottom-nav {
+    flex-shrink: 0; display: flex; background: var(--nav-bg); border-top: 1px solid var(--surface-border);
+    padding: 0.4rem 0.3rem calc(0.4rem + env(safe-area-inset-bottom, 0px));
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; background: none; border: none;
+    color: var(--nav-ink); font-family: var(--font-sans); font-size: 0.66rem; font-weight: 600; padding: 0.35rem 0.1rem;
+    cursor: pointer; border-radius: 12px;
+  }
+  .nav-btn svg { width: 21px; height: 21px; }
+  .nav-btn.active { color: var(--accent); }
+  .nav-btn.active .nav-icon-wrap { background: var(--accent-soft); }
+  .nav-icon-wrap { width: 34px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 999px; }
+
+  /* ---- settings modal ---- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(20,20,35,0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 60;
+  }
+  .modal-sheet {
+    background: var(--surface); width: 100%; max-width: 520px; border-radius: 22px 22px 0 0; padding: 0.9rem 1.15rem 1.25rem;
+    max-height: 85vh; overflow-y: auto;
+  }
+  .modal-handle { width: 40px; height: 4px; background: var(--track); border-radius: 999px; margin: 0 auto 0.8rem; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .modal-title { font-size: 1.05rem; font-weight: 800; margin: 0; }
+  .modal-close { background: var(--bg-1); border: none; border-radius: 999px; width: 30px; height: 30px; font-size: 0.95rem; cursor: pointer; color: var(--ink); }
+  /* ---- sign-in screen ---- */
+  .auth-screen {
+    position: fixed; inset: 0; z-index: 100; background: var(--bg-1); overflow-y: auto;
+    display: flex; align-items: center; justify-content: center; padding: 1.2rem;
+  }
+  .auth-card {
+    width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--surface-border);
+    border-radius: 24px; box-shadow: 0 8px 30px var(--shadow); padding: 1.7rem 1.4rem 1.4rem; text-align: center;
+  }
+  .auth-mark { margin: 0 auto 0.9rem; width: 52px; height: 52px; border-radius: 15px; font-size: 1.3rem; }
+  .auth-title { font-size: 1.35rem; font-weight: 800; margin: 0 0 0.3rem; letter-spacing: -0.01em; }
+  .auth-sub { margin: 0 0 1.2rem; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.4; }
+  .auth-sub:empty { display: none; }
+  .auth-form { display: flex; flex-direction: column; gap: 0.7rem; text-align: left; }
+  .auth-label { font-size: 0.76rem; font-weight: 600; color: var(--ink-soft); }
+  .auth-phone-row { display: flex; gap: 0.5rem; }
+  .auth-input {
+    width: 100%; min-width: 0; padding: 0.75rem 0.85rem; border-radius: 12px; border: 1px solid var(--surface-border);
+    background: var(--bg-1); color: var(--ink); font-family: var(--font-sans); font-size: 1rem;
+  }
+  .auth-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .auth-input::placeholder { color: var(--ink-faint); }
+  .auth-cc { width: 4.6rem; flex-shrink: 0; text-align: center; }
+  .auth-otp { text-align: center; font-family: var(--font-mono); font-size: 1.4rem; letter-spacing: 0.35em; }
+  .auth-btn {
+    width: 100%; border: none; border-radius: 14px; padding: 0.8rem; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    font-family: var(--font-sans); background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff;
+  }
+  .auth-btn:disabled { opacity: 0.6; cursor: default; }
+  .auth-links { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .auth-link {
+    background: none; border: none; color: var(--accent-strong); font-weight: 600; font-size: 0.82rem; cursor: pointer;
+    font-family: var(--font-sans); padding: 0.2rem 0;
+  }
+  .auth-link:disabled { color: var(--ink-faint); cursor: default; }
+  .auth-tabs {
+    display: flex; gap: 0.25rem; background: var(--bg-1); border: 1px solid var(--surface-border);
+    border-radius: 999px; padding: 0.2rem; margin: 0 0 1rem;
+  }
+  .auth-tab {
+    flex: 1; border: none; background: none; color: var(--ink-soft); font-family: var(--font-sans);
+    font-size: 0.85rem; font-weight: 600; padding: 0.5rem 0.6rem; border-radius: 999px; cursor: pointer;
+  }
+  .auth-tab.active { background: var(--accent); color: #fff; }
+  .auth-msg { min-height: 1.1rem; margin: 0.9rem 0 0; font-size: 0.8rem; color: var(--ink-soft); }
+  .auth-msg.error { color: var(--danger); }
+
+  /* ---- account sheet ---- */
+  .account-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; }
+  .account-avatar {
+    width: 42px; height: 42px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0;
+  }
+  .account-phone { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; }
+  .account-hint { font-size: 0.74rem; color: var(--ink-soft); }
+  .field-label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--ink-soft); margin: 0 0 0.3rem; }
+  .account-name-row { display: flex; gap: 0.4rem; align-items: center; }
+  .account-name-row .auth-input { padding: 0.55rem 0.75rem; font-size: 0.9rem; }
+  .btn-accent {
+    background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 0.4rem 0.95rem;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; flex-shrink: 0; font-family: var(--font-sans);
+  }
+  .btn-accent:disabled { opacity: 0.6; cursor: default; }
+  .storage-note { font-size: 0.72rem; color: var(--ink-faint); margin: 0.6rem 0 0; text-align: center; }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
+    background: var(--mark-bg); color: var(--mark-ink); padding: 0.55rem 0.95rem; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 600; z-index: 120; max-width: 90%; text-align: center; box-shadow: 0 4px 16px var(--shadow);
+  }
+  .btn-ghost {
+    background: var(--bg-1); border: 1px solid var(--surface-border); border-radius: 999px;
+    padding: 0.4rem 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--ink); cursor: pointer; font-family: var(--font-sans);
+  }
+  .btn-ghost.danger { color: var(--danger); border-color: var(--danger); }
+  .backup-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--surface-border); }
+  .backup-row .btn-ghost { flex: 1; text-align: center; }
+
+  :focus-visible { outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
+</style>
+</head>
+<body>
+<!-- Sign-in: phone number -> one-time code -> (first visit only) name -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="brand-mark auth-mark">P</div>
+    <h1 class="auth-title" id="authTitle">Planner</h1>
+    <p class="auth-sub" id="authSub">Loading&hellip;</p>
+
+    <div class="auth-tabs hidden" id="authTabs" role="tablist">
+      <button class="auth-tab" id="tabEmail" type="button" role="tab">Email</button>
+      <button class="auth-tab" id="tabPhone" type="button" role="tab">Phone</button>
+    </div>
+
+    <form class="auth-form hidden" id="emailForm" novalidate>
+      <label class="auth-label" for="emailInput">Email address</label>
+      <input class="auth-input" id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" maxlength="120" aria-label="Email address">
+      <button class="auth-btn" id="sendEmailBtn" type="submit">Send code</button>
+    </form>
+
+    <form class="auth-form hidden" id="phoneForm" novalidate>
+      <label class="auth-label" for="phoneInput">Mobile number</label>
+      <div class="auth-phone-row">
+        <input class="auth-input auth-cc" id="ccInput" type="tel" inputmode="tel" autocomplete="tel-country-code" value="+91" maxlength="5" aria-label="Country code">
+        <input class="auth-input" id="phoneInput" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Phone number" maxlength="18" aria-label="Phone number">
+      </div>
+      <button class="auth-btn" id="sendOtpBtn" type="submit">Send OTP</button>
+    </form>
+
+    <form class="auth-form hidden" id="otpForm" novalidate>
+      <label class="auth-label" for="otpInput">One-time code</label>
+      <input class="auth-input auth-otp" id="otpInput" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" aria-label="One-time code">
+      <button class="auth-btn" id="verifyOtpBtn" type="submit">Verify &amp; join</button>
+      <div class="auth-links">
+        <button class="auth-link" id="resendOtpBtn" type="button">Resend code</button>
+        <button class="auth-link" id="changeNumberBtn" type="button">Change number</button>
+      </div>
+    </form>
+
+    <form class="auth-form hidden" id="nameForm" novalidate>
+      <label class="auth-label" for="nameInput">Your name</label>
+      <input class="auth-input" id="nameInput" type="text" autocomplete="name" maxlength="40" placeholder="Your name">
+      <button class="auth-btn" id="saveNameBtn" type="submit">Continue</button>
+    </form>
+
+    <p class="auth-msg" id="authMsg" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="app-shell hidden" id="appShell">
+
+  <header class="top-header">
+    <div class="header-row">
+      <div class="brand-mini">
+        <div class="brand-mark">P</div>
+        <div>
+          <div class="brand-title" id="headerTitle">Planner</div>
+          <div class="brand-sub" id="headerSub">Study &bull; Plan &bull; Achieve</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="chip" id="whoChip" type="button">
+          <span class="chip-avatar" id="whoAvatar">?</span>
+          <span class="chip-name" id="whoName">Account</span>
+        </button>
+        <button class="gear-btn" id="settingsBtn" type="button" aria-label="Account">&#9881;</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main" id="appMain">
+
+    <section class="tab-view" data-tab="home" id="view-home">
+      <div class="home-hero">
+        <p class="greeting-line" id="greetingLine">Good morning,</p>
+        <h1 class="greeting-title">Let's make today count!</h1>
+        <p class="greeting-meta" id="greetingMeta"></p>
+        <div class="hero-task-card">
+          <div class="hero-task-top"><span class="hero-check-icon">&#10003;</span><span>Your tasks</span></div>
+          <div class="hero-task-bottom">
+            <div class="hero-stat"><strong id="homeRemaining">0</strong><span>remaining</span></div>
+            <div class="hero-divider"></div>
+            <div class="hero-stat"><strong id="homeCompleted">0</strong><span>completed</span></div>
+            <button class="hero-add-btn" id="homeAddTaskBtn" type="button">+ Add Task</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-nav-cards">
+        <button class="nav-card" data-goto="planner" type="button">
+          <span class="nav-card-icon grad-purple">&#10003;</span>
+          <span class="nav-card-body">
+            <span class="nav-card-title">Tasks</span>
+            <span class="nav-card-desc">Manage your study tasks and stay on track.</span>
+            <span class="nav-card-stat"><span class="dot dot-purple"></span><span id="homeRemaining2">0</span>&nbsp;remaining&nbsp; <span class="dot dot-green"></span><span id="homeCompleted2">0</span>&nbsp;completed</span>
+          </span>
+          <span class="nav-card-chevron">&rsaquo;</span>
+        </button>
+        <button class="nav-card" data-goto="files" type="button">
+          <span class="nav-card-icon grad-blue">&#128196;</span>
+          <span class="nav-card-body">
+            <span class="nav-card-title">Shared Notes</span>
+            <span class="nav-card-desc">Access and share important notes with your group.</span>
+            <span class="nav-card-stat" id="homeFilesStat">0 files</span>
+          </span>
+          <span class="nav-card-chevron">&rsaquo;</span>
+        </button>
+        <button class="nav-card" data-goto="chat" type="button">
+          <span class="nav-card-icon grad-pink">&#128172;</span>
+          <span class="nav-card-body">
+            <span class="nav-card-title">Group Chat</span>
+            <span class="nav-card-desc">Stay connected with your team and never miss an update.</span>
+            <span class="nav-card-stat" id="homeMembersStat">0 members</span>
+          </span>
+          <span class="nav-card-chevron">&rsaquo;</span>
+        </button>
+      </div>
+
+      <button class="home-banner" data-goto="timer" type="button">
+        <span class="home-banner-icon">&#10024;</span>
+        <span class="home-banner-body">
+          <span class="home-banner-title">Small steps every day</span>
+          <span class="home-banner-sub">Build the future you want</span>
+        </span>
+        <span class="nav-card-chevron">&rsaquo;</span>
+      </button>
+    </section>
+
+    <section class="tab-view hidden" data-tab="planner" id="view-planner">
+      <p class="date-heading" id="plannerDateHeading">Today</p>
+      <div class="day-strip" id="dayStrip"></div>
+
+      <div class="card progress-card">
+        <div class="progress-head">
+          <h2>Today's tasks</h2>
+          <span class="mono-stat" id="taskCountStat">0/0 completed</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFillTasks"></div></div>
+        <button class="hero-add-btn full-width" id="showAddTaskBtn" type="button">+ Add Task</button>
+      </div>
+
+      <div class="task-add-row hidden" id="taskAddRow">
+        <select class="subject-select" id="taskSubjectSelect"></select>
+        <input class="add-input subject-other-input hidden" id="taskSubjectOtherInput" placeholder="Subject name" type="text" maxlength="40">
+        <input class="add-input" id="taskAddInput" placeholder="Add a task" type="text" maxlength="500">
+        <button class="add-btn" id="taskAddBtn" type="button">+</button>
+      </div>
+
+      <div class="pills-row">
+        <div class="filter-pills" id="subjectFilterPills"></div>
+        <button class="sort-btn" id="taskSortBtn" type="button" aria-label="Sort tasks" title="Sort tasks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg>
+        </button>
+      </div>
+
+      <ul class="task-list" id="flatTaskList"></ul>
+    </section>
+
+    <section class="tab-view hidden" data-tab="timer" id="view-timer">
+      <div class="tab-switch">
+        <button class="tab-btn active" id="tabTimerBtn" type="button">Timer</button>
+        <button class="tab-btn" id="tabStopwatchBtn" type="button">Stopwatch</button>
+      </div>
+
+      <div class="timer-scenic">
+        <div class="timer-ring-wrap" id="timerRingWrap">
+          <svg class="timer-ring" viewBox="0 0 120 120" id="timerRingSvg">
+            <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="timer-ring-label" id="timerRingLabel">Focus Time</div>
+          <div class="timer-display" id="timerDisplay">45:00</div>
+          <button class="ring-play-btn" id="ringPlayBtn" type="button" aria-label="Start">&#9654;</button>
+        </div>
+      </div>
+
+      <div class="timer-presets" id="timerPresets">
+        <button class="preset-btn active" data-min="45" type="button">45m</button>
+        <button class="preset-btn" data-min="60" type="button">1h</button>
+        <button class="preset-btn" data-min="90" type="button">1h 30m</button>
+        <button class="preset-btn" data-min="120" type="button">2h</button>
+        <input class="custom-min-input" id="customMinInput" type="number" min="1" max="180" placeholder="min">
+      </div>
+
+      <div class="card tip-card">
+        <span class="nav-card-icon grad-purple small">&#10024;</span>
+        <span class="nav-card-body">
+          <span class="nav-card-title">Stay focused</span>
+          <span class="nav-card-desc">Small steps every day lead to big results.</span>
+        </span>
+      </div>
+
+      <ul class="lap-list hidden" id="lapList"></ul>
+
+      <div class="timer-controls">
+        <button class="timer-btn primary" id="timerStartBtn" type="button">Start</button>
+        <button class="timer-btn secondary hidden" id="lapBtn" type="button">Lap</button>
+        <button class="timer-btn secondary" id="timerResetBtn" type="button">Reset</button>
+      </div>
+    </section>
+
+    <section class="tab-view hidden" data-tab="files" id="view-files">
+      <div class="pills-row">
+        <input class="search-input" id="filesSearchInput" placeholder="Search files…" type="text">
+        <button class="sort-btn" id="filesSortBtn" type="button" aria-label="Sort files" title="Sort files">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg>
+        </button>
+      </div>
+      <div class="filter-pills" id="filesFilterPills">
+        <button class="pill active" data-filter="all" type="button">All</button>
+        <button class="pill" data-filter="documents" type="button">Documents</button>
+        <button class="pill" data-filter="images" type="button">Images</button>
+        <button class="pill" data-filter="others" type="button">Others</button>
+      </div>
+      <span class="mono-stat" id="notesCount">0 files</span>
+      <ul class="notes-list" id="notesList"><li class="empty-msg">Nothing shared yet.</li></ul>
+      <button class="hero-add-btn full-width" id="uploadBtn" type="button">+ Upload</button>
+      <input type="file" id="fileInput" hidden>
+      <p class="hint-text hidden" id="uploadHint"></p>
+    </section>
+
+    <section class="tab-view hidden" data-tab="chat" id="view-chat">
+      <div class="card group-info-card" id="chatGroupCard">
+        <span class="nav-card-icon grad-blue small">&#128101;</span>
+        <span class="nav-card-body">
+          <span class="nav-card-title">Study Group</span>
+          <span class="nav-card-desc" id="chatGroupMeta">0 members</span>
+        </span>
+        <span class="mono-stat" id="chatStatus">connecting&hellip;</span>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="add-row chat-input-row">
+        <input class="add-input" id="chatInput" placeholder="Message the group" type="text" maxlength="2000">
+        <button class="add-btn" id="chatSendBtn" type="button" aria-label="Send">&#10148;</button>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" data-tab="home" type="button">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" data-tab="planner" type="button">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>
+      <span>Planner</span>
+    </button>
+    <button class="nav-btn" data-tab="timer" type="button">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></span>
+      <span>Focus Timer</span>
+    </button>
+    <button class="nav-btn" data-tab="files" type="button">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>
+      <span>Files</span>
+    </button>
+    <button class="nav-btn" data-tab="chat" type="button">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.4 8.4 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.8a8.4 8.4 0 0 1-.9-3.7A8.4 8.4 0 0 1 12.6 3a8.4 8.4 0 0 1 8.4 8.5z"/></svg></span>
+      <span>Chat</span>
+    </button>
+  </nav>
+
+  <div class="modal-overlay hidden" id="accountOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2 class="modal-title">Your account</h2>
+        <button class="modal-close" id="accountCloseBtn" type="button" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="account-row">
+        <span class="account-avatar" id="accountAvatar">?</span>
+        <div>
+          <div class="account-phone" id="accountPhone"></div>
+          <div class="account-hint" id="accountHint">Signed in</div>
+        </div>
+      </div>
+      <label class="field-label" for="accountNameInput">Display name</label>
+      <div class="account-name-row">
+        <input class="auth-input" id="accountNameInput" type="text" maxlength="40" autocomplete="name">
+        <button class="btn-accent" id="accountSaveBtn" type="button">Save</button>
+      </div>
+      <p class="hint-text hidden" id="accountMsg"></p>
+      <p class="storage-note">Your name shows on the chat messages and files you share from now on.</p>
+      <div class="backup-row">
+        <button class="btn-ghost danger" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!--
+  SIGN-IN SETUP (one-time)
+  1. Supabase dashboard > SQL Editor: run supabase-setup.sql, then supabase-update.sql.
+  2. PHONE option: Authentication > Providers > Phone: enable it and connect an SMS provider (Twilio, Vonage, MessageBird...).
+  2b. EMAIL option: Authentication > SMTP Settings > connect an email service (e.g. Brevo), then
+      Authentication > Email Templates: in BOTH "Magic Link" and "Confirm signup", put {{ .Token }} in the body
+      (for example: <p>Your Planner code: {{ .Token }}</p>) so people get a 6-digit code instead of a link.
+  3. Project Settings > API: copy the Project URL and the anon / publishable key into the two lines below.
+     (The anon key is meant to be public; Row Level Security in the SQL files is what protects the data.)
+-->
+<script>
+  var SUPABASE_URL = "https://gwcgggsshaokrnxerllc.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_5a-rI2txiRAlVNf0K_meGQ_Ocx4bkQk";
+
+  // Which sign-in options to show. Set one to false to hide it.
+  var SIGNIN_EMAIL = true;
+  var SIGNIN_PHONE = true;
+  var DEFAULT_SIGNIN = "email";   // which option opens first: "email" or "phone"
+</script>
+
+<script>
+(function () {
+  "use strict";
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function nowIso() { return new Date().toISOString(); }
+  function fmtRelative(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    var diffMs = Date.now() - d.getTime();
+    var mins = Math.round(diffMs / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return mins + (mins === 1 ? " min ago" : " mins ago");
+    var hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? " hour ago" : " hours ago");
+    var days = Math.round(hrs / 24);
+    if (days < 30) return days + (days === 1 ? " day ago" : " days ago");
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  function fmtBytes(n) {
+    if (!n && n !== 0) return "";
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+    return (n / (1024 * 1024)).toFixed(1) + " MB";
+  }
+  function initials(name) {
+    var t = (name || "").trim();
+    return t ? t.charAt(0).toUpperCase() : "?";
+  }
+  function localDateStr(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function relativeDayLabel(dateStr) {
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var d = new Date(dateStr + "T00:00:00");
+    if (isNaN(d.getTime())) return "";
+    var diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays === -1) return "Yesterday";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  function fmtTimeOnly(iso) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  }
+
+  // ---------- Tab routing ----------
+  var TAB_HEADER = {
+    home: { title: "Planner", sub: "Study \u2022 Plan \u2022 Achieve" },
+    planner: { title: "Planner", sub: "Study \u2022 Plan \u2022 Achieve" },
+    timer: { title: "Focus Timer", sub: "Better Focus \u2022 Higher Goals" },
+    files: { title: "Files", sub: "Store \u2022 Access \u2022 Share" },
+    chat: { title: "Group Chat", sub: "Together \u2022 Stronger" }
+  };
+  var headerTitleEl = document.getElementById("headerTitle");
+  var headerSubEl = document.getElementById("headerSub");
+  var appMain = document.getElementById("appMain");
+
+  function showTab(tab) {
+    if (!TAB_HEADER[tab]) tab = "home";
+    Array.prototype.forEach.call(document.querySelectorAll(".tab-view"), function (v) {
+      v.classList.toggle("hidden", v.getAttribute("data-tab") !== tab);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".nav-btn"), function (b) {
+      b.classList.toggle("active", b.getAttribute("data-tab") === tab);
+    });
+    headerTitleEl.textContent = TAB_HEADER[tab].title;
+    headerSubEl.textContent = TAB_HEADER[tab].sub;
+    appMain.scrollTop = tab === "chat" ? appMain.scrollHeight : 0;
+    try { localStorage.setItem("plannerActiveTab", tab); } catch (e) {}
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".nav-btn"), function (b) {
+    b.addEventListener("click", function () { showTab(b.getAttribute("data-tab")); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-goto]"), function (el) {
+    el.addEventListener("click", function () { showTab(el.getAttribute("data-goto")); });
+  });
+  (function initTab() {
+    var saved = null;
+    try { saved = localStorage.getItem("plannerActiveTab"); } catch (e) {}
+    showTab(saved || "home");
+  })();
+
+  // ---------- Focus timer & stopwatch (no capability needed) ----------
+  (function initTimer() {
+    var display = document.getElementById("timerDisplay");
+    var ringLabel = document.getElementById("timerRingLabel");
+    var tabTimerBtn = document.getElementById("tabTimerBtn");
+    var tabStopwatchBtn = document.getElementById("tabStopwatchBtn");
+    var presetsWrap = document.getElementById("timerPresets");
+    var customMinInput = document.getElementById("customMinInput");
+    var ringFill = document.getElementById("ringFill");
+    var ringPlayBtn = document.getElementById("ringPlayBtn");
+    var lapList = document.getElementById("lapList");
+    var lapBtn = document.getElementById("lapBtn");
+    var startBtn = document.getElementById("timerStartBtn");
+    var resetBtn = document.getElementById("timerResetBtn");
+
+    var RING_CIRC = 2 * Math.PI * 52;
+
+    var mode = "timer";
+    var timer = { durationMs: 45 * 60 * 1000, remainingMs: 45 * 60 * 1000, endAt: null, running: false, finished: false };
+    var stopwatch = { elapsedMs: 0, startAt: null, running: false, laps: [] };
+    var tickHandle = null;
+
+    function beep() {
+      try {
+        var Ctx = window.AudioContext || window.webkitAudioContext;
+        var ctx = new Ctx();
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = 880;
+        o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(0.001, ctx.currentTime);
+        [0, 0.5].forEach(function (offset) {
+          g.gain.setValueAtTime(0.16, ctx.currentTime + offset);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.35);
+        });
+        o.start(); o.stop(ctx.currentTime + 0.9);
+      } catch (e) {}
+    }
+
+    function fmt(ms) {
+      var total = Math.max(0, Math.round(ms / 1000));
+      var h = Math.floor(total / 3600), m = Math.floor((total % 3600) / 60), s = total % 60;
+      return h > 0 ? (h + ":" + pad(m) + ":" + pad(s)) : (pad(m) + ":" + pad(s));
+    }
+    function fmtStopwatch(ms) {
+      var totalTenths = Math.max(0, Math.floor(ms / 100));
+      var tenths = totalTenths % 10;
+      var totalSec = Math.floor(totalTenths / 10);
+      var h = Math.floor(totalSec / 3600), m = Math.floor((totalSec % 3600) / 60), s = totalSec % 60;
+      var base = h > 0 ? (h + ":" + pad(m) + ":" + pad(s)) : (pad(m) + ":" + pad(s));
+      return base + "." + tenths;
+    }
+
+    function renderLaps() {
+      lapList.classList.toggle("hidden", mode !== "stopwatch" || !stopwatch.laps.length);
+      lapList.innerHTML = "";
+      for (var i = stopwatch.laps.length - 1; i >= 0; i--) {
+        var lap = stopwatch.laps[i];
+        var li = document.createElement("li");
+        li.className = "lap-row";
+        var numSpan = document.createElement("span");
+        numSpan.className = "lap-num";
+        numSpan.textContent = "Lap " + (i + 1);
+        var splitSpan = document.createElement("span");
+        splitSpan.textContent = fmt(lap.split) + " (total " + fmt(lap.total) + ")";
+        li.appendChild(numSpan);
+        li.appendChild(splitSpan);
+        lapList.appendChild(li);
+      }
+    }
+
+    function render() {
+      lapBtn.classList.toggle("hidden", mode !== "stopwatch");
+      if (mode === "timer") {
+        ringLabel.textContent = "Focus Time";
+        var rem = timer.running ? Math.max(0, timer.endAt - Date.now()) : timer.remainingMs;
+        display.textContent = fmt(rem);
+        display.classList.toggle("finished", timer.finished);
+        startBtn.textContent = timer.running ? "Pause" : "Start";
+        ringPlayBtn.innerHTML = timer.running ? "&#10074;&#10074;" : "&#9654;";
+        presetsWrap.style.display = "";
+        var frac = timer.durationMs > 0 ? Math.max(0, Math.min(1, rem / timer.durationMs)) : 0;
+        ringFill.style.strokeDashoffset = String(RING_CIRC * (1 - frac));
+        ringFill.style.stroke = timer.finished ? "var(--danger)" : "var(--accent-strong)";
+      } else {
+        ringLabel.textContent = "Elapsed Time";
+        var el = stopwatch.running ? (Date.now() - stopwatch.startAt) : stopwatch.elapsedMs;
+        display.textContent = fmtStopwatch(el);
+        display.classList.remove("finished");
+        startBtn.textContent = stopwatch.running ? "Pause" : "Start";
+        ringPlayBtn.innerHTML = stopwatch.running ? "&#10074;&#10074;" : "&#9654;";
+        presetsWrap.style.display = "none";
+        ringFill.style.strokeDashoffset = "0";
+        ringFill.style.stroke = "var(--accent-strong)";
+        renderLaps();
+      }
+    }
+
+    function tick() {
+      if (mode === "timer" && timer.running) {
+        var rem = timer.endAt - Date.now();
+        if (rem <= 0) {
+          timer.running = false; timer.remainingMs = 0; timer.finished = true;
+          beep();
+        }
+      }
+      render();
+    }
+
+    function ensureTicking() {
+      if (tickHandle) return;
+      tickHandle = setInterval(tick, 100);
+    }
+    function stopTickingIfIdle() {
+      if (!timer.running && !stopwatch.running && tickHandle) {
+        clearInterval(tickHandle); tickHandle = null;
+      }
+    }
+
+    function setDuration(mins, markPreset) {
+      if (timer.running) return;
+      mins = Math.max(1, Math.min(180, mins || 45));
+      timer.durationMs = mins * 60 * 1000;
+      timer.remainingMs = timer.durationMs;
+      timer.finished = false;
+      Array.prototype.forEach.call(presetsWrap.querySelectorAll(".preset-btn"), function (b) {
+        b.classList.toggle("active", markPreset && parseInt(b.getAttribute("data-min"), 10) === mins);
+      });
+      if (!markPreset) customMinInput.value = mins; else customMinInput.value = "";
+      render();
+    }
+
+    tabTimerBtn.addEventListener("click", function () {
+      mode = "timer"; tabTimerBtn.classList.add("active"); tabStopwatchBtn.classList.remove("active"); render();
+    });
+    tabStopwatchBtn.addEventListener("click", function () {
+      mode = "stopwatch"; tabStopwatchBtn.classList.add("active"); tabTimerBtn.classList.remove("active"); render();
+    });
+
+    presetsWrap.addEventListener("click", function (e) {
+      var btn = e.target.closest(".preset-btn");
+      if (!btn) return;
+      setDuration(parseInt(btn.getAttribute("data-min"), 10) || 45, true);
+    });
+    customMinInput.addEventListener("change", function () {
+      var v = parseInt(customMinInput.value, 10);
+      if (v) setDuration(v, false); else render();
+    });
+    customMinInput.addEventListener("keydown", function (e) { if (e.key === "Enter") customMinInput.blur(); });
+
+    function toggleStartPause() {
+      if (mode === "timer") {
+        if (timer.running) {
+          timer.remainingMs = Math.max(0, timer.endAt - Date.now());
+          timer.running = false;
+        } else {
+          if (timer.finished) { timer.remainingMs = timer.durationMs; timer.finished = false; }
+          timer.endAt = Date.now() + timer.remainingMs;
+          timer.running = true;
+          ensureTicking();
+        }
+      } else {
+        if (stopwatch.running) {
+          stopwatch.elapsedMs = Date.now() - stopwatch.startAt;
+          stopwatch.running = false;
+        } else {
+          stopwatch.startAt = Date.now() - stopwatch.elapsedMs;
+          stopwatch.running = true;
+          ensureTicking();
+        }
+      }
+      render();
+      stopTickingIfIdle();
+    }
+    startBtn.addEventListener("click", toggleStartPause);
+    ringPlayBtn.addEventListener("click", toggleStartPause);
+
+    lapBtn.addEventListener("click", function () {
+      if (mode !== "stopwatch") return;
+      var total = stopwatch.running ? (Date.now() - stopwatch.startAt) : stopwatch.elapsedMs;
+      var prevTotal = stopwatch.laps.length ? stopwatch.laps[stopwatch.laps.length - 1].total : 0;
+      stopwatch.laps.push({ total: total, split: total - prevTotal });
+      renderLaps();
+    });
+
+    resetBtn.addEventListener("click", function () {
+      if (mode === "timer") {
+        timer.running = false; timer.finished = false; timer.remainingMs = timer.durationMs;
+      } else {
+        stopwatch.running = false; stopwatch.elapsedMs = 0; stopwatch.laps = [];
+      }
+      render();
+      stopTickingIfIdle();
+    });
+
+    ringFill.style.strokeDasharray = String(RING_CIRC);
+    render();
+  })();
+
+  // ---------- Accounts & shared data (Supabase) ----------
+  var sb = null;                    // Supabase client
+  var me = null;                    // { id, name, phone, email } for the signed-in user
+  var appStarted = false;
+  var settingName = false;
+  var tasksState = [];
+  var notesState = [];
+  var chatList = [];
+  var memberCount = 0;
+  var tasksChannel = null, filesChannel = null, chatChannel = null;
+  var tasksReloadTimer = null, filesReloadTimer = null;
+  var FILES_BUCKET = "shared-files";
+  var MAX_FILE_BYTES = 10 * 1024 * 1024;
+
+  var appShell = document.getElementById("appShell");
+  var authScreen = document.getElementById("authScreen");
+  var authTitle = document.getElementById("authTitle");
+  var authSub = document.getElementById("authSub");
+  var authMsg = document.getElementById("authMsg");
+  var phoneForm = document.getElementById("phoneForm");
+  var emailForm = document.getElementById("emailForm");
+  var emailInput = document.getElementById("emailInput");
+  var sendEmailBtn = document.getElementById("sendEmailBtn");
+  var authTabs = document.getElementById("authTabs");
+  var tabEmail = document.getElementById("tabEmail");
+  var tabPhone = document.getElementById("tabPhone");
+  var accountHint = document.getElementById("accountHint");
+  var otpForm = document.getElementById("otpForm");
+  var nameForm = document.getElementById("nameForm");
+  var ccInput = document.getElementById("ccInput");
+  var phoneInput = document.getElementById("phoneInput");
+  var otpInput = document.getElementById("otpInput");
+  var nameInput = document.getElementById("nameInput");
+  var sendOtpBtn = document.getElementById("sendOtpBtn");
+  var verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  var resendOtpBtn = document.getElementById("resendOtpBtn");
+  var changeNumberBtn = document.getElementById("changeNumberBtn");
+  var saveNameBtn = document.getElementById("saveNameBtn");
+
+  var whoChip = document.getElementById("whoChip");
+  var whoAvatar = document.getElementById("whoAvatar");
+  var whoName = document.getElementById("whoName");
+  var settingsBtn = document.getElementById("settingsBtn");
+  var accountOverlay = document.getElementById("accountOverlay");
+  var accountCloseBtn = document.getElementById("accountCloseBtn");
+  var accountAvatar = document.getElementById("accountAvatar");
+  var accountPhone = document.getElementById("accountPhone");
+  var accountNameInput = document.getElementById("accountNameInput");
+  var accountSaveBtn = document.getElementById("accountSaveBtn");
+  var accountMsg = document.getElementById("accountMsg");
+  var signOutBtn = document.getElementById("signOutBtn");
+  var toastEl = document.getElementById("toast");
+
+  var chatMessages = document.getElementById("chatMessages");
+  var chatInput = document.getElementById("chatInput");
+  var chatSendBtn = document.getElementById("chatSendBtn");
+  var chatStatus = document.getElementById("chatStatus");
+
+  var greetingLine = document.getElementById("greetingLine");
+  var greetingMeta = document.getElementById("greetingMeta");
+  var homeRemaining = document.getElementById("homeRemaining");
+  var homeCompleted = document.getElementById("homeCompleted");
+  var homeRemaining2 = document.getElementById("homeRemaining2");
+  var homeCompleted2 = document.getElementById("homeCompleted2");
+  var homeFilesStat = document.getElementById("homeFilesStat");
+  var homeMembersStat = document.getElementById("homeMembersStat");
+  var homeAddTaskBtn = document.getElementById("homeAddTaskBtn");
+
+  var plannerDateHeading = document.getElementById("plannerDateHeading");
+  var dayStrip = document.getElementById("dayStrip");
+  var taskCountStat = document.getElementById("taskCountStat");
+  var progressFillTasks = document.getElementById("progressFillTasks");
+  var showAddTaskBtn = document.getElementById("showAddTaskBtn");
+  var taskAddRow = document.getElementById("taskAddRow");
+  var taskSubjectSelect = document.getElementById("taskSubjectSelect");
+  var taskSubjectOtherInput = document.getElementById("taskSubjectOtherInput");
+  var taskAddInput = document.getElementById("taskAddInput");
+  var taskAddBtn = document.getElementById("taskAddBtn");
+  var subjectFilterPills = document.getElementById("subjectFilterPills");
+  var taskSortBtn = document.getElementById("taskSortBtn");
+  var flatTaskList = document.getElementById("flatTaskList");
+
+  var filesSearchInput = document.getElementById("filesSearchInput");
+  var filesSortBtn = document.getElementById("filesSortBtn");
+  var filesFilterPills = document.getElementById("filesFilterPills");
+  var notesList = document.getElementById("notesList");
+  var notesCount = document.getElementById("notesCount");
+  var uploadBtn = document.getElementById("uploadBtn");
+  var fileInput = document.getElementById("fileInput");
+  var uploadHint = document.getElementById("uploadHint");
+
+  var chatGroupMeta = document.getElementById("chatGroupMeta");
+  var chatGroupCard = document.getElementById("chatGroupCard");
+
+  function showUploadHint(msg) { uploadHint.textContent = msg; uploadHint.classList.remove("hidden"); }
+  function clearUploadHint() { uploadHint.classList.add("hidden"); }
+
+  // ---- small helpers ----
+  var toastTimer = null;
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.add("hidden"); }, 3500);
+  }
+  function errText(err) { return (err && err.message) ? err.message : "Something went wrong."; }
+
+  // ---- Sign-in screen: phone number -> one-time code -> (first visit only) name ----
+  var authStep = "loading";
+  var authMethod = "email";     // "email" or "phone": which one the code was sent to
+  var pendingTarget = "";       // the email address or phone number awaiting its code
+  var resendTimer = null;
+  var AUTH_COPY = {
+    loading: ["Planner", "Loading\u2026"],
+    email: ["Join Planner", "Enter your email address and we\u2019ll send you a one-time code."],
+    phone: ["Join Planner", "Enter your mobile number and we\u2019ll text you a one-time code."],
+    otp: ["Enter your code", ""],
+    name: ["One last thing", "What should your group call you?"],
+    setup: ["Almost there", ""]
+  };
+
+  function setAuthMsg(text, isError) {
+    authMsg.textContent = text || "";
+    authMsg.classList.toggle("error", !!isError);
+  }
+  function showAuthStep(step) {
+    authStep = step;
+    emailForm.classList.toggle("hidden", step !== "email");
+    phoneForm.classList.toggle("hidden", step !== "phone");
+    otpForm.classList.toggle("hidden", step !== "otp");
+    nameForm.classList.toggle("hidden", step !== "name");
+    var bothOn = SIGNIN_PHONE !== false && SIGNIN_EMAIL !== false;
+    authTabs.classList.toggle("hidden", !(bothOn && (step === "email" || step === "phone")));
+    tabEmail.classList.toggle("active", step === "email");
+    tabPhone.classList.toggle("active", step === "phone");
+    tabEmail.setAttribute("aria-selected", step === "email" ? "true" : "false");
+    tabPhone.setAttribute("aria-selected", step === "phone" ? "true" : "false");
+    authTitle.textContent = AUTH_COPY[step][0];
+    if (step === "otp") {
+      authSub.textContent = authMethod === "email"
+        ? "We sent a code to " + pendingTarget + ". If it doesn\u2019t show up, check your spam folder."
+        : "We sent a code to " + pendingTarget + ".";
+      changeNumberBtn.textContent = authMethod === "email" ? "Change email" : "Change number";
+    } else {
+      authSub.textContent = AUTH_COPY[step][1];
+    }
+    setAuthMsg("");
+    authScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
+    try {
+      if (step === "phone") phoneInput.focus();
+      else if (step === "email") emailInput.focus();
+      else if (step === "otp") otpInput.focus();
+      else if (step === "name") nameInput.focus();
+    } catch (e) {}
+  }
+  function showSetupMessage(msg) {
+    showAuthStep("setup");
+    authSub.textContent = msg;
+  }
+
+  function startingMethod() {
+    var emailOn = SIGNIN_EMAIL !== false, phoneOn = SIGNIN_PHONE !== false;
+    if (emailOn && phoneOn) return DEFAULT_SIGNIN === "phone" ? "phone" : "email";
+    return phoneOn ? "phone" : "email";
+  }
+  tabEmail.addEventListener("click", function () { showAuthStep("email"); });
+  tabPhone.addEventListener("click", function () { showAuthStep("phone"); });
+
+  function buildEmail() {
+    var v = (emailInput.value || "").trim().toLowerCase();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) && v.length <= 120 ? v : null;
+  }
+
+  // E.164: "+" + country code + number, 8-15 digits in total.
+  function buildPhone() {
+    var rawNum = (phoneInput.value || "").trim();
+    var digits;
+    if (rawNum.charAt(0) === "+") {
+      digits = rawNum.replace(/\D/g, "");
+    } else {
+      var cc = (ccInput.value || "").replace(/\D/g, "");
+      var num = rawNum.replace(/\D/g, "").replace(/^0+/, "");
+      if (!cc || !num) return null;
+      digits = cc + num;
+    }
+    if (digits.length < 8 || digits.length > 15 || digits.charAt(0) === "0") return null;
+    return "+" + digits;
+  }
+
+  function startResendCountdown(sec) {
+    clearInterval(resendTimer);
+    var left = sec;
+    resendOtpBtn.disabled = true;
+    function paint() { resendOtpBtn.textContent = left > 0 ? "Resend code in " + left + "s" : "Resend code"; }
+    paint();
+    resendTimer = setInterval(function () {
+      left--;
+      paint();
+      if (left <= 0) { clearInterval(resendTimer); resendOtpBtn.disabled = false; }
+    }, 1000);
+  }
+
+  function sendErrorText(err) {
+    var status = err && err.status;
+    var m = ((err && err.message) || "").toLowerCase();
+    if (status === 429 || m.indexOf("rate limit") !== -1 || m.indexOf("too many") !== -1 || /after \d+ seconds/.test(m)) {
+      return "Too many codes were requested. Please wait a minute and try again.";
+    }
+    if (/unsupported phone provider|phone_provider_disabled|sms.*(disabled|not enabled)/.test(m)) {
+      return "Phone codes aren\u2019t switched on yet. Try the Email option instead.";
+    }
+    if (m.indexOf("not authorized") !== -1 || m.indexOf("smtp") !== -1) {
+      return "Email sending isn\u2019t set up yet. Connect an email service (SMTP) in Supabase first.";
+    }
+    return "Couldn\u2019t send the code. " + errText(err);
+  }
+  function verifyErrorText(err) {
+    var m = ((err && err.message) || "").toLowerCase();
+    if (m.indexOf("expired") !== -1 || m.indexOf("invalid") !== -1) {
+      return "That code is wrong or has expired. Check it, or request a new one.";
+    }
+    return "Couldn\u2019t verify the code. " + errText(err);
+  }
+  var OFFLINE_MSG = "Couldn\u2019t reach the server. Check your connection and try again.";
+
+  function sendOtp(target, method, btn) {
+    btn.disabled = true;
+    setAuthMsg("Sending code\u2026");
+    var payload = method === "email"
+      ? { email: target, options: { shouldCreateUser: true } }
+      : { phone: target, options: { channel: "sms" } };
+    return sb.auth.signInWithOtp(payload).then(function (res) {
+      btn.disabled = false;
+      if (res.error) { setAuthMsg(sendErrorText(res.error), true); return false; }
+      pendingTarget = target;
+      authMethod = method;
+      return true;
+    }, function () {
+      btn.disabled = false;
+      setAuthMsg(OFFLINE_MSG, true);
+      return false;
+    });
+  }
+
+  phoneForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var phone = buildPhone();
+    if (!phone) { setAuthMsg("Enter a valid mobile number.", true); return; }
+    sendOtp(phone, "phone", sendOtpBtn).then(function (ok) {
+      if (!ok) return;
+      otpInput.value = "";
+      showAuthStep("otp");
+      startResendCountdown(60);
+    });
+  });
+
+  emailForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = buildEmail();
+    if (!email) { setAuthMsg("Enter a valid email address.", true); return; }
+    sendOtp(email, "email", sendEmailBtn).then(function (ok) {
+      if (!ok) return;
+      otpInput.value = "";
+      showAuthStep("otp");
+      startResendCountdown(60);
+    });
+  });
+
+  resendOtpBtn.addEventListener("click", function () {
+    sendOtp(pendingTarget, authMethod, resendOtpBtn).then(function (ok) {
+      if (ok) { setAuthMsg("New code sent."); startResendCountdown(60); }
+      else { resendOtpBtn.disabled = false; }
+    });
+  });
+
+  changeNumberBtn.addEventListener("click", function () {
+    clearInterval(resendTimer);
+    showAuthStep(authMethod);
+  });
+
+  otpInput.addEventListener("input", function () { otpInput.value = otpInput.value.replace(/\D/g, ""); });
+
+  otpForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var token = (otpInput.value || "").replace(/\D/g, "");
+    if (token.length < 6) { setAuthMsg("Enter the full code from the SMS.", true); return; }
+    verifyOtpBtn.disabled = true;
+    setAuthMsg("Checking\u2026");
+    var verifyArgs = authMethod === "email"
+      ? { email: pendingTarget, token: token, type: "email" }
+      : { phone: pendingTarget, token: token, type: "sms" };
+    sb.auth.verifyOtp(verifyArgs).then(function (res) {
+      verifyOtpBtn.disabled = false;
+      if (res.error || !res.data || !res.data.session) {
+        setAuthMsg(verifyErrorText(res.error), true);
+        return;
+      }
+      clearInterval(resendTimer);
+      handleSession(res.data.session);
+    }, function () {
+      verifyOtpBtn.disabled = false;
+      setAuthMsg(OFFLINE_MSG, true);
+    });
+  });
+
+  // The database stamps each message/file with the name inside the user's JWT, so after
+  // changing the name we refresh the session to get a token that carries it.
+  function saveName(name) {
+    settingName = true;
+    return sb.auth.updateUser({ data: { display_name: name } }).then(function (res) {
+      if (res.error) throw res.error;
+      return sb.auth.refreshSession();
+    }).then(function (res) {
+      if (res.error) throw res.error;
+      settingName = false;
+    }, function (err) {
+      settingName = false;
+      throw err;
+    });
+  }
+
+  nameForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = (nameInput.value || "").trim();
+    if (!name) { setAuthMsg("Please enter your name.", true); return; }
+    saveNameBtn.disabled = true;
+    setAuthMsg("Saving\u2026");
+    saveName(name).then(function () {
+      saveNameBtn.disabled = false;
+      me.name = name;
+      startApp();
+    }, function (err) {
+      saveNameBtn.disabled = false;
+      setAuthMsg("Couldn\u2019t save your name. " + errText(err), true);
+    });
+  });
+
+  function handleSession(session) {
+    var u = session.user;
+    var name = String((u.user_metadata || {}).display_name || "").trim();
+    var phone = u.phone ? "+" + String(u.phone).replace(/^\+/, "") : "";
+    var email = u.email || "";
+    if (appStarted) {
+      if (me && me.id !== u.id) { location.reload(); return; }
+      if (name) me.name = name;
+      renderIdentity();
+      return;
+    }
+    me = { id: u.id, name: name, phone: phone, email: email };
+    if (name) startApp();
+    else if (authStep !== "name") { nameInput.value = ""; showAuthStep("name"); }
+  }
+
+  // ---- Account sheet (name + sign out) ----
+  function showAccountMsg(msg) { accountMsg.textContent = msg; accountMsg.classList.remove("hidden"); }
+  function openAccount() {
+    if (!me) return;
+    accountNameInput.value = me.name || "";
+    accountMsg.classList.add("hidden");
+    accountOverlay.classList.remove("hidden");
+  }
+  function closeAccount() { accountOverlay.classList.add("hidden"); }
+  whoChip.addEventListener("click", openAccount);
+  settingsBtn.addEventListener("click", openAccount);
+  accountCloseBtn.addEventListener("click", closeAccount);
+  accountOverlay.addEventListener("click", function (e) { if (e.target === accountOverlay) closeAccount(); });
+
+  accountSaveBtn.addEventListener("click", function () {
+    var name = (accountNameInput.value || "").trim();
+    if (!name) { showAccountMsg("Please enter a name."); return; }
+    if (name === me.name) { showAccountMsg("That\u2019s already your name."); return; }
+    accountSaveBtn.disabled = true;
+    saveName(name).then(function () {
+      accountSaveBtn.disabled = false;
+      me.name = name;
+      renderIdentity();
+      showAccountMsg("Saved.");
+    }, function (err) {
+      accountSaveBtn.disabled = false;
+      showAccountMsg("Couldn\u2019t save: " + errText(err));
+    });
+  });
+  accountNameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") accountSaveBtn.click(); });
+
+  signOutBtn.addEventListener("click", function () {
+    sb.auth.signOut().then(function () { location.reload(); });
+  });
+
+  function renderIdentity() {
+    var name = (me && me.name) || "";
+    whoAvatar.textContent = initials(name);
+    whoName.textContent = name || "Account";
+    accountAvatar.textContent = initials(name);
+    accountPhone.textContent = (me && (me.email || me.phone)) || "";
+    accountHint.textContent = me && me.email ? "Signed in with this email" : "Signed in with this number";
+  }
+
+  function memberLabel() {
+    return memberCount > 0 ? memberCount + " member" + (memberCount === 1 ? "" : "s") : "";
+  }
+  function updateGreeting() {
+    var h = new Date().getHours();
+    greetingLine.textContent = h < 12 ? "Good morning," : (h < 18 ? "Good afternoon," : "Good evening,");
+    var dateStr = new Date().toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+    var label = memberLabel();
+    greetingMeta.textContent = dateStr + (label ? " \u2022 " + label : "");
+    homeMembersStat.textContent = label || "Chat with your group";
+    chatGroupMeta.textContent = label || "Your study group";
+  }
+
+  // ---- Tasks ----
+  var SUBJECT_PRESETS = ["PPS", "Maths", "Chemistry", "Biology", "WS"];
+  var selectedPlannerDate = localDateStr(new Date());
+  var selectedSubjectFilter = "All";
+
+  function legacySubjectFromId(subjectId) {
+    var m = subjectId && /^sub(\d+)$/.exec(subjectId);
+    return m ? (SUBJECT_PRESETS[parseInt(m[1], 10) - 1] || null) : null;
+  }
+  function taskSubjectLabel(task) {
+    return task.subject || legacySubjectFromId(task.subjectId) || "Other";
+  }
+  function distinctCustomSubjects() {
+    var set = {};
+    tasksState.forEach(function (t) {
+      var s = taskSubjectLabel(t);
+      if (SUBJECT_PRESETS.indexOf(s) === -1) set[s] = true;
+    });
+    return Object.keys(set).sort();
+  }
+  function refreshSubjectOptions() {
+    var wanted = SUBJECT_PRESETS.concat(distinctCustomSubjects());
+    var current = Array.prototype.map.call(taskSubjectSelect.options, function (o) { return o.value; })
+      .filter(function (v) { return v !== "__other__"; });
+    var changed = wanted.length !== current.length || wanted.some(function (v, i) { return v !== current[i]; });
+    if (changed) {
+      var prevValue = taskSubjectSelect.value;
+      taskSubjectSelect.innerHTML = "";
+      wanted.forEach(function (name) {
+        var opt = document.createElement("option");
+        opt.value = name; opt.textContent = name;
+        taskSubjectSelect.appendChild(opt);
+      });
+      var otherOpt = document.createElement("option");
+      otherOpt.value = "__other__"; otherOpt.textContent = "Other\u2026";
+      taskSubjectSelect.appendChild(otherOpt);
+      taskSubjectSelect.value = (wanted.indexOf(prevValue) !== -1 || prevValue === "__other__") ? prevValue : SUBJECT_PRESETS[0];
+      taskSubjectOtherInput.classList.toggle("hidden", taskSubjectSelect.value !== "__other__");
+    }
+  }
+  taskSubjectSelect.addEventListener("change", function () {
+    var isOther = taskSubjectSelect.value === "__other__";
+    taskSubjectOtherInput.classList.toggle("hidden", !isOther);
+    if (isOther) taskSubjectOtherInput.focus();
+  });
+
+  showAddTaskBtn.addEventListener("click", function () {
+    taskAddRow.classList.toggle("hidden");
+    if (!taskAddRow.classList.contains("hidden")) taskAddInput.focus();
+  });
+  homeAddTaskBtn.addEventListener("click", function () {
+    showTab("planner");
+    taskAddRow.classList.remove("hidden");
+    taskAddInput.focus();
+  });
+
+  function chosenSubject() {
+    if (taskSubjectSelect.value === "__other__") return taskSubjectOtherInput.value.trim() || "Other";
+    return taskSubjectSelect.value;
+  }
+  function doAddTask() {
+    var text = taskAddInput.value.trim();
+    var subject = chosenSubject();
+    if (!text || !me) return;
+    taskAddInput.value = "";
+    sb.from("tasks").insert({ subject: subject, title: text }).then(function (res) {
+      if (res.error) { taskAddInput.value = text; showToast("Couldn\u2019t add that task."); return; }
+      loadTasks();
+    });
+  }
+  taskAddBtn.addEventListener("click", doAddTask);
+  taskAddInput.addEventListener("keydown", function (e) { if (e.key === "Enter") doAddTask(); });
+  taskSubjectOtherInput.addEventListener("keydown", function (e) { if (e.key === "Enter") doAddTask(); });
+
+  function renderDayStrip() {
+    dayStrip.innerHTML = "";
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (var offset = -3; offset <= 3; offset++) {
+      var d = new Date(today);
+      d.setDate(d.getDate() + offset);
+      var dateStr = localDateStr(d);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "day-pill" + (dateStr === selectedPlannerDate ? " active" : "");
+      var wd = document.createElement("span");
+      wd.className = "day-pill-wd";
+      wd.textContent = d.toLocaleDateString(undefined, { weekday: "short" });
+      var dn = document.createElement("span");
+      dn.className = "day-pill-num";
+      dn.textContent = d.getDate();
+      btn.appendChild(wd);
+      btn.appendChild(dn);
+      (function (ds) {
+        btn.addEventListener("click", function () { selectedPlannerDate = ds; renderDayStrip(); renderTaskList(); });
+      })(dateStr);
+      dayStrip.appendChild(btn);
+    }
+    var sel = new Date(selectedPlannerDate + "T00:00:00");
+    var todayStr = localDateStr(today);
+    plannerDateHeading.textContent = (selectedPlannerDate === todayStr ? "Today \u2014 " : "") +
+      sel.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+  }
+
+  function renderSubjectFilterPills() {
+    var used = {};
+    tasksState.forEach(function (t) { used[taskSubjectLabel(t)] = true; });
+    var pills = ["All"].concat(Object.keys(used).sort());
+    subjectFilterPills.innerHTML = "";
+    pills.forEach(function (name) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pill" + (name === selectedSubjectFilter ? " active" : "");
+      btn.textContent = name;
+      btn.addEventListener("click", function () { selectedSubjectFilter = name; renderTaskList(); });
+      subjectFilterPills.appendChild(btn);
+    });
+  }
+
+  function updateHomeTaskStats() {
+    var total = tasksState.length;
+    var done = tasksState.filter(function (t) { return t.done; }).length;
+    var remaining = total - done;
+    homeRemaining.textContent = String(remaining);
+    homeCompleted.textContent = String(done);
+    homeRemaining2.textContent = String(remaining);
+    homeCompleted2.textContent = String(done);
+  }
+
+  var taskSortAsc = true;
+  taskSortBtn.addEventListener("click", function () { taskSortAsc = !taskSortAsc; renderTaskList(); });
+
+  function renderTaskList() {
+    refreshSubjectOptions();
+    renderSubjectFilterPills();
+    updateHomeTaskStats();
+
+    var filtered = tasksState.filter(function (t) {
+      var dayMatch = !t.deadline || t.deadline === selectedPlannerDate;
+      var subjMatch = selectedSubjectFilter === "All" || taskSubjectLabel(t) === selectedSubjectFilter;
+      return dayMatch && subjMatch;
+    }).sort(function (a, b) {
+      var cmp = (a.assignedAt || "").localeCompare(b.assignedAt || "");
+      return taskSortAsc ? cmp : -cmp;
+    });
+
+    var doneCount = filtered.filter(function (t) { return t.done; }).length;
+    taskCountStat.textContent = doneCount + "/" + filtered.length + " completed";
+    progressFillTasks.style.width = (filtered.length ? Math.round((doneCount / filtered.length) * 100) : 0) + "%";
+
+    flatTaskList.innerHTML = "";
+    if (!filtered.length) {
+      var empty = document.createElement("li");
+      empty.className = "empty-msg";
+      empty.textContent = tasksState.length ? "No tasks match this day/filter." : "No tasks yet \u2014 add one above.";
+      flatTaskList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(function (task) {
+      var li = document.createElement("li");
+      li.className = "task-row";
+
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.className = "task-checkbox";
+      cb.checked = !!task.done;
+      var cbId = "t-" + task.id;
+      cb.id = cbId;
+      cb.setAttribute("aria-label", task.text);
+      cb.addEventListener("change", function () {
+        sb.from("tasks").update({ done: cb.checked }).eq("id", task.id).then(afterTaskWrite);
+      });
+
+      var body = document.createElement("div");
+      body.className = "task-body";
+
+      var label = document.createElement("label");
+      label.setAttribute("for", cbId);
+      label.className = "task-text" + (task.done ? " done" : "");
+      label.textContent = task.text;
+      body.appendChild(label);
+
+      var metaLine = document.createElement("p");
+      metaLine.className = "task-meta-line";
+      var subjSpan = document.createElement("span");
+      subjSpan.className = "subject-label";
+      subjSpan.textContent = taskSubjectLabel(task);
+      var whenSpan = document.createElement("span");
+      whenSpan.className = "task-when";
+      var dayPart = task.deadline ? relativeDayLabel(task.deadline) : relativeDayLabel(localDateStr(new Date(task.assignedAt || nowIso())));
+      var timePart = fmtTimeOnly(task.assignedAt);
+      whenSpan.textContent = " " + dayPart + (timePart ? " \u00B7 " + timePart : "");
+      whenSpan.title = "Click to set a due date";
+      whenSpan.style.cursor = "pointer";
+      metaLine.appendChild(subjSpan);
+      metaLine.appendChild(whenSpan);
+      body.appendChild(metaLine);
+
+      var deadlineInput = document.createElement("input");
+      deadlineInput.type = "date";
+      deadlineInput.className = "task-deadline-edit hidden";
+      deadlineInput.value = task.deadline || "";
+      deadlineInput.addEventListener("change", function () {
+        sb.from("tasks").update({ deadline: deadlineInput.value }).eq("id", task.id).then(afterTaskWrite);
+        deadlineInput.classList.add("hidden");
+      });
+      deadlineInput.addEventListener("blur", function () { deadlineInput.classList.add("hidden"); });
+      body.appendChild(deadlineInput);
+
+      whenSpan.addEventListener("click", function () {
+        deadlineInput.classList.remove("hidden");
+        deadlineInput.focus();
+      });
+
+      var del = document.createElement("button");
+      del.type = "button";
+      del.className = "task-del";
+      del.setAttribute("aria-label", "Remove task");
+      del.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16z"/></svg>';
+      del.addEventListener("click", function () {
+        sb.from("tasks").delete().eq("id", task.id).then(afterTaskWrite);
+      });
+
+      li.appendChild(cb);
+      li.appendChild(body);
+      li.appendChild(del);
+      flatTaskList.appendChild(li);
+    });
+  }
+
+  // ---- Files (shared notes) ----
+  var filesSelectedFilter = "all";
+  var filesSortAsc = false;
+  filesSortBtn.addEventListener("click", function () { filesSortAsc = !filesSortAsc; renderNotes(); });
+  function noteCategory(note) {
+    var type = (note.contentType || "").toLowerCase();
+    var name = (note.fileName || "").toLowerCase();
+    if (type.indexOf("image/") === 0 || /\.(png|jpe?g|gif|webp|svg)$/.test(name)) return "images";
+    if (type.indexOf("pdf") !== -1 || type.indexOf("document") !== -1 || type.indexOf("text") !== -1 || /\.(pdf|docx?|txt|pptx?|xlsx?)$/.test(name)) return "documents";
+    return "others";
+  }
+  function noteIcon(cat) { return cat === "images" ? "\uD83D\uDDBC\uFE0F" : (cat === "documents" ? "\uD83D\uDCC4" : "\uD83D\uDCCE"); }
+
+  filesFilterPills.addEventListener("click", function (e) {
+    var btn = e.target.closest(".pill");
+    if (!btn) return;
+    filesSelectedFilter = btn.getAttribute("data-filter");
+    Array.prototype.forEach.call(filesFilterPills.querySelectorAll(".pill"), function (b) {
+      b.classList.toggle("active", b === btn);
+    });
+    renderNotes();
+  });
+  filesSearchInput.addEventListener("input", renderNotes);
+
+  function renderNotes() {
+    homeFilesStat.textContent = notesState.length + (notesState.length === 1 ? " file" : " files");
+    notesCount.textContent = notesState.length + (notesState.length === 1 ? " file" : " files");
+
+    var q = (filesSearchInput.value || "").trim().toLowerCase();
+    var filtered = notesState.filter(function (n) {
+      var matchesQuery = !q || (n.fileName || "").toLowerCase().indexOf(q) !== -1;
+      var matchesFilter = filesSelectedFilter === "all" || noteCategory(n) === filesSelectedFilter;
+      return matchesQuery && matchesFilter;
+    }).sort(function (a, b) {
+      var cmp = (a.createdAt || "").localeCompare(b.createdAt || "");
+      return filesSortAsc ? cmp : -cmp;
+    });
+
+    notesList.innerHTML = "";
+    if (!filtered.length) {
+      var empty = document.createElement("li");
+      empty.className = "empty-msg";
+      empty.textContent = notesState.length ? "No files match." : "Nothing shared yet.";
+      notesList.appendChild(empty);
+      return;
+    }
+    filtered.forEach(function (note) {
+      var li = document.createElement("li");
+      li.className = "note-row";
+
+      var cat = noteCategory(note);
+      var icon = document.createElement("span");
+      icon.className = "note-icon cat-" + cat;
+      icon.textContent = noteIcon(cat);
+
+      var body = document.createElement("div");
+      body.className = "note-body";
+      var nameEl = document.createElement("span");
+      nameEl.className = "note-name";
+      var a = document.createElement("a");
+      a.href = "#";
+      a.title = "Download";
+      a.textContent = note.fileName || "file";
+      a.addEventListener("click", function (e) { e.preventDefault(); downloadNote(note); });
+      nameEl.appendChild(a);
+      var meta = document.createElement("span");
+      meta.className = "note-meta";
+      var sizeStr = fmtBytes(note.sizeBytes);
+      meta.textContent = (sizeStr ? sizeStr + " \u2022 " : "") + fmtRelative(note.createdAt) + " \u2022 " + (note.uploaderName || "Someone");
+      body.appendChild(nameEl);
+      body.appendChild(meta);
+
+      li.appendChild(icon);
+      li.appendChild(body);
+      if (me && note.userId === me.id) {
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "note-del";
+        del.setAttribute("aria-label", "Delete file");
+        del.textContent = "\u00D7";
+        del.addEventListener("click", function () { deleteNote(note); });
+        li.appendChild(del);
+      }
+      notesList.appendChild(li);
+    });
+  }
+
+  function downloadNote(note) {
+    sb.storage.from(FILES_BUCKET).createSignedUrl(note.storagePath, 60, { download: note.fileName || true }).then(function (res) {
+      if (res.error || !res.data) { showToast("Couldn\u2019t open that file."); return; }
+      window.location.href = res.data.signedUrl;
+    });
+  }
+
+  function deleteNote(note) {
+    if (!confirm("Delete \u201C" + (note.fileName || "this file") + "\u201D for everyone?")) return;
+    sb.from("shared_files").delete().eq("id", note.id).then(function (res) {
+      if (res.error) { showToast("Couldn\u2019t delete that file."); return; }
+      sb.storage.from(FILES_BUCKET).remove([note.storagePath]);
+      loadFiles();
+    });
+  }
+
+  function newId() {
+    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  }
+
+  uploadBtn.addEventListener("click", function () { fileInput.click(); });
+  fileInput.addEventListener("change", function () {
+    var file = fileInput.files && fileInput.files[0];
+    fileInput.value = "";
+    if (!file || !me) return;
+    clearUploadHint();
+    if (file.size > MAX_FILE_BYTES) {
+      showUploadHint("That file is too big \u2014 keep uploads under " + Math.round(MAX_FILE_BYTES / 1024 / 1024) + " MB.");
+      return;
+    }
+    var safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(-100);
+    var path = me.id + "/" + newId() + "-" + safeName;
+    uploadBtn.disabled = true;
+    showUploadHint("Uploading\u2026");
+    sb.storage.from(FILES_BUCKET).upload(path, file, { contentType: file.type || "application/octet-stream", upsert: false })
+      .then(function (up) {
+        if (up.error) throw up.error;
+        return sb.from("shared_files").insert({
+          file_name: file.name, storage_path: path, content_type: file.type || "", size_bytes: file.size
+        });
+      })
+      .then(function (ins) {
+        if (ins.error) {
+          sb.storage.from(FILES_BUCKET).remove([path]);
+          throw ins.error;
+        }
+        clearUploadHint();
+        loadFiles();
+      })
+      .catch(function (err) {
+        showUploadHint("Couldn\u2019t upload that file. " + errText(err));
+      })
+      .then(function () { uploadBtn.disabled = false; });
+  });
+
+  function loadFiles() {
+    sb.from("shared_files").select("*").order("created_at", { ascending: false }).limit(200).then(function (res) {
+      if (res.error) { showToast("Couldn\u2019t load shared files."); return; }
+      notesState = (res.data || []).map(function (r) {
+        return {
+          id: r.id, userId: r.user_id, fileName: r.file_name, storagePath: r.storage_path,
+          contentType: r.content_type, sizeBytes: r.size_bytes, uploaderName: r.uploader_name, createdAt: r.created_at
+        };
+      });
+      renderNotes();
+    });
+  }
+  function subscribeFiles() {
+    filesChannel = sb.channel("files-feed")
+      .on("postgres_changes", { event: "*", schema: "public", table: "shared_files" }, function () {
+        clearTimeout(filesReloadTimer);
+        filesReloadTimer = setTimeout(loadFiles, 200);
+      })
+      .subscribe();
+  }
+
+  // ---- Tasks (stored per account) ----
+  function mapTask(r) {
+    return { id: r.id, subject: r.subject, text: r.title, assignedAt: r.assigned_at, deadline: r.deadline || "", done: !!r.done };
+  }
+  function loadTasks() {
+    sb.from("tasks").select("*").order("assigned_at", { ascending: true }).then(function (res) {
+      if (res.error) { showToast("Couldn\u2019t load your tasks."); return; }
+      tasksState = (res.data || []).map(mapTask);
+      renderTaskList();
+    });
+  }
+  function afterTaskWrite(res) {
+    if (res && res.error) showToast("Couldn\u2019t save that change.");
+    loadTasks();
+  }
+  function subscribeTasks() {
+    tasksChannel = sb.channel("tasks-" + me.id)
+      .on("postgres_changes", { event: "*", schema: "public", table: "tasks", filter: "user_id=eq." + me.id }, function () {
+        clearTimeout(tasksReloadTimer);
+        tasksReloadTimer = setTimeout(loadTasks, 200);
+      })
+      .subscribe();
+  }
+
+  // ---- Group chat ----
+  function renderEmpty(msg) {
+    chatMessages.innerHTML = "";
+    var p = document.createElement("p");
+    p.className = "empty-msg";
+    p.textContent = msg;
+    chatMessages.appendChild(p);
+  }
+
+  function renderMessages() {
+    chatMessages.innerHTML = "";
+    if (!chatList.length) { renderEmpty("No messages yet \u2014 say hello."); return; }
+    chatList.forEach(function (m) {
+      var mine = !!me && m.user_id === me.id;
+      var row = document.createElement("div");
+      row.className = "chat-row" + (mine ? " mine" : "");
+
+      var avatar = document.createElement("span");
+      avatar.className = "chat-avatar";
+      avatar.textContent = initials(m.display_name);
+
+      var wrap = document.createElement("div");
+      wrap.className = "chat-bubble-wrap";
+      var head = document.createElement("div");
+      head.className = "chat-row-head";
+      var nameSpan = document.createElement("span");
+      nameSpan.className = "chat-name";
+      nameSpan.textContent = mine ? "You" : (m.display_name || "Someone");
+      var timeSpan = document.createElement("span");
+      timeSpan.className = "chat-time";
+      timeSpan.textContent = fmtTimeOnly(m.created_at);
+      head.appendChild(nameSpan);
+      head.appendChild(timeSpan);
+      var textDiv = document.createElement("div");
+      textDiv.className = "chat-text";
+      textDiv.textContent = m.body;
+      wrap.appendChild(head);
+      wrap.appendChild(textDiv);
+
+      row.appendChild(avatar);
+      row.appendChild(wrap);
+      chatMessages.appendChild(row);
+    });
+    if (!document.getElementById("view-chat").classList.contains("hidden")) appMain.scrollTop = appMain.scrollHeight;
+  }
+
+  function addMessage(m) {
+    if (!m || chatList.some(function (x) { return x.id === m.id; })) return;
+    chatList.push(m);
+    chatList.sort(function (a, b) { return a.id - b.id; });
+    if (chatList.length > 200) chatList = chatList.slice(-200);
+    renderMessages();
+  }
+
+  function loadChat() {
+    chatStatus.textContent = "connecting\u2026";
+    sb.from("messages").select("*").order("created_at", { ascending: false }).limit(200).then(function (res) {
+      if (res.error) {
+        chatStatus.textContent = "offline";
+        renderEmpty("Couldn\u2019t load the chat. Check your connection and reload.");
+        return;
+      }
+      var seen = {};
+      chatList = (res.data || []).concat(chatList).filter(function (m) {
+        if (seen[m.id]) return false;
+        seen[m.id] = true;
+        return true;
+      }).sort(function (a, b) { return a.id - b.id; });
+      renderMessages();
+    });
+  }
+
+  function subscribeChat() {
+    chatChannel = sb.channel("chat-feed")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, function (payload) {
+        addMessage(payload.new);
+      })
+      .subscribe(function (status) {
+        if (status === "SUBSCRIBED") chatStatus.textContent = "live";
+        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") chatStatus.textContent = "offline";
+        else chatStatus.textContent = "connecting\u2026";
+      });
+  }
+
+  function sendChat() {
+    var text = chatInput.value.trim();
+    if (!text || !me) return;
+    chatInput.value = "";
+    sb.from("messages").insert({ body: text }).select().single().then(function (res) {
+      if (res.error) {
+        chatInput.value = text;
+        showToast("Couldn\u2019t send that message.");
+        return;
+      }
+      addMessage(res.data);
+    });
+  }
+  chatSendBtn.addEventListener("click", sendChat);
+  chatInput.addEventListener("keydown", function (e) { if (e.key === "Enter") sendChat(); });
+
+  function loadMemberCount() {
+    sb.rpc("member_count").then(function (res) {
+      if (res.error || typeof res.data !== "number") return;
+      memberCount = res.data;
+      updateGreeting();
+    });
+  }
+
+  // ---- Start-up ----
+  function startApp() {
+    if (appStarted) { renderIdentity(); return; }
+    appStarted = true;
+    authScreen.classList.add("hidden");
+    appShell.classList.remove("hidden");
+    renderIdentity();
+    renderDayStrip();
+    updateGreeting();
+    renderTaskList();
+    renderNotes();
+    loadTasks(); subscribeTasks();
+    loadFiles(); subscribeFiles();
+    loadChat(); subscribeChat();
+    loadMemberCount();
+  }
+
+  function init() {
+    if (!window.supabase || !window.supabase.createClient) {
+      showSetupMessage("Couldn\u2019t load the sign-in library. Check your connection and reload the page.");
+      return;
+    }
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.indexOf("YOUR_") === 0 || SUPABASE_ANON_KEY.indexOf("YOUR_") === 0) {
+      showSetupMessage("Sign-in isn\u2019t set up yet. Paste your Supabase project URL and anon key into the config block just above the main script at the bottom of this file.");
+      return;
+    }
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Deferred with setTimeout so we never call Supabase from inside its own auth callback.
+    sb.auth.onAuthStateChange(function (event, session) {
+      setTimeout(function () {
+        if (event === "SIGNED_OUT") {
+          if (appStarted) location.reload(); else showAuthStep(startingMethod());
+          return;
+        }
+        if (event === "USER_UPDATED" && settingName) return;
+        if (session) handleSession(session);
+        else if (authStep === "loading") showAuthStep(startingMethod());
+      }, 0);
+    });
+    sb.auth.getSession().then(function (r) {
+      var s = r && r.data && r.data.session;
+      if (s) handleSession(s);
+      else if (authStep === "loading") showAuthStep(startingMethod());
+    });
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
