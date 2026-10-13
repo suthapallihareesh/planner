@@ -1594,7 +1594,8 @@
 
   // ---- Install to home screen (PWA) ----
   var deferredInstall = null;   // Chrome/Edge/Android hand us this when the app can be installed
-  var androidFallback = false;  // set after a few seconds if Android Chrome never offered the install prompt
+  var fallbackReady = false;    // true once the browser has had time to offer its own install prompt (instantly on iPhone)
+  var stepsShown = false;       // the "How?" button was pressed
   var INSTALL_DISMISS_KEY = "plannerInstallDismissedAt";
   var installBanner = document.getElementById("installBanner");
   var installBannerSub = document.getElementById("installBannerSub");
@@ -1610,6 +1611,8 @@
     var ua = navigator.userAgent || "";
     return /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   }
+  function isAndroid() { return /android/i.test(navigator.userAgent || ""); }
+  function canShowSteps() { return isIos() || isAndroid() || /Chrome|Chromium|Edg\//.test(navigator.userAgent || ""); }
   function installDismissedRecently() {
     try {
       var t = Number(localStorage.getItem(INSTALL_DISMISS_KEY) || 0);
@@ -1617,19 +1620,20 @@
     } catch (e) { return false; }
   }
   var IOS_STEPS = "Tap the Share button, then \u201CAdd to Home Screen\u201D.";
-  var ANDROID_STEPS = "Open the \u22EE menu, then tap \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.";
-  function isAndroid() { return /android/i.test(navigator.userAgent || ""); }
+  var MENU_STEPS = "Open your browser menu (\u22EE), then choose \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.";
+  function stepsText() { return isIos() ? IOS_STEPS : MENU_STEPS; }
+
+  // The banner always has a button: "Install" when the browser lets us install in one tap,
+  // otherwise "How?", which shows the steps for this phone or browser.
   function renderInstallUi() {
     var canPrompt = !!deferredInstall;
-    var iosHowTo = isIos() && !isStandalone();            // iPhone/iPad Safari has no install button: show how-to instead
-    var androidHowTo = androidFallback && isAndroid() && !canPrompt && !isStandalone();
-    var available = !isStandalone() && (canPrompt || iosHowTo || androidHowTo);
+    var steps = !canPrompt && fallbackReady && canShowSteps();
+    var available = !isStandalone() && (canPrompt || steps);
     installRow.classList.toggle("hidden", !available);
     installBanner.classList.toggle("hidden", !(available && !installDismissedRecently()));
-    installBtn.classList.toggle("hidden", !canPrompt);
-    installBannerSub.textContent = canPrompt
-      ? "Add it to your home screen for one-tap access."
-      : (iosHowTo ? IOS_STEPS : ANDROID_STEPS);
+    installBtn.textContent = canPrompt ? "Install" : "How?";
+    installBtn.classList.toggle("hidden", !canPrompt && stepsShown);
+    installBannerSub.textContent = (canPrompt || !stepsShown) ? "Add it to your home screen for one-tap access." : stepsText();
   }
   function doInstall() {
     if (deferredInstall) {
@@ -1639,12 +1643,12 @@
       Promise.resolve(ev.userChoice).then(renderInstallUi, renderInstallUi);
       renderInstallUi();
     } else {
-      showHowTo();
+      stepsShown = true;
+      renderInstallUi();
     }
   }
   function showHowTo() {
-    if (isIos()) showAccountMsg("On iPhone or iPad: " + IOS_STEPS.charAt(0).toLowerCase() + IOS_STEPS.slice(1));
-    else if (isAndroid()) showAccountMsg(ANDROID_STEPS);
+    showAccountMsg(isIos() ? "On iPhone or iPad: " + IOS_STEPS.charAt(0).toLowerCase() + IOS_STEPS.slice(1) : stepsText());
   }
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; renderInstallUi(); });
   window.addEventListener("appinstalled", function () { deferredInstall = null; renderInstallUi(); showToast("Planner was added to your home screen."); });
@@ -1657,8 +1661,9 @@
     try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch (e) {}
     renderInstallUi();
   });
+  fallbackReady = isIos();
   renderInstallUi();
-  setTimeout(function () { androidFallback = true; renderInstallUi(); }, 5000);
+  if (!fallbackReady) setTimeout(function () { fallbackReady = true; renderInstallUi(); }, 3000);
 
 
   function memberLabel() {

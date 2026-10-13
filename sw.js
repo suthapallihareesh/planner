@@ -4,7 +4,7 @@
    - The Supabase library and the fonts are cached after the first visit.
    - Supabase traffic (sign-in, tasks, chat, files, realtime) is never touched: it always goes straight to the network.
    Bump VERSION whenever you want every device to drop its old cache. */
-const VERSION = "planner-v3";
+const VERSION = "planner-v5";
 const SHELL = ["./", "./index.html"];
 const CACHEABLE_HOSTS = ["cdn.jsdelivr.net", "fonts.googleapis.com", "fonts.gstatic.com"];
 
