@@ -444,13 +444,186 @@
   .btn-accent:disabled { opacity: 0.6; cursor: default; }
   .storage-note { font-size: 0.72rem; color: var(--ink-faint); margin: 0.6rem 0 0; text-align: center; }
 
-  .install-banner {
-    display: flex; align-items: center; gap: 0.6rem; margin: 0 0 0.9rem; padding: 0.7rem 0.75rem 0.7rem 0.9rem;
-    border-radius: 16px; background: var(--accent-soft); border: 1px solid var(--surface-border);
+  /* ---- home stats + permanent install button ---- */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.9rem; }
+  .stat-tile {
+    background: var(--surface); border: 1px solid var(--surface-border); border-radius: 18px; padding: 1rem 1rem 0.9rem;
+    box-shadow: 0 4px 16px var(--shadow); display: flex; flex-direction: column; gap: 0.15rem;
   }
-  .install-banner-text { flex: 1; min-width: 0; font-size: 0.8rem; line-height: 1.35; color: var(--ink-soft); }
-  .install-banner-text strong { display: block; font-size: 0.88rem; color: var(--ink); }
-  .install-x { background: none; border: none; color: var(--ink-soft); font-size: 0.95rem; cursor: pointer; padding: 0.25rem 0.35rem; }
+  .stat-tile strong { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .stat-tile span { font-size: 0.78rem; color: var(--ink-soft); font-weight: 600; }
+  .stat-tile.wide { grid-column: 1 / -1; }
+  .install-dock {
+    position: sticky; bottom: 0; margin-top: 1.2rem; padding: 0.9rem 0 0.2rem; text-align: center;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), var(--bg-1) 35%);
+  }
+  .install-btn {
+    width: 100%; border: none; border-radius: 16px; padding: 0.9rem; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    color: #fff; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); font-family: var(--font-sans);
+  }
+  .install-steps { margin: 0.6rem 0 0; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.45; text-align: left; }
+
+  /* ---- install gate ---- */
+  .gate-steps { text-align: left; margin: 1rem 0 0; padding-left: 1.25rem; font-size: 0.88rem; line-height: 1.55; color: var(--ink); }
+  .gate-steps li { margin-bottom: 0.3rem; }
+  .gate-warn {
+    margin: 0 0 0.9rem; padding: 0.6rem 0.75rem; border-radius: 12px; font-size: 0.8rem; line-height: 1.4; text-align: left;
+    background: var(--accent-soft); color: var(--ink);
+  }
+  .gate-note { margin: 0.9rem 0 0; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.4; }
+  .gate-note strong { font-family: var(--font-mono); letter-spacing: 0.08em; color: var(--ink); }
+
+  /* ---- chat groups (WhatsApp style) ---- */
+  .nav-icon-wrap { position: relative; }
+  .nav-badge {
+    position: absolute; top: -4px; right: -6px; min-width: 1.05rem; height: 1.05rem; padding: 0 0.28rem; border-radius: 999px;
+    background: #E5484D; color: #fff; font-size: 0.62rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .chat-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
+  .chat-top-title { margin: 0; font-size: 1.15rem; font-weight: 800; flex: 1; }
+  .group-list { display: flex; flex-direction: column; }
+  .group-row {
+    display: flex; align-items: center; gap: 0.75rem; width: 100%; text-align: left; background: var(--surface);
+    border: 1px solid var(--surface-border); border-radius: 16px; padding: 0.7rem 0.8rem; margin-bottom: 0.5rem;
+    cursor: pointer; font-family: var(--font-sans); color: var(--ink);
+  }
+  .group-avatar {
+    width: 46px; height: 46px; border-radius: 999px; color: #fff; font-weight: 800; display: flex; align-items: center;
+    justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .group-avatar.small { width: 38px; height: 38px; font-size: 0.9rem; }
+  .group-avatar.big { width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 0.5rem; }
+  .group-row-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .group-row-top, .group-row-bottom { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .group-row-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .group-row-time { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-faint); flex-shrink: 0; }
+  .group-row-preview { font-size: 0.8rem; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .unread-badge {
+    background: var(--accent); color: #fff; border-radius: 999px; font-size: 0.68rem; font-weight: 700; min-width: 1.25rem;
+    height: 1.25rem; padding: 0 0.35rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .convo-bar {
+    position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 0.5rem; background: var(--bg-1);
+    margin: -1rem -1.1rem 0.6rem; padding: 0.7rem 1.1rem 0.6rem; border-bottom: 1px solid var(--surface-border);
+  }
+  .convo-back {
+    background: none; border: none; color: var(--ink); font-size: 1.35rem; cursor: pointer; padding: 0.1rem 0.35rem;
+    font-family: var(--font-sans);
+  }
+  .convo-title {
+    display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; background: none; border: none; cursor: pointer;
+    text-align: left; color: var(--ink); font-family: var(--font-sans); padding: 0;
+  }
+  .convo-title-text { display: flex; flex-direction: column; min-width: 0; }
+  .convo-title-text strong { font-size: 0.98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .convo-title-text small { font-size: 0.72rem; color: var(--ink-soft); }
+  .sheet-divider { text-align: center; color: var(--ink-faint); font-size: 0.78rem; margin: 0.9rem 0; }
+  .sheet-field-row { display: flex; gap: 0.4rem; align-items: center; }
+  .sheet-field-row .auth-input { padding: 0.6rem 0.75rem; font-size: 0.95rem; }
+  .info-head { text-align: center; margin-bottom: 0.9rem; }
+  .info-head h3 { margin: 0; font-size: 1.1rem; }
+  .info-head p { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft); }
+  .invite-box {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: var(--bg-1);
+    border: 1px solid var(--surface-border); border-radius: 14px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem;
+  }
+  .invite-code { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; letter-spacing: 0.12em; }
+  .invite-actions { display: flex; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .invite-actions .btn-ghost { flex: 1; }
+  .member-list { list-style: none; padding: 0; margin: 0.4rem 0 0.9rem; display: flex; flex-direction: column; gap: 0.55rem; max-height: 28vh; overflow-y: auto; }
+  .member-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; }
+  .role-tag {
+    margin-left: auto; font-size: 0.66rem; font-weight: 700; color: var(--accent-strong); background: var(--accent-soft);
+    padding: 0.1rem 0.5rem; border-radius: 999px;
+  }
+
+  .modal-sheet { max-height: 88vh; overflow-y: auto; }
+  .find-results { list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .find-row { display: flex; align-items: center; gap: 0.6rem; }
+  .find-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .find-body strong { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .find-body small { font-size: 0.72rem; color: var(--ink-soft); }
+  .find-empty { font-size: 0.82rem; color: var(--ink-soft); }
+  .pending-list { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.7rem; }
+  .pending-row {
+    display: flex; align-items: center; gap: 0.6rem; background: var(--accent-soft); border-radius: 14px; padding: 0.55rem 0.75rem;
+    font-size: 0.82rem; color: var(--ink);
+  }
+  .pending-row .pending-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .pending-row small { color: var(--ink-soft); font-size: 0.7rem; }
+  .request-pill {
+    background: #F5A524; color: #1B1B1B; border-radius: 999px; font-size: 0.66rem; font-weight: 700; padding: 0.12rem 0.5rem;
+    flex-shrink: 0; white-space: nowrap;
+  }
+  .check-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.86rem; margin: 0.2rem 0 0.6rem; }
+  .req-actions { display: flex; gap: 0.35rem; margin-left: auto; }
+  .btn-quiet {
+    background: var(--bg-1); color: var(--ink); border: 1px solid var(--surface-border); border-radius: 999px; padding: 0.35rem 0.8rem;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: var(--font-sans); flex-shrink: 0;
+  }
+
+  /* ---- sign-in role choice ---- */
+  .role-switch { display: flex; gap: 0.3rem; margin: 0 0 1rem; }
+  .role-btn {
+    flex: 1; border: 1px solid var(--surface-border); background: var(--bg-1); color: var(--ink-soft); border-radius: 12px;
+    padding: 0.6rem 0.4rem; font-family: var(--font-sans); font-size: 0.84rem; font-weight: 700; cursor: pointer;
+  }
+  .role-btn.active { background: var(--ink); color: var(--bg-1); border-color: var(--ink); }
+
+  /* ---- admin dashboard ---- */
+  .admin-shell { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg-1); color: var(--ink); font-family: var(--font-sans); }
+  .admin-head {
+    position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.1rem;
+    background: var(--bg-1); border-bottom: 1px solid var(--surface-border);
+  }
+  .admin-head-text { flex: 1; min-width: 0; }
+  .admin-head h1 { margin: 0; font-size: 1.1rem; font-weight: 800; }
+  .admin-head p { margin: 0.1rem 0 0; font-size: 0.72rem; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-head-actions { display: flex; gap: 0.4rem; }
+  .admin-main { max-width: 920px; margin: 0 auto; padding: 1rem 1.1rem 3rem; }
+  .range-chips, .metric-tabs { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.2rem; margin-bottom: 0.9rem; }
+  .chip {
+    border: 1px solid var(--surface-border); background: var(--surface); color: var(--ink-soft); border-radius: 999px; padding: 0.4rem 0.9rem;
+    font-family: var(--font-sans); font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  }
+  .chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; margin-bottom: 1rem; }
+  @media (min-width: 720px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+  .kpi {
+    text-align: left; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 16px; padding: 0.85rem 0.9rem;
+    font-family: var(--font-sans); color: var(--ink); display: flex; flex-direction: column; gap: 0.1rem; box-shadow: 0 3px 12px var(--shadow);
+  }
+  button.kpi { cursor: pointer; }
+  .kpi.on { outline: 2px solid var(--accent); }
+  .kpi span { font-size: 0.74rem; color: var(--ink-soft); font-weight: 600; }
+  .kpi strong { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  .kpi small { font-size: 0.7rem; color: var(--ink-faint); }
+  .admin-card {
+    background: var(--surface); border: 1px solid var(--surface-border); border-radius: 18px; padding: 1rem; margin-bottom: 1rem;
+    box-shadow: 0 3px 12px var(--shadow);
+  }
+  .admin-card h2 { margin: 0 0 0.7rem; font-size: 0.95rem; font-weight: 800; }
+  .admin-card h2 + .bar-list { margin-bottom: 1rem; }
+  .chart-svg { width: 100%; height: auto; display: block; }
+  .chart-svg .grid { stroke: var(--surface-border); stroke-width: 1; }
+  .chart-svg text { fill: var(--ink-soft); font-size: 10px; font-family: var(--font-mono); }
+  .chart-svg .bar { fill: var(--accent); opacity: 0.7; }
+  .chart-svg .bar.sel { fill: var(--accent-strong); opacity: 1; }
+  .chart-svg .bar-hit { fill: transparent; cursor: pointer; }
+  .chart-detail { min-height: 2.4em; margin: 0.5rem 0 0.7rem; font-size: 0.82rem; color: var(--ink-soft); line-height: 1.4; }
+  .bar-list { display: flex; flex-direction: column; gap: 0.55rem; }
+  .bar-row { display: grid; grid-template-columns: 7.5rem 1fr 2.2rem; align-items: center; gap: 0.6rem; font-size: 0.8rem; }
+  .bar-track { height: 10px; border-radius: 999px; background: var(--bg-1); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--grad-a), var(--grad-b)); }
+  .bar-row b { text-align: right; font-family: var(--font-mono); }
+  .admin-empty { font-size: 0.82rem; color: var(--ink-soft); margin: 0; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  .admin-table th, .admin-table td { text-align: left; padding: 0.5rem 0.3rem; border-bottom: 1px solid var(--surface-border); }
+  .admin-table th:nth-child(n+2), .admin-table td:nth-child(n+2) { text-align: right; }
+  .sort-btn { background: none; border: none; padding: 0; font: inherit; font-weight: 700; color: var(--ink); cursor: pointer; }
+  .newest-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .newest-list li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; }
+  .newest-list small { margin-left: auto; color: var(--ink-faint); font-size: 0.72rem; }
 
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
@@ -559,7 +732,7 @@
       short_name: APP_NAME,
       description: APP_DESCRIPTION,
       id: here,
-      start_url: here,
+      start_url: here + "?source=pwa",
       scope: folder,
       display: "standalone",
       background_color: PAGE_BACKGROUND,
@@ -591,12 +764,32 @@
 </script>
 </head>
 <body>
+<!-- Install gate: on phones and tablets the app only opens once it has been added to the home screen -->
+<div class="auth-screen hidden" id="installGate">
+  <div class="auth-card">
+    <div class="brand-mark auth-mark">P</div>
+    <h1 class="auth-title" id="gateTitle">Add Planner to your home screen</h1>
+    <p class="auth-sub" id="gateSub">Planner works as an app. Add it to your home screen, then open it from there to sign in.</p>
+    <p class="gate-warn hidden" id="gateWarn"></p>
+    <button class="auth-btn hidden" id="gateInstallBtn" type="button">Add to home screen</button>
+    <ol class="gate-steps" id="gateSteps"></ol>
+    <p class="gate-note hidden" id="gateNote"></p>
+    <p class="auth-msg" id="gateMsg" role="status" aria-live="polite"></p>
+    <button class="auth-link hidden" id="gateCopyBtn" type="button">Copy link</button>
+  </div>
+</div>
+
 <!-- Sign-in: phone number -> one-time code -> (first visit only) name -->
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="brand-mark auth-mark">P</div>
     <h1 class="auth-title" id="authTitle">Planner</h1>
     <p class="auth-sub" id="authSub">Loading&hellip;</p>
+
+    <div class="role-switch hidden" id="roleSwitch" role="tablist">
+      <button class="role-btn active" id="roleUser" type="button" role="tab">Login as user</button>
+      <button class="role-btn" id="roleAdmin" type="button" role="tab">Login as admin</button>
+    </div>
 
     <div class="auth-tabs hidden" id="authTabs" role="tablist">
       <button class="auth-tab" id="tabEmail" type="button" role="tab">Email</button>
@@ -634,6 +827,11 @@
       <button class="auth-btn" id="saveNameBtn" type="submit">Continue</button>
     </form>
 
+    <div class="auth-form hidden" id="notAdminBox">
+      <button class="auth-btn" id="notAdminUserBtn" type="button">Open Planner as a user</button>
+      <button class="auth-link" id="notAdminOutBtn" type="button">Sign out</button>
+    </div>
+
     <p class="auth-msg" id="authMsg" role="status" aria-live="polite"></p>
   </div>
 </div>
@@ -662,64 +860,24 @@
   <main class="app-main" id="appMain">
 
     <section class="tab-view" data-tab="home" id="view-home">
-      <div class="install-banner hidden" id="installBanner">
-        <div class="install-banner-text"><strong>Install Planner</strong><span id="installBannerSub">Add it to your home screen for one-tap access.</span></div>
-        <button class="btn-accent" id="installBtn" type="button">Install</button>
-        <button class="install-x" id="installDismiss" type="button" aria-label="Dismiss">&#10005;</button>
-      </div>
       <div class="home-hero">
         <p class="greeting-line" id="greetingLine">Good morning,</p>
         <h1 class="greeting-title">Let's make today count!</h1>
         <p class="greeting-meta" id="greetingMeta"></p>
-        <div class="hero-task-card">
-          <div class="hero-task-top"><span class="hero-check-icon">&#10003;</span><span>Your tasks</span></div>
-          <div class="hero-task-bottom">
-            <div class="hero-stat"><strong id="homeRemaining">0</strong><span>remaining</span></div>
-            <div class="hero-divider"></div>
-            <div class="hero-stat"><strong id="homeCompleted">0</strong><span>completed</span></div>
-            <button class="hero-add-btn" id="homeAddTaskBtn" type="button">+ Add Task</button>
-          </div>
-        </div>
       </div>
 
-      <div class="home-nav-cards">
-        <button class="nav-card" data-goto="planner" type="button">
-          <span class="nav-card-icon grad-purple">&#10003;</span>
-          <span class="nav-card-body">
-            <span class="nav-card-title">Tasks</span>
-            <span class="nav-card-desc">Manage your study tasks and stay on track.</span>
-            <span class="nav-card-stat"><span class="dot dot-purple"></span><span id="homeRemaining2">0</span>&nbsp;remaining&nbsp; <span class="dot dot-green"></span><span id="homeCompleted2">0</span>&nbsp;completed</span>
-          </span>
-          <span class="nav-card-chevron">&rsaquo;</span>
-        </button>
-        <button class="nav-card" data-goto="files" type="button">
-          <span class="nav-card-icon grad-blue">&#128196;</span>
-          <span class="nav-card-body">
-            <span class="nav-card-title">Shared Notes</span>
-            <span class="nav-card-desc">Access and share important notes with your group.</span>
-            <span class="nav-card-stat" id="homeFilesStat">0 files</span>
-          </span>
-          <span class="nav-card-chevron">&rsaquo;</span>
-        </button>
-        <button class="nav-card" data-goto="chat" type="button">
-          <span class="nav-card-icon grad-pink">&#128172;</span>
-          <span class="nav-card-body">
-            <span class="nav-card-title">Group Chat</span>
-            <span class="nav-card-desc">Stay connected with your team and never miss an update.</span>
-            <span class="nav-card-stat" id="homeMembersStat">0 members</span>
-          </span>
-          <span class="nav-card-chevron">&rsaquo;</span>
-        </button>
+      <div class="stat-grid">
+        <div class="stat-tile"><strong id="statRemaining">0</strong><span>Tasks remaining</span></div>
+        <div class="stat-tile"><strong id="statCompleted">0</strong><span>Tasks completed</span></div>
+        <div class="stat-tile"><strong id="statFiles">0</strong><span>Shared files</span></div>
+        <div class="stat-tile"><strong id="statGroups">0</strong><span>Chat groups</span></div>
+        <div class="stat-tile wide hidden" id="statMembersTile"><strong id="statMembers">0</strong><span>People on Planner</span></div>
       </div>
 
-      <button class="home-banner" data-goto="timer" type="button">
-        <span class="home-banner-icon">&#10024;</span>
-        <span class="home-banner-body">
-          <span class="home-banner-title">Small steps every day</span>
-          <span class="home-banner-sub">Build the future you want</span>
-        </span>
-        <span class="nav-card-chevron">&rsaquo;</span>
-      </button>
+      <div class="install-dock hidden" id="installDock">
+        <button class="install-btn" id="installBtn" type="button">Add to home screen</button>
+        <p class="install-steps hidden" id="installSteps"></p>
+      </div>
     </section>
 
     <section class="tab-view hidden" data-tab="planner" id="view-planner">
@@ -816,18 +974,29 @@
     </section>
 
     <section class="tab-view hidden" data-tab="chat" id="view-chat">
-      <div class="card group-info-card" id="chatGroupCard">
-        <span class="nav-card-icon grad-blue small">&#128101;</span>
-        <span class="nav-card-body">
-          <span class="nav-card-title">Study Group</span>
-          <span class="nav-card-desc" id="chatGroupMeta">0 members</span>
-        </span>
-        <span class="mono-stat" id="chatStatus">connecting&hellip;</span>
+      <div id="chatListScreen">
+        <div class="chat-top">
+          <h2 class="chat-top-title">Chats</h2>
+          <span class="mono-stat" id="chatStatus">connecting&hellip;</span>
+          <button class="btn-accent" id="newGroupBtn" type="button">+ New</button>
+        </div>
+        <div class="pending-list hidden" id="pendingList"></div>
+        <div class="group-list" id="groupList"></div>
       </div>
-      <div class="chat-messages" id="chatMessages"></div>
-      <div class="add-row chat-input-row">
-        <input class="add-input" id="chatInput" placeholder="Message the group" type="text" maxlength="2000">
-        <button class="add-btn" id="chatSendBtn" type="button" aria-label="Send">&#10148;</button>
+
+      <div class="hidden" id="chatConvoScreen">
+        <div class="convo-bar">
+          <button class="convo-back" id="convoBackBtn" type="button" aria-label="Back to chats">&#8592;</button>
+          <button class="convo-title" id="convoInfoBtn" type="button" aria-label="Group info">
+            <span class="group-avatar small" id="convoAvatar">G</span>
+            <span class="convo-title-text"><strong id="convoName"></strong><small id="convoMeta"></small></span>
+          </button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="add-row chat-input-row">
+          <input class="add-input" id="chatInput" placeholder="Message" type="text" maxlength="2000">
+          <button class="add-btn" id="chatSendBtn" type="button" aria-label="Send">&#10148;</button>
+        </div>
       </div>
     </section>
 
@@ -851,7 +1020,7 @@
       <span>Files</span>
     </button>
     <button class="nav-btn" data-tab="chat" type="button">
-      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.4 8.4 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.8a8.4 8.4 0 0 1-.9-3.7A8.4 8.4 0 0 1 12.6 3a8.4 8.4 0 0 1 8.4 8.5z"/></svg></span>
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.4 8.4 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.8a8.4 8.4 0 0 1-.9-3.7A8.4 8.4 0 0 1 12.6 3a8.4 8.4 0 0 1 8.4 8.5z"/></svg><span class="nav-badge hidden" id="chatNavBadge"></span></span>
       <span>Chat</span>
     </button>
   </nav>
@@ -877,17 +1046,128 @@
       </div>
       <p class="hint-text hidden" id="accountMsg"></p>
       <p class="storage-note">Your name shows on the chat messages and files you share from now on.</p>
-      <div class="backup-row hidden" id="installRow">
-        <button class="btn-ghost" id="installRowBtn" type="button">Add to home screen</button>
-      </div>
       <div class="backup-row">
         <button class="btn-ghost danger" id="signOutBtn" type="button">Sign out</button>
       </div>
     </div>
   </div>
 
+  <div class="modal-overlay hidden" id="groupNewOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2 class="modal-title">New chat</h2>
+        <button class="modal-close" id="groupNewCloseBtn" type="button" aria-label="Close">&#10005;</button>
+      </div>
+      <label class="field-label" for="groupNameInput">Create a group</label>
+      <div class="sheet-field-row">
+        <input class="auth-input" id="groupNameInput" type="text" maxlength="40" placeholder="Group name">
+        <button class="btn-accent" id="createGroupBtn" type="button">Create</button>
+      </div>
+      <div class="sheet-divider">or</div>
+      <label class="field-label" for="findGroupInput">Find a group to join</label>
+      <div class="sheet-field-row">
+        <input class="auth-input" id="findGroupInput" type="text" maxlength="40" placeholder="Search by group name" autocomplete="off">
+        <button class="btn-accent" id="findGroupBtn" type="button">Search</button>
+      </div>
+      <ul class="find-results hidden" id="findResults"></ul>
+      <div class="sheet-divider">or</div>
+      <label class="field-label" for="joinCodeInput">Have an invite link?</label>
+      <div class="sheet-field-row">
+        <input class="auth-input" id="joinCodeInput" type="text" maxlength="200" placeholder="Paste the invite link or code" autocomplete="off">
+        <button class="btn-accent" id="joinGroupBtn" type="button">Join</button>
+      </div>
+      <p class="hint-text hidden" id="groupNewMsg"></p>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="groupInfoOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2 class="modal-title">Group info</h2>
+        <button class="modal-close" id="groupInfoCloseBtn" type="button" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="info-head">
+        <div class="group-avatar big" id="infoAvatar">G</div>
+        <h3 id="infoName"></h3>
+        <p id="infoCount"></p>
+      </div>
+      <label class="field-label">Invite code</label>
+      <div class="invite-box"><span class="invite-code" id="infoCode"></span></div>
+      <div class="invite-actions">
+        <button class="btn-ghost" id="copyCodeBtn" type="button">Copy invite link</button>
+        <button class="btn-ghost" id="shareLinkBtn" type="button">Share invite link</button>
+      </div>
+      <div class="hidden" id="infoAdminBlock">
+        <label class="check-row"><input type="checkbox" id="searchableToggle"><span>Let people find this group by name and ask to join</span></label>
+        <div class="invite-actions"><button class="btn-ghost" id="resetLinkBtn" type="button">Reset invite link</button></div>
+      </div>
+      <div class="hidden" id="infoRequestsBlock">
+        <label class="field-label">Join requests</label>
+        <ul class="member-list" id="infoRequests"></ul>
+      </div>
+      <label class="field-label">Members</label>
+      <ul class="member-list" id="infoMembers"></ul>
+      <div class="backup-row">
+        <button class="btn-ghost danger" id="leaveGroupBtn" type="button">Leave group</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast hidden" id="toast" role="status"></div>
 
+</div>
+
+<!-- Admin dashboard: only opens for accounts on the admin list -->
+<div class="admin-shell hidden" id="adminShell">
+  <header class="admin-head">
+    <div class="admin-head-text"><h1>Planner admin</h1><p id="adminUpdated">Loading&hellip;</p></div>
+    <div class="admin-head-actions">
+      <button class="btn-quiet" id="adminRefreshBtn" type="button">Refresh</button>
+      <button class="btn-quiet" id="adminSignOutBtn" type="button">Sign out</button>
+    </div>
+  </header>
+  <main class="admin-main">
+    <div class="range-chips" id="adminRange" role="tablist">
+      <button class="chip" type="button" data-days="7">Last 7 days</button>
+      <button class="chip active" type="button" data-days="30">Last 30 days</button>
+      <button class="chip" type="button" data-days="90">Last 90 days</button>
+    </div>
+    <p class="hint-text hidden" id="adminError"></p>
+    <section class="kpi-grid" id="adminKpis"></section>
+
+    <section class="admin-card">
+      <div class="metric-tabs" id="metricTabs" role="tablist"></div>
+      <svg class="chart-svg" id="adminChart" viewBox="0 0 640 240" role="img" aria-label="Daily chart"></svg>
+      <p class="chart-detail" id="chartDetail"></p>
+      <button class="btn-quiet" id="csvBtn" type="button">Download daily numbers (CSV)</button>
+    </section>
+
+    <section class="admin-card">
+      <h2>Devices people used</h2>
+      <div class="bar-list" id="adminDevices"></div>
+      <h2>How people sign in</h2>
+      <div class="bar-list" id="adminMethods"></div>
+    </section>
+
+    <section class="admin-card">
+      <h2>Busiest groups</h2>
+      <table class="admin-table">
+        <thead><tr id="topGroupsHead">
+          <th><button class="sort-btn" type="button" data-sort="name">Group</button></th>
+          <th><button class="sort-btn" type="button" data-sort="members">Members</button></th>
+          <th><button class="sort-btn" type="button" data-sort="messages">Messages</button></th>
+        </tr></thead>
+        <tbody id="topGroupsBody"></tbody>
+      </table>
+    </section>
+
+    <section class="admin-card">
+      <h2>Newest members</h2>
+      <ul class="newest-list" id="newestMembers"></ul>
+    </section>
+  </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -912,6 +1192,10 @@
   var SIGNIN_EMAIL = true;
   var SIGNIN_PHONE = true;
   var DEFAULT_SIGNIN = "email";   // which option opens first: "email" or "phone"
+
+  // On phones and tablets the app only opens once it has been added to the home screen.
+  // Set to false to turn this requirement off (for example while testing in a phone browser).
+  var REQUIRE_INSTALL = true;
 
 (function () {
   "use strict";
@@ -981,7 +1265,8 @@
     });
     headerTitleEl.textContent = TAB_HEADER[tab].title;
     headerSubEl.textContent = TAB_HEADER[tab].sub;
-    appMain.scrollTop = tab === "chat" ? appMain.scrollHeight : 0;
+    appMain.scrollTop = (tab === "chat" && openGroupId) ? appMain.scrollHeight : 0;
+    if (tab === "chat" && typeof onChatTabShown === "function") onChatTabShown();
     try { localStorage.setItem("plannerActiveTab", tab); } catch (e) {}
   }
   Array.prototype.forEach.call(document.querySelectorAll(".nav-btn"), function (b) {
@@ -1223,6 +1508,13 @@
   var accountHint = document.getElementById("accountHint");
   var otpForm = document.getElementById("otpForm");
   var nameForm = document.getElementById("nameForm");
+  var roleSwitch = document.getElementById("roleSwitch");
+  var roleUserBtn = document.getElementById("roleUser");
+  var roleAdminBtn = document.getElementById("roleAdmin");
+  var notAdminBox = document.getElementById("notAdminBox");
+  var notAdminUserBtn = document.getElementById("notAdminUserBtn");
+  var notAdminOutBtn = document.getElementById("notAdminOutBtn");
+  var adminShell = document.getElementById("adminShell");
   var ccInput = document.getElementById("ccInput");
   var phoneInput = document.getElementById("phoneInput");
   var otpInput = document.getElementById("otpInput");
@@ -1251,16 +1543,51 @@
   var chatInput = document.getElementById("chatInput");
   var chatSendBtn = document.getElementById("chatSendBtn");
   var chatStatus = document.getElementById("chatStatus");
+  var chatListScreen = document.getElementById("chatListScreen");
+  var chatConvoScreen = document.getElementById("chatConvoScreen");
+  var groupList = document.getElementById("groupList");
+  var newGroupBtn = document.getElementById("newGroupBtn");
+  var convoBackBtn = document.getElementById("convoBackBtn");
+  var convoInfoBtn = document.getElementById("convoInfoBtn");
+  var convoAvatar = document.getElementById("convoAvatar");
+  var convoName = document.getElementById("convoName");
+  var convoMeta = document.getElementById("convoMeta");
+  var chatNavBadge = document.getElementById("chatNavBadge");
+  var groupNewOverlay = document.getElementById("groupNewOverlay");
+  var groupNewCloseBtn = document.getElementById("groupNewCloseBtn");
+  var groupNameInput = document.getElementById("groupNameInput");
+  var createGroupBtn = document.getElementById("createGroupBtn");
+  var joinCodeInput = document.getElementById("joinCodeInput");
+  var joinGroupBtn = document.getElementById("joinGroupBtn");
+  var groupNewMsg = document.getElementById("groupNewMsg");
+  var groupInfoOverlay = document.getElementById("groupInfoOverlay");
+  var groupInfoCloseBtn = document.getElementById("groupInfoCloseBtn");
+  var infoAvatar = document.getElementById("infoAvatar");
+  var infoName = document.getElementById("infoName");
+  var infoCount = document.getElementById("infoCount");
+  var infoCode = document.getElementById("infoCode");
+  var infoMembers = document.getElementById("infoMembers");
+  var copyCodeBtn = document.getElementById("copyCodeBtn");
+  var shareLinkBtn = document.getElementById("shareLinkBtn");
+  var leaveGroupBtn = document.getElementById("leaveGroupBtn");
+  var pendingList = document.getElementById("pendingList");
+  var findGroupInput = document.getElementById("findGroupInput");
+  var findGroupBtn = document.getElementById("findGroupBtn");
+  var findResults = document.getElementById("findResults");
+  var infoAdminBlock = document.getElementById("infoAdminBlock");
+  var searchableToggle = document.getElementById("searchableToggle");
+  var resetLinkBtn = document.getElementById("resetLinkBtn");
+  var infoRequestsBlock = document.getElementById("infoRequestsBlock");
+  var infoRequests = document.getElementById("infoRequests");
 
   var greetingLine = document.getElementById("greetingLine");
   var greetingMeta = document.getElementById("greetingMeta");
-  var homeRemaining = document.getElementById("homeRemaining");
-  var homeCompleted = document.getElementById("homeCompleted");
-  var homeRemaining2 = document.getElementById("homeRemaining2");
-  var homeCompleted2 = document.getElementById("homeCompleted2");
-  var homeFilesStat = document.getElementById("homeFilesStat");
-  var homeMembersStat = document.getElementById("homeMembersStat");
-  var homeAddTaskBtn = document.getElementById("homeAddTaskBtn");
+  var statRemaining = document.getElementById("statRemaining");
+  var statCompleted = document.getElementById("statCompleted");
+  var statFiles = document.getElementById("statFiles");
+  var statGroups = document.getElementById("statGroups");
+  var statMembers = document.getElementById("statMembers");
+  var statMembersTile = document.getElementById("statMembersTile");
 
   var plannerDateHeading = document.getElementById("plannerDateHeading");
   var dayStrip = document.getElementById("dayStrip");
@@ -1285,8 +1612,6 @@
   var fileInput = document.getElementById("fileInput");
   var uploadHint = document.getElementById("uploadHint");
 
-  var chatGroupMeta = document.getElementById("chatGroupMeta");
-  var chatGroupCard = document.getElementById("chatGroupCard");
 
   function showUploadHint(msg) { uploadHint.textContent = msg; uploadHint.classList.remove("hidden"); }
   function clearUploadHint() { uploadHint.classList.add("hidden"); }
@@ -1302,6 +1627,11 @@
   function errText(err) { return (err && err.message) ? err.message : "Something went wrong."; }
 
   // ---- Sign-in screen: phone number -> one-time code -> (first visit only) name ----
+  var MODE_KEY = "plannerMode";   // remembers whether this device last signed in as a user or as an admin
+  var authRole = "user";          // which sign-in the person chose: "user" or "admin"
+  try { if (localStorage.getItem(MODE_KEY) === "admin") authRole = "admin"; } catch (e) {}
+  var adminStarted = false;
+  var adminChecking = false;
   var authStep = "loading";
   var authMethod = "email";     // "email" or "phone": which one the code was sent to
   var pendingTarget = "";       // the email address or phone number awaiting its code
@@ -1312,6 +1642,7 @@
     phone: ["Join Planner", "Enter your mobile number and we\u2019ll text you a one-time code."],
     otp: ["Enter your code", ""],
     name: ["One last thing", "What should your group call you?"],
+    notadmin: ["Not an admin account", "This account hasn\u2019t been made an admin, so there\u2019s no dashboard for it."],
     setup: ["Almost there", ""]
   };
 
@@ -1325,6 +1656,11 @@
     phoneForm.classList.toggle("hidden", step !== "phone");
     otpForm.classList.toggle("hidden", step !== "otp");
     nameForm.classList.toggle("hidden", step !== "name");
+    notAdminBox.classList.toggle("hidden", step !== "notadmin");
+    var picking = step === "email" || step === "phone";
+    roleSwitch.classList.toggle("hidden", !picking);
+    roleUserBtn.classList.toggle("active", authRole !== "admin");
+    roleAdminBtn.classList.toggle("active", authRole === "admin");
     var bothOn = SIGNIN_PHONE !== false && SIGNIN_EMAIL !== false;
     authTabs.classList.toggle("hidden", !(bothOn && (step === "email" || step === "phone")));
     tabEmail.classList.toggle("active", step === "email");
@@ -1332,17 +1668,23 @@
     tabEmail.setAttribute("aria-selected", step === "email" ? "true" : "false");
     tabPhone.setAttribute("aria-selected", step === "phone" ? "true" : "false");
     authTitle.textContent = AUTH_COPY[step][0];
+    if (picking && authRole === "admin") authTitle.textContent = "Admin sign-in";
     if (step === "otp") {
       authSub.textContent = authMethod === "email"
         ? "We sent a code to " + pendingTarget + ". If it doesn\u2019t show up, check your spam folder."
         : "We sent a code to " + pendingTarget + ".";
       changeNumberBtn.textContent = authMethod === "email" ? "Change email" : "Change number";
+    } else if (picking && authRole === "admin") {
+      authSub.textContent = step === "email"
+        ? "Enter your admin account\u2019s email address and we\u2019ll send you a one-time code."
+        : "Enter your admin account\u2019s mobile number and we\u2019ll text you a one-time code.";
     } else {
       authSub.textContent = AUTH_COPY[step][1];
     }
     setAuthMsg("");
     authScreen.classList.remove("hidden");
     appShell.classList.add("hidden");
+    adminShell.classList.add("hidden");
     try {
       if (step === "phone") phoneInput.focus();
       else if (step === "email") emailInput.focus();
@@ -1537,16 +1879,29 @@
     var name = String((u.user_metadata || {}).display_name || "").trim();
     var phone = u.phone ? "+" + String(u.phone).replace(/^\+/, "") : "";
     var email = u.email || "";
-    if (appStarted) {
+    if (appStarted || adminStarted) {
       if (me && me.id !== u.id) { location.reload(); return; }
-      if (name) me.name = name;
-      renderIdentity();
+      if (name && me) me.name = name;
+      if (appStarted) renderIdentity();
       return;
     }
+    if (adminChecking || authStep === "notadmin") return;
     me = { id: u.id, name: name, phone: phone, email: email };
-    if (name) startApp();
+    if (authRole === "admin") { enterAdmin(); return; }
+    continueAsUser();
+  }
+  function continueAsUser() {
+    if (me.name) startApp();
     else if (authStep !== "name") { nameInput.value = ""; showAuthStep("name"); }
   }
+
+  roleUserBtn.addEventListener("click", function () { authRole = "user"; showAuthStep(authStep); });
+  roleAdminBtn.addEventListener("click", function () { authRole = "admin"; showAuthStep(authStep); });
+  notAdminUserBtn.addEventListener("click", function () { authRole = "user"; continueAsUser(); });
+  notAdminOutBtn.addEventListener("click", function () {
+    try { localStorage.removeItem(MODE_KEY); } catch (e) {}
+    sb.auth.signOut().then(function () { location.reload(); });
+  });
 
   // ---- Account sheet (name + sign out) ----
   function showAccountMsg(msg) { accountMsg.textContent = msg; accountMsg.classList.remove("hidden"); }
@@ -1580,6 +1935,7 @@
   accountNameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") accountSaveBtn.click(); });
 
   signOutBtn.addEventListener("click", function () {
+    try { localStorage.removeItem(MODE_KEY); } catch (e) {}
     sb.auth.signOut().then(function () { location.reload(); });
   });
 
@@ -1592,17 +1948,22 @@
     accountHint.textContent = me && me.email ? "Signed in with this email" : "Signed in with this number";
   }
 
-  // ---- Install to home screen (PWA) ----
-  var deferredInstall = null;   // Chrome/Edge/Android hand us this when the app can be installed
-  var fallbackReady = false;    // true once the browser has had time to offer its own install prompt (instantly on iPhone)
-  var stepsShown = false;       // the "How?" button was pressed
-  var INSTALL_DISMISS_KEY = "plannerInstallDismissedAt";
-  var installBanner = document.getElementById("installBanner");
-  var installBannerSub = document.getElementById("installBannerSub");
+  // ---- Install to home screen (required on every device) ----
+  var deferredInstall = null;   // Chrome/Edge/Android hand us this when the app can be installed in one tap
+  var INSTALLED_KEY = "plannerInstalled";
+  var installDock = document.getElementById("installDock");
   var installBtn = document.getElementById("installBtn");
-  var installDismiss = document.getElementById("installDismiss");
-  var installRow = document.getElementById("installRow");
-  var installRowBtn = document.getElementById("installRowBtn");
+  var installSteps = document.getElementById("installSteps");
+  var installGate = document.getElementById("installGate");
+  var gateTitle = document.getElementById("gateTitle");
+  var gateSub = document.getElementById("gateSub");
+  var gateWarn = document.getElementById("gateWarn");
+  var gateInstallBtn = document.getElementById("gateInstallBtn");
+  var gateSteps = document.getElementById("gateSteps");
+  var gateNote = document.getElementById("gateNote");
+  var gateMsg = document.getElementById("gateMsg");
+  var gateCopyBtn = document.getElementById("gateCopyBtn");
+  var PENDING_JOIN_KEY = "plannerPendingJoin";
 
   function isStandalone() {
     return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
@@ -1612,71 +1973,118 @@
     return /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   }
   function isAndroid() { return /android/i.test(navigator.userAgent || ""); }
-  function canShowSteps() { return isIos() || isAndroid() || /Chrome|Chromium|Edg\//.test(navigator.userAgent || ""); }
-  function installDismissedRecently() {
-    try {
-      var t = Number(localStorage.getItem(INSTALL_DISMISS_KEY) || 0);
-      return !!t && Date.now() - t < 14 * 24 * 60 * 60 * 1000;
-    } catch (e) { return false; }
+  function platform() {
+    var ua = navigator.userAgent || "";
+    if (isIos()) return "ios";
+    if (isAndroid()) return "android";
+    if (/Edg\//.test(ua)) return "edge";
+    if (/Firefox\//.test(ua)) return "firefox";
+    if (/Chrome|Chromium/.test(ua)) return "chrome";
+    if (/Safari\//.test(ua)) return "safari";
+    return "other";
   }
-  var IOS_STEPS = "Tap the Share button, then \u201CAdd to Home Screen\u201D.";
-  var MENU_STEPS = "Open your browser menu (\u22EE), then choose \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.";
-  function stepsText() { return isIos() ? IOS_STEPS : MENU_STEPS; }
+  function isPhone() { var p = platform(); return p === "ios" || p === "android"; }
+  function inAppBrowser() { return /FBAN|FBAV|Instagram|Line\/|Snapchat|MicroMessenger|; wv\)|GSA\/|Telegram/i.test(navigator.userAgent || ""); }
+  // True when Planner was opened from its home-screen icon or installed app window.
+  function launchedAsApp() {
+    var mm = window.matchMedia;
+    return isStandalone()
+      || !!(mm && (mm("(display-mode: fullscreen)").matches || mm("(display-mode: minimal-ui)").matches))
+      || /(^|[?&])source=pwa(&|$)/.test(location.search);
+  }
+  function wasInstalledHere() { try { return localStorage.getItem(INSTALLED_KEY) === "1"; } catch (e) { return false; } }
+  // Everyone must install first. A copy opened straight from a file on your own computer is let through, because it cannot be installed.
+  function installRequired() { return REQUIRE_INSTALL !== false && /^https?:$/.test(location.protocol) && !launchedAsApp(); }
 
-  // The banner always has a button: "Install" when the browser lets us install in one tap,
-  // otherwise "How?", which shows the steps for this phone or browser.
+  var STEPS = {
+    ios: ["Tap the Share button (the square with an arrow).", "Scroll down and tap \u201CAdd to Home Screen\u201D.", "Tap Add, then open Planner from your home screen."],
+    android: ["Tap the \u22EE menu in your browser.", "Tap \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.", "Open Planner from your home screen."],
+    chrome: ["Click the install icon at the right end of the address bar, or open the \u22EE menu and choose Cast, save and share, then Install page as app.", "Click Install.", "Open Planner from its new app window or icon."],
+    edge: ["Open the \u2026 menu and choose Apps, then Install this site as an app.", "Click Install.", "Open Planner from its new app window or icon."],
+    safari: ["In the menu bar choose File, then Add to Dock.", "Click Add.", "Open Planner from your Dock."],
+    firefox: ["Firefox can\u2019t install web apps on a computer.", "Copy the link and open it in Chrome or Edge.", "Install it from there."],
+    other: ["Open your browser\u2019s menu.", "Choose \u201CInstall app\u201D or \u201CAdd to Home screen\u201D.", "Open Planner from its new icon."]
+  };
+  function stepList() { return STEPS[platform()] || STEPS.other; }
+  function whereToOpen() { return isPhone() ? "your home screen" : "its new app window or icon"; }
+  function installLabel() { return isPhone() ? "Add to home screen" : "Install app"; }
+
+  // The permanent button at the bottom of Home. It disappears once Planner is installed.
   function renderInstallUi() {
-    var canPrompt = !!deferredInstall;
-    var steps = !canPrompt && fallbackReady && canShowSteps();
-    var available = !isStandalone() && (canPrompt || steps);
-    installRow.classList.toggle("hidden", !available);
-    installBanner.classList.toggle("hidden", !(available && !installDismissedRecently()));
-    installBtn.textContent = canPrompt ? "Install" : "How?";
-    installBtn.classList.toggle("hidden", !canPrompt && stepsShown);
-    installBannerSub.textContent = (canPrompt || !stepsShown) ? "Add it to your home screen for one-tap access." : stepsText();
+    var installed = launchedAsApp() || wasInstalledHere();
+    installDock.classList.toggle("hidden", installed);
+    installBtn.textContent = installLabel();
+    gateInstallBtn.textContent = installLabel();
+    gateInstallBtn.classList.toggle("hidden", !deferredInstall);
   }
-  function doInstall() {
-    if (deferredInstall) {
-      var ev = deferredInstall;
-      deferredInstall = null;            // a captured prompt can only be used once
-      ev.prompt();
-      Promise.resolve(ev.userChoice).then(renderInstallUi, renderInstallUi);
-      renderInstallUi();
-    } else {
-      stepsShown = true;
-      renderInstallUi();
-    }
-  }
-  function showHowTo() {
-    showAccountMsg(isIos() ? "On iPhone or iPad: " + IOS_STEPS.charAt(0).toLowerCase() + IOS_STEPS.slice(1) : stepsText());
-  }
-  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; renderInstallUi(); });
-  window.addEventListener("appinstalled", function () { deferredInstall = null; renderInstallUi(); showToast("Planner was added to your home screen."); });
-  installBtn.addEventListener("click", doInstall);
-  installRowBtn.addEventListener("click", function () {
-    if (deferredInstall) doInstall();
-    else showHowTo();
-  });
-  installDismiss.addEventListener("click", function () {
-    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch (e) {}
+  function promptInstall() {
+    var ev = deferredInstall;
+    if (!ev) return false;
+    deferredInstall = null;            // a captured prompt can only be used once
+    ev.prompt();
+    Promise.resolve(ev.userChoice).then(renderInstallUi, renderInstallUi);
     renderInstallUi();
-  });
-  fallbackReady = isIos();
-  renderInstallUi();
-  if (!fallbackReady) setTimeout(function () { fallbackReady = true; renderInstallUi(); }, 3000);
-
-
-  function memberLabel() {
-    return memberCount > 0 ? memberCount + " member" + (memberCount === 1 ? "" : "s") : "";
+    return true;
   }
+  installBtn.addEventListener("click", function () {
+    if (promptInstall()) return;
+    installSteps.textContent = stepList().map(function (s, i) { return (i + 1) + ". " + s; }).join(" ");
+    installSteps.classList.remove("hidden");
+  });
+  gateInstallBtn.addEventListener("click", promptInstall);
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; renderInstallUi(); });
+  window.addEventListener("appinstalled", function () {
+    deferredInstall = null;
+    try { localStorage.setItem(INSTALLED_KEY, "1"); } catch (e) {}
+    renderInstallUi();
+    if (!installGate.classList.contains("hidden")) showInstallGate();
+    else showToast("Planner was added to your home screen.");
+  });
+  renderInstallUi();
+
+  // Shown instead of the app, on every device, until Planner is opened as an installed app.
+  function showInstallGate() {
+    authScreen.classList.add("hidden");
+    appShell.classList.add("hidden");
+    installGate.classList.remove("hidden");
+    var done = wasInstalledHere();
+    gateTitle.textContent = done ? "Planner is installed" : (isPhone() ? "Add Planner to your home screen" : "Install Planner");
+    gateSub.textContent = done
+      ? "Close this tab and open Planner from " + whereToOpen() + " to sign in."
+      : (isPhone() ? "Planner works as an app. Add it to your home screen, then open it from there to sign in."
+                   : "Planner works as an app. Install it, then open it from its app window to sign in.");
+    gateSteps.innerHTML = "";
+    if (!done) stepList().forEach(function (s) { var li = document.createElement("li"); li.textContent = s; gateSteps.appendChild(li); });
+    var warn = inAppBrowser();
+    var noInstall = platform() === "firefox";
+    gateWarn.classList.toggle("hidden", !warn);
+    gateCopyBtn.classList.toggle("hidden", !(warn || noInstall) || done);
+    if (warn) gateWarn.textContent = "You\u2019re inside another app\u2019s browser, which can\u2019t add Planner to your home screen. Copy the link and open it in " + (isIos() ? "Safari" : "Chrome") + ".";
+    var code = null;
+    try { code = localStorage.getItem(PENDING_JOIN_KEY); } catch (e) {}
+    gateNote.classList.toggle("hidden", !code);
+    if (code) {
+      gateNote.textContent = "You were invited to a group. Your invite code is ";
+      var b = document.createElement("strong");
+      b.textContent = code;
+      gateNote.appendChild(b);
+      gateNote.appendChild(document.createTextNode(". If it doesn\u2019t join automatically once you open the app, paste it into \u201CHave an invite link?\u201D under Chat, then + New."));
+    }
+    gateInstallBtn.classList.toggle("hidden", !deferredInstall);
+  }
+  gateCopyBtn.addEventListener("click", function () {
+    copyText(location.origin + location.pathname, "Link copied", gateMsg);
+  });
+
+
+
   function updateGreeting() {
     var h = new Date().getHours();
     greetingLine.textContent = h < 12 ? "Good morning," : (h < 18 ? "Good afternoon," : "Good evening,");
     var dateStr = new Date().toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-    var label = memberLabel();
-    greetingMeta.textContent = dateStr + (label ? " \u2022 " + label : "");
-    homeMembersStat.textContent = label || "Chat with your group";
-    chatGroupMeta.textContent = label || "Your study group";
+    greetingMeta.textContent = dateStr;
+    statMembers.textContent = String(memberCount);
+    statMembersTile.classList.toggle("hidden", !(memberCount > 0));
   }
 
   // ---- Tasks ----
@@ -1728,11 +2136,6 @@
   showAddTaskBtn.addEventListener("click", function () {
     taskAddRow.classList.toggle("hidden");
     if (!taskAddRow.classList.contains("hidden")) taskAddInput.focus();
-  });
-  homeAddTaskBtn.addEventListener("click", function () {
-    showTab("planner");
-    taskAddRow.classList.remove("hidden");
-    taskAddInput.focus();
   });
 
   function chosenSubject() {
@@ -1802,10 +2205,8 @@
     var total = tasksState.length;
     var done = tasksState.filter(function (t) { return t.done; }).length;
     var remaining = total - done;
-    homeRemaining.textContent = String(remaining);
-    homeCompleted.textContent = String(done);
-    homeRemaining2.textContent = String(remaining);
-    homeCompleted2.textContent = String(done);
+    statRemaining.textContent = String(remaining);
+    statCompleted.textContent = String(done);
   }
 
   var taskSortAsc = true;
@@ -1935,7 +2336,7 @@
   filesSearchInput.addEventListener("input", renderNotes);
 
   function renderNotes() {
-    homeFilesStat.textContent = notesState.length + (notesState.length === 1 ? " file" : " files");
+    statFiles.textContent = String(notesState.length);
     notesCount.textContent = notesState.length + (notesState.length === 1 ? " file" : " files");
 
     var q = (filesSearchInput.value || "").trim().toLowerCase();
@@ -2098,7 +2499,161 @@
       .subscribe();
   }
 
-  // ---- Group chat ----
+  // ---- Group chat: many separate groups, like WhatsApp ----
+  var groups = [];                 // groups I belong to
+  var openGroupId = null;          // the conversation currently open (null = the list of chats)
+  var msgsByGroup = {};            // group id -> messages, oldest first
+  var historyLoaded = {};          // group id -> full history fetched
+  var membersByGroup = {};         // group id -> member rows
+  var lastRead = {};               // group id -> id of the last message seen on this device
+  var chatLoadError = null;        // set when the groups could not be loaded (for example the SQL has not been run yet)
+  var myRequests = [];             // join requests I have sent
+  var incomingRequests = [];       // pending requests to groups I run
+  var requestsChannel = null;
+  var AVATAR_COLORS = ["#6C5CE7", "#00B894", "#E17055", "#0984E3", "#E84393", "#E1A100", "#00A8A8"];
+
+  function findGroup(id) { for (var i = 0; i < groups.length; i++) if (groups[i].id === id) return groups[i]; return null; }
+  function colorFor(id) { var n = 0; for (var i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0; return AVATAR_COLORS[n % AVATAR_COLORS.length]; }
+  function paintAvatar(el, group) { el.textContent = initials(group.name); el.style.background = colorFor(group.id); }
+  function chatTabVisible() { return !document.getElementById("view-chat").classList.contains("hidden"); }
+  function iAmAdmin(gid) { return (membersByGroup[gid] || []).some(function (m) { return m.user_id === (me && me.id) && m.role === "admin"; }); }
+  function requestsFor(gid) { return incomingRequests.filter(function (r) { return r.group_id === gid; }); }
+
+  function readKey() { return "plannerLastRead:" + (me ? me.id : ""); }
+  function loadLastRead() { try { lastRead = JSON.parse(localStorage.getItem(readKey()) || "{}") || {}; } catch (e) { lastRead = {}; } }
+  function saveLastRead() { try { localStorage.setItem(readKey(), JSON.stringify(lastRead)); } catch (e) {} }
+  function lastMsg(gid) { var l = msgsByGroup[gid] || []; return l.length ? l[l.length - 1] : null; }
+  function unreadCount(gid) {
+    var seen = lastRead[gid] || 0;
+    return (msgsByGroup[gid] || []).filter(function (m) { return m.id > seen && m.user_id !== (me && me.id); }).length;
+  }
+  function markRead(gid) {
+    var m = lastMsg(gid);
+    if (m && (lastRead[gid] || 0) < m.id) { lastRead[gid] = m.id; saveLastRead(); }
+  }
+  function updateNavBadge() {
+    var total = 0;
+    groups.forEach(function (g) { if (!(openGroupId === g.id && chatTabVisible())) total += unreadCount(g.id); });
+    chatNavBadge.textContent = total > 99 ? "99+" : String(total);
+    chatNavBadge.classList.toggle("hidden", total === 0);
+  }
+
+  function fmtListTime(iso) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    var now = new Date();
+    if (d.toDateString() === now.toDateString()) return fmtTimeOnly(iso);
+    var y = new Date(now); y.setDate(now.getDate() - 1);
+    if (d.toDateString() === y.toDateString()) return "Yesterday";
+    return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  }
+  function groupSortTime(g) {
+    var m = lastMsg(g.id);
+    return new Date(m ? m.created_at : g.created_at).getTime() || 0;
+  }
+
+  function renderListMessage(text) {
+    groupList.innerHTML = "";
+    var p = document.createElement("p");
+    p.className = "empty-msg";
+    p.textContent = text;
+    groupList.appendChild(p);
+  }
+
+  // Requests I have sent that are still waiting for an admin
+  function renderPending() {
+    var waiting = myRequests.filter(function (r) { return r.status === "pending"; });
+    pendingList.innerHTML = "";
+    pendingList.classList.toggle("hidden", waiting.length === 0);
+    waiting.forEach(function (r) {
+      var row = document.createElement("div");
+      row.className = "pending-row";
+      var text = document.createElement("span");
+      text.className = "pending-text";
+      var name = document.createElement("strong");
+      name.textContent = r.group_name || "a group";
+      var small = document.createElement("small");
+      small.textContent = "Waiting for an admin to approve your request";
+      text.appendChild(name);
+      text.appendChild(small);
+      var cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.className = "btn-quiet";
+      cancel.textContent = "Cancel";
+      cancel.addEventListener("click", function () {
+        sb.from("group_join_requests").delete().eq("id", r.id).then(function (res) {
+          if (res.error) showToast("Couldn\u2019t cancel the request.");
+          loadRequests();
+        });
+      });
+      row.appendChild(text);
+      row.appendChild(cancel);
+      pendingList.appendChild(row);
+    });
+  }
+
+  function renderGroupList() {
+    statGroups.textContent = String(groups.length);
+    updateNavBadge();
+    renderPending();
+    if (!groups.length) {
+      renderListMessage(chatLoadError || "No groups yet. Tap + New to create one, find a group to ask to join, or open an invite link a friend sent you.");
+      return;
+    }
+    groupList.innerHTML = "";
+    groups.slice().sort(function (a, b) { return groupSortTime(b) - groupSortTime(a); }).forEach(function (g) {
+      var row = document.createElement("button");
+      row.type = "button";
+      row.className = "group-row";
+      row.setAttribute("data-group", g.id);
+
+      var av = document.createElement("span");
+      av.className = "group-avatar";
+      paintAvatar(av, g);
+
+      var body = document.createElement("span");
+      body.className = "group-row-body";
+      var top = document.createElement("span");
+      top.className = "group-row-top";
+      var name = document.createElement("span");
+      name.className = "group-row-name";
+      name.textContent = g.name;
+      var time = document.createElement("span");
+      time.className = "group-row-time";
+      var m = lastMsg(g.id);
+      time.textContent = m ? fmtListTime(m.created_at) : "";
+      top.appendChild(name);
+      top.appendChild(time);
+
+      var bottom = document.createElement("span");
+      bottom.className = "group-row-bottom";
+      var preview = document.createElement("span");
+      preview.className = "group-row-preview";
+      preview.textContent = m ? ((m.user_id === (me && me.id) ? "You" : (m.display_name || "Someone")) + ": " + m.body) : "No messages yet";
+      bottom.appendChild(preview);
+      var inc = requestsFor(g.id).length;
+      if (inc > 0) {
+        var pill = document.createElement("span");
+        pill.className = "request-pill";
+        pill.textContent = inc + (inc === 1 ? " request" : " requests");
+        bottom.appendChild(pill);
+      }
+      var n = unreadCount(g.id);
+      if (n > 0) {
+        var badge = document.createElement("span");
+        badge.className = "unread-badge";
+        badge.textContent = n > 99 ? "99+" : String(n);
+        bottom.appendChild(badge);
+      }
+      body.appendChild(top);
+      body.appendChild(bottom);
+      row.appendChild(av);
+      row.appendChild(body);
+      row.addEventListener("click", function () { openGroup(g.id); });
+      groupList.appendChild(row);
+    });
+  }
+
   function renderEmpty(msg) {
     chatMessages.innerHTML = "";
     var p = document.createElement("p");
@@ -2109,8 +2664,9 @@
 
   function renderMessages() {
     chatMessages.innerHTML = "";
-    if (!chatList.length) { renderEmpty("No messages yet \u2014 say hello."); return; }
-    chatList.forEach(function (m) {
+    var list = openGroupId ? (msgsByGroup[openGroupId] || []) : [];
+    if (!list.length) { renderEmpty("No messages yet \u2014 say hello."); return; }
+    list.forEach(function (m) {
       var mine = !!me && m.user_id === me.id;
       var row = document.createElement("div");
       row.className = "chat-row" + (mine ? " mine" : "");
@@ -2141,33 +2697,161 @@
       row.appendChild(wrap);
       chatMessages.appendChild(row);
     });
-    if (!document.getElementById("view-chat").classList.contains("hidden")) appMain.scrollTop = appMain.scrollHeight;
+    if (chatTabVisible()) appMain.scrollTop = appMain.scrollHeight;
+  }
+
+  function mergeMessages(gid, rows) {
+    var seen = {};
+    var all = (msgsByGroup[gid] || []).concat(rows).filter(function (m) {
+      if (seen[m.id]) return false;
+      seen[m.id] = true;
+      return true;
+    });
+    all.sort(function (a, b) { return a.id - b.id; });
+    msgsByGroup[gid] = all.slice(-300);
   }
 
   function addMessage(m) {
-    if (!m || chatList.some(function (x) { return x.id === m.id; })) return;
-    chatList.push(m);
-    chatList.sort(function (a, b) { return a.id - b.id; });
-    if (chatList.length > 200) chatList = chatList.slice(-200);
-    renderMessages();
+    if (!m || !m.group_id) return;
+    var before = (msgsByGroup[m.group_id] || []).length;
+    mergeMessages(m.group_id, [m]);
+    if ((msgsByGroup[m.group_id] || []).length === before) return;      // already have it
+    if (!findGroup(m.group_id)) { loadChatData(); return; }              // a group I joined on another device
+    if (openGroupId === m.group_id) {
+      if (chatTabVisible()) markRead(m.group_id);
+      renderMessages();
+    } else {
+      renderGroupList();
+    }
+    updateNavBadge();
   }
 
-  function loadChat() {
-    chatStatus.textContent = "connecting\u2026";
-    sb.from("messages").select("*").order("created_at", { ascending: false }).limit(200).then(function (res) {
+  function showListScreen() {
+    openGroupId = null;
+    chatConvoScreen.classList.add("hidden");
+    chatListScreen.classList.remove("hidden");
+    renderGroupList();
+    appMain.scrollTop = 0;
+  }
+
+  function convoMetaText(gid) {
+    var n = (membersByGroup[gid] || []).length;
+    var text = n ? n + (n === 1 ? " member" : " members") : "tap for group info";
+    var inc = requestsFor(gid).length;
+    if (inc > 0) text += " \u00B7 " + inc + (inc === 1 ? " join request" : " join requests");
+    return text;
+  }
+
+  function openGroup(gid) {
+    var g = findGroup(gid);
+    if (!g) return;
+    openGroupId = gid;
+    chatListScreen.classList.add("hidden");
+    chatConvoScreen.classList.remove("hidden");
+    paintAvatar(convoAvatar, g);
+    convoName.textContent = g.name;
+    convoMeta.textContent = convoMetaText(gid);
+    markRead(gid);
+    updateNavBadge();
+    renderMessages();
+    loadHistory(gid);
+    loadMembers(gid);
+  }
+
+  function onChatTabShown() {
+    if (openGroupId) { markRead(openGroupId); renderMessages(); updateNavBadge(); }
+    else renderGroupList();
+  }
+
+  function loadHistory(gid) {
+    if (historyLoaded[gid]) return;
+    sb.from("messages").select("*").eq("group_id", gid).order("created_at", { ascending: false }).limit(200).then(function (res) {
+      if (res.error) { showToast("Couldn\u2019t load that chat."); return; }
+      historyLoaded[gid] = true;
+      mergeMessages(gid, res.data || []);
+      if (openGroupId === gid) { if (chatTabVisible()) markRead(gid); renderMessages(); }
+      updateNavBadge();
+    });
+  }
+
+  function loadMembers(gid) {
+    sb.from("group_members").select("*").eq("group_id", gid).then(function (res) {
+      if (res.error) return;
+      membersByGroup[gid] = res.data || [];
+      if (openGroupId === gid) convoMeta.textContent = convoMetaText(gid);
+      if (!groupInfoOverlay.classList.contains("hidden") && openGroupId === gid) renderInfo(gid);
+    });
+  }
+
+  function setupText(err, file) {
+    var m = ((err && err.message) || "") + " " + ((err && err.code) || "");
+    if (/PGRST20[25]|42P01|42883|schema cache|Could not find the (table|function)/i.test(m)) {
+      return "This isn\u2019t set up yet. Run " + file + " in your Supabase SQL Editor.";
+    }
+    return (err && err.message) ? err.message : "Something went wrong. Please try again.";
+  }
+  function groupsSetupText(err) {
+    var t = setupText(err, "supabase-groups.sql");
+    return /isn\u2019t set up yet/.test(t) ? "Chat groups aren\u2019t set up yet. Run supabase-groups.sql in your Supabase SQL Editor." : t;
+  }
+  function requestsSetupText(err) {
+    var t = setupText(err, "supabase-join-requests.sql");
+    return /isn\u2019t set up yet/.test(t) ? "Join requests aren\u2019t set up yet. Run supabase-join-requests.sql in your Supabase SQL Editor." : t;
+  }
+
+  // Requests I sent, and pending requests to groups I run (the database only returns those two kinds)
+  function loadRequests() {
+    sb.from("group_join_requests").select("*").order("created_at", { ascending: false }).then(function (res) {
+      if (res.error) return;
+      var rows = res.data || [];
+      myRequests = rows.filter(function (r) { return r.user_id === (me && me.id); });
+      incomingRequests = rows.filter(function (r) { return r.user_id !== (me && me.id) && r.status === "pending"; });
+      renderGroupList();
+      if (openGroupId) {
+        convoMeta.textContent = convoMetaText(openGroupId);
+        if (!groupInfoOverlay.classList.contains("hidden")) renderInfo(openGroupId);
+      }
+    });
+  }
+
+  // Loads my groups, then the recent messages across all of them (the database only returns groups I belong to).
+  function loadChatData() {
+    sb.from("chat_groups").select("*").then(function (res) {
       if (res.error) {
         chatStatus.textContent = "offline";
-        renderEmpty("Couldn\u2019t load the chat. Check your connection and reload.");
+        chatLoadError = groupsSetupText(res.error);
+        renderListMessage(chatLoadError);
         return;
       }
-      var seen = {};
-      chatList = (res.data || []).concat(chatList).filter(function (m) {
-        if (seen[m.id]) return false;
-        seen[m.id] = true;
-        return true;
-      }).sort(function (a, b) { return a.id - b.id; });
-      renderMessages();
+      chatLoadError = null;
+      groups = res.data || [];
+      sb.from("messages").select("*").order("created_at", { ascending: false }).limit(500).then(function (r2) {
+        if (!r2.error) {
+          var byGroup = {};
+          (r2.data || []).forEach(function (m) { if (m.group_id) (byGroup[m.group_id] = byGroup[m.group_id] || []).push(m); });
+          Object.keys(byGroup).forEach(function (gid) { mergeMessages(gid, byGroup[gid]); });
+        }
+        groups.forEach(function (g) { if (!(g.id in lastRead)) { var m = lastMsg(g.id); lastRead[g.id] = m ? m.id : 0; } });   // first time on this device: existing history counts as read
+        saveLastRead();
+        renderGroupList();
+        if (openGroupId && !findGroup(openGroupId)) showListScreen();
+        loadRequests();
+        handlePendingJoin();
+      });
     });
+  }
+
+  function onRequestEvent(payload) {
+    var r = payload.new || {};
+    var mine = me && r.user_id === me.id;
+    if ((payload.eventType === "INSERT" || payload.eventType === "UPDATE") && !mine && r.status === "pending") {
+      showToast((r.display_name || "Someone") + " asked to join \u201C" + (r.group_name || "your group") + "\u201D.");
+    }
+    if (payload.eventType === "UPDATE" && mine) {
+      if (r.status === "approved") { showToast("You\u2019re in! Welcome to \u201C" + (r.group_name || "the group") + "\u201D."); loadChatData(); }
+      else if (r.status === "declined") showToast("Your request to join \u201C" + (r.group_name || "the group") + "\u201D was declined.");
+    }
+    loadRequests();
   }
 
   function subscribeChat() {
@@ -2180,13 +2864,17 @@
         else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") chatStatus.textContent = "offline";
         else chatStatus.textContent = "connecting\u2026";
       });
+    requestsChannel = sb.channel("requests-feed")
+      .on("postgres_changes", { event: "*", schema: "public", table: "group_join_requests" }, onRequestEvent)
+      .subscribe();
   }
 
   function sendChat() {
     var text = chatInput.value.trim();
-    if (!text || !me) return;
+    if (!text || !me || !openGroupId) return;
+    var gid = openGroupId;
     chatInput.value = "";
-    sb.from("messages").insert({ body: text }).select().single().then(function (res) {
+    sb.from("messages").insert({ group_id: gid, body: text }).select().single().then(function (res) {
       if (res.error) {
         chatInput.value = text;
         showToast("Couldn\u2019t send that message.");
@@ -2197,6 +2885,315 @@
   }
   chatSendBtn.addEventListener("click", sendChat);
   chatInput.addEventListener("keydown", function (e) { if (e.key === "Enter") sendChat(); });
+  convoBackBtn.addEventListener("click", showListScreen);
+
+  // ---- new group / find a group / paste an invite link ----
+  function setNewMsg(t) { groupNewMsg.textContent = t || ""; groupNewMsg.classList.toggle("hidden", !t); }
+  function openNewSheet() {
+    groupNameInput.value = "";
+    findGroupInput.value = "";
+    joinCodeInput.value = "";
+    findResults.innerHTML = "";
+    findResults.classList.add("hidden");
+    setNewMsg("");
+    groupNewOverlay.classList.remove("hidden");
+  }
+  function closeNewSheet() { groupNewOverlay.classList.add("hidden"); }
+  newGroupBtn.addEventListener("click", openNewSheet);
+  groupNewCloseBtn.addEventListener("click", closeNewSheet);
+  groupNewOverlay.addEventListener("click", function (e) { if (e.target === groupNewOverlay) closeNewSheet(); });
+
+  function afterGroupJoined(g) {
+    if (!findGroup(g.id)) groups.push(g);
+    if (!(g.id in lastRead)) lastRead[g.id] = 0;
+    historyLoaded[g.id] = false;
+    showTab("chat");
+    openGroup(g.id);
+  }
+
+  createGroupBtn.addEventListener("click", function () {
+    var name = (groupNameInput.value || "").trim();
+    if (!name) { setNewMsg("Give your group a name."); return; }
+    createGroupBtn.disabled = true;
+    sb.rpc("create_group", { group_name: name }).then(function (res) {
+      createGroupBtn.disabled = false;
+      if (res.error || !res.data) { setNewMsg(groupsSetupText(res.error)); return; }
+      closeNewSheet();
+      afterGroupJoined(res.data);
+      showToast("Group created. Tap its name to share the invite link.");
+    });
+  });
+  groupNameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") createGroupBtn.click(); });
+
+  // Find a group by name and ask to join (an admin approves)
+  function renderFindResults(rows) {
+    findResults.innerHTML = "";
+    findResults.classList.remove("hidden");
+    if (!rows.length) {
+      var none = document.createElement("li");
+      none.className = "find-empty";
+      none.textContent = "No groups found with that name. Ask a member to send you an invite link.";
+      findResults.appendChild(none);
+      return;
+    }
+    rows.forEach(function (g) {
+      var li = document.createElement("li");
+      li.className = "find-row";
+      var av = document.createElement("span");
+      av.className = "group-avatar small";
+      paintAvatar(av, g);
+      var body = document.createElement("span");
+      body.className = "find-body";
+      var nm = document.createElement("strong");
+      nm.textContent = g.name;
+      var sm = document.createElement("small");
+      sm.textContent = g.member_count + (g.member_count === 1 ? " member" : " members");
+      body.appendChild(nm);
+      body.appendChild(sm);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-accent";
+      if (g.my_status === "member") { btn.textContent = "Joined"; btn.disabled = true; }
+      else if (g.my_status === "pending") { btn.textContent = "Requested"; btn.disabled = true; }
+      else {
+        btn.textContent = "Request";
+        btn.addEventListener("click", function () {
+          btn.disabled = true;
+          sb.rpc("request_to_join", { gid: g.id }).then(function (res) {
+            if (res.error) { btn.disabled = false; setNewMsg(requestsSetupText(res.error)); return; }
+            btn.textContent = "Requested";
+            setNewMsg("");
+            showToast("Request sent. The group\u2019s admins can approve it.");
+            loadRequests();
+          });
+        });
+      }
+      li.appendChild(av);
+      li.appendChild(body);
+      li.appendChild(btn);
+      findResults.appendChild(li);
+    });
+  }
+  function runSearch() {
+    var q = (findGroupInput.value || "").trim();
+    if (q.length < 2) { setNewMsg("Type at least 2 letters of the group\u2019s name."); return; }
+    setNewMsg("");
+    findGroupBtn.disabled = true;
+    sb.rpc("search_groups", { q: q }).then(function (res) {
+      findGroupBtn.disabled = false;
+      if (res.error) { setNewMsg(requestsSetupText(res.error)); return; }
+      renderFindResults(res.data || []);
+    });
+  }
+  findGroupBtn.addEventListener("click", runSearch);
+  findGroupInput.addEventListener("keydown", function (e) { if (e.key === "Enter") runSearch(); });
+
+  // Paste an invite link (or just its code): opening or pasting a link from a member joins straight away
+  function extractInviteCode(text) {
+    var t = String(text || "").trim();
+    var m = t.match(/[?&]join=([A-Za-z0-9]+)/);
+    if (m) return m[1].toUpperCase();
+    return /^[A-Za-z0-9]{4,16}$/.test(t) ? t.toUpperCase() : "";
+  }
+  function joinWithCode(code, quiet) {
+    return sb.rpc("join_group", { code: code }).then(function (res) {
+      if (res.error || !res.data) { if (quiet) showToast(groupsSetupText(res.error)); else setNewMsg(groupsSetupText(res.error)); return false; }
+      afterGroupJoined(res.data);
+      showToast("Joined \u201C" + res.data.name + "\u201D.");
+      return true;
+    });
+  }
+  joinGroupBtn.addEventListener("click", function () {
+    var code = extractInviteCode(joinCodeInput.value);
+    if (!code) { setNewMsg("That doesn\u2019t look like an invite link or code. Paste the whole link you were sent."); return; }
+    joinGroupBtn.disabled = true;
+    joinWithCode(code, false).then(function (ok) { joinGroupBtn.disabled = false; if (ok) closeNewSheet(); });
+  });
+  joinCodeInput.addEventListener("keydown", function (e) { if (e.key === "Enter") joinGroupBtn.click(); });
+
+  // Invite links look like  https://your-site/?join=CODE . The code is kept until the person is signed in.
+  function capturePendingJoin() {
+    try {
+      var p = new URLSearchParams(location.search);
+      var code = p.get("join");
+      if (!code) return;
+      localStorage.setItem(PENDING_JOIN_KEY, code.trim().toUpperCase().slice(0, 16));
+      p.delete("join");
+      var q = p.toString();
+      history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+    } catch (e) {}
+  }
+  function handlePendingJoin() {
+    var code = null;
+    try { code = localStorage.getItem(PENDING_JOIN_KEY); } catch (e) {}
+    if (!code) return;
+    try { localStorage.removeItem(PENDING_JOIN_KEY); } catch (e) {}
+    joinWithCode(code, true);
+  }
+
+  // ---- group info: invite link, admin controls, join requests, members, leave ----
+  function copyText(text, okMsg, msgEl) {
+    function done() { if (msgEl) msgEl.textContent = okMsg; else showToast(okMsg); }
+    function fallback() {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand && document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok) done(); else if (msgEl) msgEl.textContent = text; else showToast(text);
+      } catch (e) { if (msgEl) msgEl.textContent = text; else showToast(text); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  }
+  function inviteLink(g) { return location.origin + location.pathname + "?join=" + g.invite_code; }
+
+  function renderInfoMembers(gid) {
+    var ms = (membersByGroup[gid] || []).slice().sort(function (a, b) {
+      if (a.role !== b.role) return a.role === "admin" ? -1 : 1;
+      return String(a.display_name).localeCompare(String(b.display_name));
+    });
+    infoCount.textContent = ms.length + (ms.length === 1 ? " member" : " members");
+    infoMembers.innerHTML = "";
+    ms.forEach(function (m) {
+      var li = document.createElement("li");
+      li.className = "member-row";
+      var av = document.createElement("span");
+      av.className = "chat-avatar";
+      av.textContent = initials(m.display_name);
+      var nm = document.createElement("span");
+      nm.textContent = (m.display_name || "Someone") + (me && m.user_id === me.id ? " (You)" : "");
+      li.appendChild(av);
+      li.appendChild(nm);
+      if (m.role === "admin") {
+        var tag = document.createElement("span");
+        tag.className = "role-tag";
+        tag.textContent = "Admin";
+        li.appendChild(tag);
+      }
+      infoMembers.appendChild(li);
+    });
+  }
+
+  function decideRequest(r, approve) {
+    sb.rpc("decide_join_request", { request_id: r.id, approve: approve }).then(function (res) {
+      if (res.error) { showToast(requestsSetupText(res.error)); return; }
+      showToast(approve ? (r.display_name || "Someone") + " joined the group." : "Request declined.");
+      loadRequests();
+      if (approve) loadMembers(r.group_id);
+    });
+  }
+  function renderInfoRequests(gid) {
+    var list = requestsFor(gid);
+    infoRequestsBlock.classList.toggle("hidden", list.length === 0);
+    infoRequests.innerHTML = "";
+    list.forEach(function (r) {
+      var li = document.createElement("li");
+      li.className = "member-row";
+      var av = document.createElement("span");
+      av.className = "chat-avatar";
+      av.textContent = initials(r.display_name);
+      var nm = document.createElement("span");
+      nm.textContent = r.display_name || "Someone";
+      var actions = document.createElement("span");
+      actions.className = "req-actions";
+      var yes = document.createElement("button");
+      yes.type = "button";
+      yes.className = "btn-accent";
+      yes.textContent = "Approve";
+      yes.addEventListener("click", function () { decideRequest(r, true); });
+      var no = document.createElement("button");
+      no.type = "button";
+      no.className = "btn-quiet";
+      no.textContent = "Decline";
+      no.addEventListener("click", function () { decideRequest(r, false); });
+      actions.appendChild(yes);
+      actions.appendChild(no);
+      li.appendChild(av);
+      li.appendChild(nm);
+      li.appendChild(actions);
+      infoRequests.appendChild(li);
+    });
+  }
+  function renderInfo(gid) {
+    var g = findGroup(gid);
+    if (!g) return;
+    infoCode.textContent = g.invite_code;
+    renderInfoMembers(gid);
+    renderInfoRequests(gid);
+    var admin = iAmAdmin(gid);
+    infoAdminBlock.classList.toggle("hidden", !admin);
+    searchableToggle.checked = g.searchable !== false;
+  }
+  function openInfoSheet() {
+    var g = findGroup(openGroupId);
+    if (!g) return;
+    paintAvatar(infoAvatar, g);
+    infoName.textContent = g.name;
+    renderInfo(g.id);
+    groupInfoOverlay.classList.remove("hidden");
+    loadMembers(g.id);
+    loadRequests();
+  }
+  function closeInfoSheet() { groupInfoOverlay.classList.add("hidden"); }
+  convoInfoBtn.addEventListener("click", openInfoSheet);
+  groupInfoCloseBtn.addEventListener("click", closeInfoSheet);
+  groupInfoOverlay.addEventListener("click", function (e) { if (e.target === groupInfoOverlay) closeInfoSheet(); });
+  copyCodeBtn.addEventListener("click", function () {
+    var g = findGroup(openGroupId);
+    if (g) copyText(inviteLink(g), "Invite link copied");
+  });
+  shareLinkBtn.addEventListener("click", function () {
+    var g = findGroup(openGroupId);
+    if (!g) return;
+    var link = inviteLink(g);
+    if (navigator.share) {
+      navigator.share({ title: "Join " + g.name + " on Planner", text: "Join my Planner group \u201C" + g.name + "\u201D.", url: link }).catch(function () {});
+    } else {
+      copyText(link, "Invite link copied");
+    }
+  });
+  searchableToggle.addEventListener("change", function () {
+    var g = findGroup(openGroupId);
+    if (!g) return;
+    var on = searchableToggle.checked;
+    sb.from("chat_groups").update({ searchable: on }).eq("id", g.id).then(function (res) {
+      if (res.error) { searchableToggle.checked = !on; showToast(requestsSetupText(res.error)); return; }
+      g.searchable = on;
+      showToast(on ? "People can now find this group by name." : "This group is now hidden from search.");
+    });
+  });
+  resetLinkBtn.addEventListener("click", function () {
+    var g = findGroup(openGroupId);
+    if (!g) return;
+    if (!confirm("Reset the invite link? The old link will stop working.")) return;
+    sb.rpc("reset_invite_code", { gid: g.id }).then(function (res) {
+      if (res.error || !res.data) { showToast(requestsSetupText(res.error)); return; }
+      g.invite_code = res.data.invite_code;
+      renderInfo(g.id);
+      showToast("New invite link ready. Share it again.");
+    });
+  });
+  leaveGroupBtn.addEventListener("click", function () {
+    var g = findGroup(openGroupId);
+    if (!g || !me) return;
+    if (!confirm("Leave \u201C" + g.name + "\u201D? You won\u2019t see its messages any more unless you rejoin.")) return;
+    sb.from("group_members").delete().eq("group_id", g.id).eq("user_id", me.id).then(function (res) {
+      if (res.error) { showToast("Couldn\u2019t leave the group."); return; }
+      groups = groups.filter(function (x) { return x.id !== g.id; });
+      delete msgsByGroup[g.id];
+      delete membersByGroup[g.id];
+      delete historyLoaded[g.id];
+      closeInfoSheet();
+      showListScreen();
+      showToast("You left the group.");
+    });
+  });
 
   function loadMemberCount() {
     sb.rpc("member_count").then(function (res) {
@@ -2207,9 +3204,16 @@
   }
 
   // ---- Start-up ----
+  function recordActivity() {
+    var kind = isIos() ? "ios" : (isAndroid() ? "android" : "computer");
+    sb.rpc("record_activity", { p_platform: kind }).then(function () {}, function () {});   // counts this person once today; ignored if the SQL hasn't been run
+  }
+
   function startApp() {
     if (appStarted) { renderIdentity(); return; }
     appStarted = true;
+    try { localStorage.setItem(MODE_KEY, "user"); } catch (e) {}
+    recordActivity();
     authScreen.classList.add("hidden");
     appShell.classList.remove("hidden");
     renderIdentity();
@@ -2219,11 +3223,325 @@
     renderNotes();
     loadTasks(); subscribeTasks();
     loadFiles(); subscribeFiles();
-    loadChat(); subscribeChat();
+    loadLastRead(); loadChatData(); subscribeChat();
     loadMemberCount();
   }
 
+  // ---- Admin dashboard ----
+  var adminData = null;
+  var adminDays = 30;
+  var adminMetric = "active";
+  var adminSelected = -1;
+  var topSort = { key: "messages", dir: -1 };
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var METRICS = [
+    { id: "active", label: "Active people", field: "active" },
+    { id: "signups", label: "New sign-ups", field: "new_users" },
+    { id: "messages", label: "Messages", field: "messages" },
+    { id: "tasks", label: "Tasks created", field: "tasks" },
+    { id: "files", label: "Files shared", field: "files" }
+  ];
+  var DEVICE_LABELS = { android: "Android phones", ios: "iPhone / iPad", computer: "Computers", other: "Not recorded" };
+
+  var adminUpdated = document.getElementById("adminUpdated");
+  var adminRefreshBtn = document.getElementById("adminRefreshBtn");
+  var adminSignOutBtn = document.getElementById("adminSignOutBtn");
+  var adminRange = document.getElementById("adminRange");
+  var adminError = document.getElementById("adminError");
+  var adminKpis = document.getElementById("adminKpis");
+  var metricTabs = document.getElementById("metricTabs");
+  var adminChart = document.getElementById("adminChart");
+  var chartDetail = document.getElementById("chartDetail");
+  var csvBtn = document.getElementById("csvBtn");
+  var adminDevices = document.getElementById("adminDevices");
+  var adminMethods = document.getElementById("adminMethods");
+  var topGroupsHead = document.getElementById("topGroupsHead");
+  var topGroupsBody = document.getElementById("topGroupsBody");
+  var newestMembers = document.getElementById("newestMembers");
+
+  function metricById(id) { for (var i = 0; i < METRICS.length; i++) if (METRICS[i].id === id) return METRICS[i]; return METRICS[0]; }
+  function fmtNum(n) { return Number(n || 0).toLocaleString(); }
+  function fmtAdminBytes(b) {
+    b = Number(b || 0);
+    if (b < 1024) return b + " B";
+    if (b < 1048576) return (b / 1024).toFixed(1) + " KB";
+    if (b < 1073741824) return (b / 1048576).toFixed(1) + " MB";
+    return (b / 1073741824).toFixed(2) + " GB";
+  }
+  function fmtDay(iso) { return new Date(iso + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); }
+  function fmtDayShort(iso) { return new Date(iso + "T00:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", timeZone: "UTC" }); }
+  function niceCeil(max) {
+    var p = Math.pow(10, Math.floor(Math.log(max) / Math.LN10));
+    var f = max / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+  function svgEl(name, attrs) {
+    var el = document.createElementNS(SVG_NS, name);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function adminSetupText(err) {
+    var t = setupText(err, "supabase-admin.sql");
+    if (/isn\u2019t set up yet/.test(t)) return "The admin dashboard isn\u2019t set up yet. Run supabase-admin.sql in your Supabase SQL Editor.";
+    return /Admins only/i.test(t) ? "This account isn\u2019t an admin." : t;
+  }
+
+  // After sign-in as admin: ask the database whether this account is on the admin list. The database decides, not this page.
+  function enterAdmin() {
+    adminChecking = true;
+    sb.rpc("is_app_admin").then(function (res) {
+      adminChecking = false;
+      if (res.error) { showAuthStep("notadmin"); setAuthMsg(adminSetupText(res.error), true); return; }
+      if (res.data === true) startAdmin(); else showAuthStep("notadmin");
+    }, function () {
+      adminChecking = false;
+      showAuthStep("notadmin");
+      setAuthMsg(OFFLINE_MSG, true);
+    });
+  }
+  function startAdmin() {
+    adminStarted = true;
+    try { localStorage.setItem(MODE_KEY, "admin"); } catch (e) {}
+    authScreen.classList.add("hidden");
+    appShell.classList.add("hidden");
+    adminShell.classList.remove("hidden");
+    loadAdmin();
+  }
+  function loadAdmin() {
+    adminUpdated.textContent = "Loading\u2026";
+    adminRefreshBtn.disabled = true;
+    sb.rpc("admin_dashboard", { days: adminDays }).then(function (res) {
+      adminRefreshBtn.disabled = false;
+      if (res.error || !res.data) {
+        adminError.textContent = adminSetupText(res.error);
+        adminError.classList.remove("hidden");
+        adminUpdated.textContent = "Couldn\u2019t load";
+        return;
+      }
+      adminError.classList.add("hidden");
+      adminData = res.data;
+      adminSelected = -1;
+      adminUpdated.textContent = "Updated " + new Date(adminData.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " \u00B7 signed in as " + (me.email || me.phone || "admin");
+      renderAdmin();
+    }, function () {
+      adminRefreshBtn.disabled = false;
+      adminError.textContent = OFFLINE_MSG;
+      adminError.classList.remove("hidden");
+    });
+  }
+
+  function renderKpis() {
+    var t = adminData.totals, a = adminData.active;
+    function pct(n) { return t.users ? Math.round(100 * n / t.users) + "% of everyone" : "\u2014"; }
+    var tiles = [
+      { label: "People signed up", value: t.users, sub: t.email_users + " by email \u00B7 " + t.phone_users + " by phone", metric: "signups" },
+      { label: "Active today", value: a.today, sub: pct(a.today), metric: "active" },
+      { label: "Active in 7 days", value: a.last7, sub: pct(a.last7), metric: "active" },
+      { label: "Active in 30 days", value: a.last30, sub: pct(a.last30), metric: "active" },
+      { label: "Chat groups", value: t.groups, sub: t.pending_requests + (t.pending_requests === 1 ? " join request waiting" : " join requests waiting") },
+      { label: "Messages sent", value: t.messages, sub: "all time", metric: "messages" },
+      { label: "Tasks created", value: t.tasks, sub: t.tasks_done + " done", metric: "tasks" },
+      { label: "Files shared", value: t.files, sub: fmtAdminBytes(t.file_bytes), metric: "files" }
+    ];
+    adminKpis.innerHTML = "";
+    tiles.forEach(function (tile) {
+      var el = document.createElement(tile.metric ? "button" : "div");
+      el.className = "kpi" + (tile.metric && tile.metric === adminMetric ? " on" : "");
+      if (tile.metric) { el.type = "button"; el.setAttribute("data-metric", tile.metric); }
+      var l = document.createElement("span"); l.textContent = tile.label;
+      var v = document.createElement("strong"); v.textContent = fmtNum(tile.value);
+      var s = document.createElement("small"); s.textContent = tile.sub;
+      el.appendChild(l); el.appendChild(v); el.appendChild(s);
+      adminKpis.appendChild(el);
+    });
+  }
+  function renderMetricTabs() {
+    metricTabs.innerHTML = "";
+    METRICS.forEach(function (m) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip" + (m.id === adminMetric ? " active" : "");
+      b.setAttribute("data-metric", m.id);
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", m.id === adminMetric ? "true" : "false");
+      b.textContent = m.label;
+      metricTabs.appendChild(b);
+    });
+  }
+  function updateChartDetail() {
+    var daily = adminData.daily || [];
+    var mt = metricById(adminMetric);
+    if (adminSelected >= 0 && daily[adminSelected]) {
+      var d = daily[adminSelected];
+      chartDetail.textContent = fmtDay(d.day) + " \u2014 " + METRICS.map(function (m) { return m.label + " " + fmtNum(d[m.field]); }).join(" \u00B7 ");
+      return;
+    }
+    var vals = daily.map(function (d) { return Number(d[mt.field]) || 0; });
+    var peak = Math.max.apply(null, vals.concat([0]));
+    var total = vals.reduce(function (a, b) { return a + b; }, 0);
+    var peakAt = vals.indexOf(peak);
+    chartDetail.textContent = (mt.id === "active"
+      ? (peak ? "Busiest day: " + fmtNum(peak) + (peak === 1 ? " person" : " people") + " on " + fmtDay(daily[peakAt].day) + "." : "Nobody opened Planner in this period yet.")
+      : "Total: " + fmtNum(total) + " in the last " + adminData.days + " days.") + " Hover or tap a bar to see a day.";
+  }
+  function selectDay(i) {
+    adminSelected = i;
+    var bars = adminChart.querySelectorAll(".bar");
+    for (var k = 0; k < bars.length; k++) bars[k].setAttribute("class", "bar" + (k === i ? " sel" : ""));
+    updateChartDetail();
+  }
+  function renderChart() {
+    var daily = adminData.daily || [];
+    var mt = metricById(adminMetric);
+    var vals = daily.map(function (d) { return Number(d[mt.field]) || 0; });
+    var W = 640, H = 240, L = 34, R = 8, T = 12, B = 26, n = Math.max(1, daily.length);
+    var top = niceCeil(Math.max.apply(null, vals.concat([1])));
+    var plotH = H - T - B;
+    while (adminChart.firstChild) adminChart.removeChild(adminChart.firstChild);
+    [0, 0.5, 1].forEach(function (f) {
+      var y = T + plotH * (1 - f);
+      adminChart.appendChild(svgEl("line", { "class": "grid", x1: L, x2: W - R, y1: y, y2: y }));
+      var lab = svgEl("text", { x: L - 6, y: y + 3, "text-anchor": "end" });
+      lab.textContent = fmtNum(Math.round(top * f));
+      adminChart.appendChild(lab);
+    });
+    var slot = (W - L - R) / n;
+    var gap = Math.min(3, slot * 0.25);
+    daily.forEach(function (d, i) {
+      var h = (vals[i] / top) * plotH;
+      var x = L + i * slot;
+      adminChart.appendChild(svgEl("rect", { "class": "bar" + (i === adminSelected ? " sel" : ""), x: x + gap / 2, y: T + plotH - h, width: Math.max(1, slot - gap), height: vals[i] > 0 ? Math.max(h, 1) : 0, rx: 2 }));
+    });
+    daily.forEach(function (d, i) {
+      var hit = svgEl("rect", { "class": "bar-hit", x: L + i * slot, y: T, width: slot, height: plotH, tabindex: "0", role: "button", "aria-label": fmtDay(d.day) + ": " + fmtNum(vals[i]) + " " + mt.label.toLowerCase() });
+      hit.addEventListener("pointerenter", function () { selectDay(i); });
+      hit.addEventListener("click", function () { selectDay(i); });
+      hit.addEventListener("focus", function () { selectDay(i); });
+      adminChart.appendChild(hit);
+    });
+    var marks = [0, Math.floor((n - 1) / 2), n - 1].filter(function (v, i, a) { return a.indexOf(v) === i && daily[v]; });
+    marks.forEach(function (i, k) {
+      var t = svgEl("text", { x: L + i * slot + slot / 2, y: H - 8, "text-anchor": k === 0 ? "start" : (k === marks.length - 1 ? "end" : "middle") });
+      t.textContent = fmtDayShort(daily[i].day);
+      adminChart.appendChild(t);
+    });
+    updateChartDetail();
+  }
+  function renderBars(el, rows) {
+    el.innerHTML = "";
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
+    var any = rows.some(function (r) { return r.value > 0; });
+    if (!any) { var p = document.createElement("p"); p.className = "admin-empty"; p.textContent = "Nothing recorded yet."; el.appendChild(p); return; }
+    rows.forEach(function (r) {
+      var row = document.createElement("div"); row.className = "bar-row";
+      var l = document.createElement("span"); l.textContent = r.label;
+      var track = document.createElement("span"); track.className = "bar-track";
+      var fill = document.createElement("span"); fill.className = "bar-fill"; fill.style.width = Math.round(100 * r.value / max) + "%";
+      track.appendChild(fill);
+      var v = document.createElement("b"); v.textContent = fmtNum(r.value);
+      row.appendChild(l); row.appendChild(track); row.appendChild(v);
+      el.appendChild(row);
+    });
+  }
+  function renderTopGroups() {
+    var rows = (adminData.top_groups || []).slice();
+    var key = topSort.key, dir = topSort.dir;
+    rows.sort(function (a, b) {
+      var x = a[key], y = b[key];
+      if (key === "name") return dir * String(x).localeCompare(String(y));
+      return dir * (Number(x) - Number(y));
+    });
+    var heads = topGroupsHead.querySelectorAll(".sort-btn");
+    var labels = { name: "Group", members: "Members", messages: "Messages" };
+    for (var i = 0; i < heads.length; i++) {
+      var k = heads[i].getAttribute("data-sort");
+      heads[i].textContent = labels[k] + (k === key ? (dir < 0 ? " \u25BE" : " \u25B4") : "");
+    }
+    topGroupsBody.innerHTML = "";
+    if (!rows.length) {
+      var tr = document.createElement("tr"), td = document.createElement("td");
+      td.colSpan = 3; td.textContent = "No groups yet."; tr.appendChild(td); topGroupsBody.appendChild(tr);
+      return;
+    }
+    rows.forEach(function (g) {
+      var tr = document.createElement("tr");
+      [g.name, fmtNum(g.members), fmtNum(g.messages)].forEach(function (text) { var td = document.createElement("td"); td.textContent = text; tr.appendChild(td); });
+      topGroupsBody.appendChild(tr);
+    });
+  }
+  function renderNewest() {
+    newestMembers.innerHTML = "";
+    var list = adminData.newest || [];
+    if (!list.length) { var li0 = document.createElement("li"); li0.textContent = "Nobody yet."; newestMembers.appendChild(li0); return; }
+    list.forEach(function (m) {
+      var li = document.createElement("li");
+      var av = document.createElement("span"); av.className = "chat-avatar"; av.textContent = initials(m.name);
+      var nm = document.createElement("span"); nm.textContent = m.name;
+      var when = document.createElement("small");
+      when.textContent = (m.method === "email" ? "email" : "phone") + " \u00B7 " + new Date(m.joined).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+      li.appendChild(av); li.appendChild(nm); li.appendChild(when);
+      newestMembers.appendChild(li);
+    });
+  }
+  function renderAdmin() {
+    renderKpis();
+    renderMetricTabs();
+    renderChart();
+    renderBars(adminDevices, (adminData.devices || []).map(function (d) { return { label: DEVICE_LABELS[d.platform] || d.platform, value: Number(d.people) }; }));
+    renderBars(adminMethods, [{ label: "Email", value: Number(adminData.totals.email_users) }, { label: "Phone number", value: Number(adminData.totals.phone_users) }]);
+    renderTopGroups();
+    renderNewest();
+  }
+  function chooseMetric(id) {
+    adminMetric = id;
+    adminSelected = -1;
+    if (!adminData) return;
+    renderKpis();
+    renderMetricTabs();
+    renderChart();
+  }
+
+  adminRange.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-days]");
+    if (!b) return;
+    adminDays = Number(b.getAttribute("data-days"));
+    var chips = adminRange.querySelectorAll("[data-days]");
+    for (var i = 0; i < chips.length; i++) chips[i].classList.toggle("active", chips[i] === b);
+    loadAdmin();
+  });
+  metricTabs.addEventListener("click", function (e) { var b = e.target.closest("[data-metric]"); if (b) chooseMetric(b.getAttribute("data-metric")); });
+  adminKpis.addEventListener("click", function (e) { var b = e.target.closest("[data-metric]"); if (b) chooseMetric(b.getAttribute("data-metric")); });
+  topGroupsHead.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-sort]");
+    if (!b || !adminData) return;
+    var key = b.getAttribute("data-sort");
+    topSort = { key: key, dir: topSort.key === key ? -topSort.dir : (key === "name" ? 1 : -1) };
+    renderTopGroups();
+  });
+  adminRefreshBtn.addEventListener("click", loadAdmin);
+  csvBtn.addEventListener("click", function () {
+    if (!adminData) return;
+    var rows = [["date", "active_people", "new_signups", "messages", "tasks_created", "files_shared"]].concat((adminData.daily || []).map(function (d) {
+      return [d.day, d.active, d.new_users, d.messages, d.tasks, d.files];
+    }));
+    var csv = rows.map(function (r) { return r.join(","); }).join("\n") + "\n";
+    var url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "planner-daily-numbers.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
+  adminSignOutBtn.addEventListener("click", function () {
+    try { localStorage.removeItem(MODE_KEY); } catch (e) {}
+    sb.auth.signOut().then(function () { location.reload(); });
+  });
+
   function init() {
+    capturePendingJoin();
+    if (installRequired()) { showInstallGate(); return; }
     if (!window.supabase || !window.supabase.createClient) {
       showSetupMessage("Couldn\u2019t load the sign-in library. Check your connection and reload the page.");
       return;
@@ -2238,7 +3556,7 @@
     sb.auth.onAuthStateChange(function (event, session) {
       setTimeout(function () {
         if (event === "SIGNED_OUT") {
-          if (appStarted) location.reload(); else showAuthStep(startingMethod());
+          if (appStarted || adminStarted) location.reload(); else showAuthStep(startingMethod());
           return;
         }
         if (event === "USER_UPDATED" && settingName) return;
