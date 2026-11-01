@@ -625,6 +625,88 @@
   .newest-list li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; }
   .newest-list small { margin-left: auto; color: var(--ink-faint); font-size: 0.72rem; }
 
+  /* ---- admin console v2 ---- */
+  .admin-top { position: sticky; top: 0; z-index: 3; background: var(--bg-1); border-bottom: 1px solid var(--surface-border); }
+  .admin-head { position: static; border-bottom: none; }
+  .admin-tabs { display: flex; gap: 0.2rem; overflow-x: auto; padding: 0 1.1rem; }
+  .admin-tab {
+    border: none; background: none; color: var(--ink-soft); font-family: var(--font-sans); font-weight: 700; font-size: 0.85rem;
+    padding: 0.6rem 0.8rem; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap;
+  }
+  .admin-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .live-toggle { display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; color: var(--ink-soft); font-weight: 600; }
+  .toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; }
+  .toolbar .auth-input { padding: 0.6rem 0.75rem; font-size: 0.9rem; }
+  .toolbar select.auth-input { width: auto; flex-shrink: 0; }
+  .toolbar-note { display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 0.6rem; }
+  .row-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem; }
+  .row-card {
+    display: flex; align-items: center; gap: 0.7rem; width: 100%; text-align: left; background: var(--surface);
+    border: 1px solid var(--surface-border); border-radius: 14px; padding: 0.65rem 0.8rem; font-family: var(--font-sans); color: var(--ink);
+  }
+  button.row-card { cursor: pointer; }
+  .rc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .rc-title { font-weight: 700; font-size: 0.92rem; display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+  .rc-sub { font-size: 0.78rem; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rc-meta { font-size: 0.7rem; color: var(--ink-faint); }
+  .rc-actions { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .badge { font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); white-space: nowrap; }
+  .badge.warn { background: #FDE7C4; color: #7A4B00; }
+  .badge.bad { background: #FAD4D6; color: #8A1C22; }
+  .badge.good { background: #D5F2E3; color: #14633F; }
+  .btn-quiet.wide { width: 100%; margin-bottom: 1rem; }
+  .seg { display: flex; gap: 0.35rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .chart-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .chart-controls .seg { margin-bottom: 0; }
+  .chart-controls .check-row { margin: 0; }
+  .admin-note { margin: -0.3rem 0 0.6rem; font-size: 0.76rem; color: var(--ink-soft); }
+  .delta { font-size: 0.68rem; font-weight: 700; }
+  .delta.up { color: #14833F; }
+  .delta.down { color: #C0392B; }
+  .delta.flat { color: var(--ink-faint); }
+  .chart-svg .line { fill: none; stroke: var(--accent-strong); stroke-width: 2; stroke-linejoin: round; }
+  .chart-svg .area { fill: var(--accent); opacity: 0.15; }
+  .chart-svg .prev-line { fill: none; stroke: var(--ink-faint); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .chart-svg .guide { stroke: var(--ink-faint); stroke-width: 1; }
+  .chart-svg .dot { fill: var(--accent-strong); }
+  .heat-cell { fill: var(--accent); cursor: pointer; }
+  .heat-cell.sel { stroke: var(--ink); stroke-width: 1.5; }
+  .drawer-section { margin-top: 1rem; }
+  .drawer-section h3 { margin: 0 0 0.5rem; font-size: 0.85rem; font-weight: 800; }
+  .drawer-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.4rem; }
+  .drawer-head .group-avatar { margin: 0; }
+  .drawer-head h3 { margin: 0; font-size: 1.05rem; }
+  .drawer-head p { margin: 0.1rem 0 0; font-size: 0.78rem; color: var(--ink-soft); word-break: break-word; }
+  .stat-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .stat-list div { background: var(--bg-1); border-radius: 10px; padding: 0.5rem 0.6rem; font-size: 0.74rem; color: var(--ink-soft); }
+  .stat-list b { display: block; font-size: 0.95rem; color: var(--ink); }
+  .chip-row { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .btn-danger {
+    background: #C0392B; color: #fff; border: none; border-radius: 999px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 700;
+    cursor: pointer; font-family: var(--font-sans);
+  }
+  .btn-danger:disabled { opacity: 0.45; cursor: default; }
+  .danger-box { border: 1px solid #F0B9BC; border-radius: 14px; padding: 0.7rem; margin-top: 0.7rem; }
+  .danger-box p { margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--ink-soft); }
+  .form-actions { display: flex; gap: 0.5rem; margin-top: 0.7rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
+  textarea.auth-input { resize: vertical; font-family: var(--font-sans); }
+  .admin-card .field-label { margin-top: 0.6rem; }
+  .log-row { font-size: 0.82rem; }
+  .log-row .rc-meta { margin-top: 0.1rem; }
+  .updates-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.9rem; }
+  .update-card {
+    background: var(--surface); border: 1px solid var(--surface-border); border-left: 4px solid var(--accent); border-radius: 14px;
+    padding: 0.75rem 0.85rem; display: flex; gap: 0.6rem; align-items: flex-start;
+  }
+  .update-card.pinned { border-left-color: #F5A524; }
+  .update-body { flex: 1; min-width: 0; }
+  .update-title { font-weight: 800; font-size: 0.92rem; }
+  .update-text { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.15rem; white-space: pre-wrap; word-break: break-word; }
+  .update-when { font-size: 0.74rem; font-weight: 700; color: var(--accent-strong); margin-top: 0.25rem; }
+  .update-x { background: none; border: none; color: var(--ink-faint); font-size: 0.95rem; cursor: pointer; padding: 0.1rem 0.3rem; }
+  .lock-note { margin: 0.4rem 0; padding: 0.5rem 0.7rem; border-radius: 12px; background: var(--accent-soft); font-size: 0.8rem; color: var(--ink); }
+
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
     background: var(--mark-bg); color: var(--mark-ink); padding: 0.55rem 0.95rem; border-radius: 999px;
@@ -866,11 +948,14 @@
         <p class="greeting-meta" id="greetingMeta"></p>
       </div>
 
+      <div class="updates-list hidden" id="homeUpdates"></div>
+
       <div class="stat-grid">
         <div class="stat-tile"><strong id="statRemaining">0</strong><span>Tasks remaining</span></div>
         <div class="stat-tile"><strong id="statCompleted">0</strong><span>Tasks completed</span></div>
         <div class="stat-tile"><strong id="statFiles">0</strong><span>Shared files</span></div>
         <div class="stat-tile"><strong id="statGroups">0</strong><span>Chat groups</span></div>
+        <div class="stat-tile" id="statAttendanceTile" style="cursor:pointer;"><strong id="statAttendance">&mdash;</strong><span>Attendance</span></div>
         <div class="stat-tile wide hidden" id="statMembersTile"><strong id="statMembers">0</strong><span>People on Planner</span></div>
       </div>
 
@@ -993,6 +1078,7 @@
           </button>
         </div>
         <div class="chat-messages" id="chatMessages"></div>
+        <p class="lock-note hidden" id="lockNote">This group is locked by an admin, so you can read it but not send messages.</p>
         <div class="add-row chat-input-row">
           <input class="add-input" id="chatInput" placeholder="Message" type="text" maxlength="2000">
           <button class="add-btn" id="chatSendBtn" type="button" aria-label="Send">&#10148;</button>
@@ -1048,6 +1134,51 @@
       <p class="storage-note">Your name shows on the chat messages and files you share from now on.</p>
       <div class="backup-row">
         <button class="btn-ghost danger" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="attendanceOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <h2 class="modal-title">Attendance</h2>
+        <button class="modal-close" id="attendanceCloseBtn" type="button" aria-label="Close">&#10005;</button>
+      </div>
+
+      <div class="updates-list hidden" id="attAlerts"></div>
+
+      <div id="attSummaryWrap" class="hidden">
+        <div class="card progress-card">
+          <div class="progress-head">
+            <h2>Overall</h2>
+            <span class="mono-stat" id="attOverallStat"></span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="attOverallFill"></div></div>
+          <p class="account-hint" id="attPeriodLabel"></p>
+        </div>
+        <ul class="member-list" id="attCourseList"></ul>
+      </div>
+
+      <div class="card">
+        <div class="progress-head"><h2>Update from your portal</h2></div>
+        <p class="account-hint">On your college portal's Attendance page, select the page (Ctrl+A or Cmd+A), copy it, and paste it below.</p>
+        <textarea class="auth-input" id="attPasteInput" rows="4" placeholder="Paste your attendance page here"></textarea>
+        <button class="btn-accent full-width" id="attParseBtn" type="button" style="margin-top:8px;">Save attendance</button>
+        <p class="account-hint hidden" id="attParseMsg"></p>
+      </div>
+
+      <div class="card">
+        <div class="progress-head"><h2>Add absence dates (optional)</h2></div>
+        <p class="account-hint">Click an absent-hours number on the portal to see the dates, then paste that popup's text below. This sharpens the "absent for a period" alert.</p>
+        <textarea class="auth-input" id="attAbsentPasteInput" rows="3" placeholder="Paste the Absent Details popup here"></textarea>
+        <button class="btn-ghost full-width" id="attAbsentParseBtn" type="button" style="margin-top:8px;">Add dates</button>
+        <p class="account-hint hidden" id="attAbsentParseMsg"></p>
+      </div>
+
+      <div id="attHistoryWrap" class="hidden">
+        <div class="progress-head"><h2>History</h2></div>
+        <ul class="member-list" id="attHistoryList"></ul>
       </div>
     </div>
   </div>
@@ -1119,55 +1250,143 @@
 
 </div>
 
-<!-- Admin dashboard: only opens for accounts on the admin list -->
+<!-- Admin console: only opens for accounts on the admin list -->
 <div class="admin-shell hidden" id="adminShell">
-  <header class="admin-head">
-    <div class="admin-head-text"><h1>Planner admin</h1><p id="adminUpdated">Loading&hellip;</p></div>
-    <div class="admin-head-actions">
-      <button class="btn-quiet" id="adminRefreshBtn" type="button">Refresh</button>
-      <button class="btn-quiet" id="adminSignOutBtn" type="button">Sign out</button>
-    </div>
-  </header>
+  <div class="admin-top">
+    <header class="admin-head">
+      <div class="admin-head-text"><h1>Planner admin</h1><p id="adminUpdated">Loading&hellip;</p></div>
+      <div class="admin-head-actions">
+        <label class="live-toggle" title="Refresh the Overview every 30 seconds"><input type="checkbox" id="adminLive"><span>Live</span></label>
+        <button class="btn-quiet" id="adminRefreshBtn" type="button">Refresh</button>
+        <button class="btn-quiet" id="adminSignOutBtn" type="button">Sign out</button>
+      </div>
+    </header>
+    <nav class="admin-tabs" id="adminTabs" role="tablist">
+      <button class="admin-tab active" type="button" role="tab" data-tab="overview">Overview</button>
+      <button class="admin-tab" type="button" role="tab" data-tab="people">People</button>
+      <button class="admin-tab" type="button" role="tab" data-tab="groups">Groups</button>
+      <button class="admin-tab" type="button" role="tab" data-tab="posts">Announcements</button>
+      <button class="admin-tab" type="button" role="tab" data-tab="log">Activity log</button>
+    </nav>
+  </div>
+
   <main class="admin-main">
-    <div class="range-chips" id="adminRange" role="tablist">
-      <button class="chip" type="button" data-days="7">Last 7 days</button>
-      <button class="chip active" type="button" data-days="30">Last 30 days</button>
-      <button class="chip" type="button" data-days="90">Last 90 days</button>
-    </div>
     <p class="hint-text hidden" id="adminError"></p>
-    <section class="kpi-grid" id="adminKpis"></section>
 
-    <section class="admin-card">
-      <div class="metric-tabs" id="metricTabs" role="tablist"></div>
-      <svg class="chart-svg" id="adminChart" viewBox="0 0 640 240" role="img" aria-label="Daily chart"></svg>
-      <p class="chart-detail" id="chartDetail"></p>
-      <button class="btn-quiet" id="csvBtn" type="button">Download daily numbers (CSV)</button>
+    <section class="admin-pane" id="pane-overview">
+      <div class="range-chips" id="adminRange" role="tablist">
+        <button class="chip" type="button" data-days="7">Last 7 days</button>
+        <button class="chip active" type="button" data-days="30">Last 30 days</button>
+        <button class="chip" type="button" data-days="90">Last 90 days</button>
+        <button class="chip" type="button" data-days="365">Last year</button>
+      </div>
+      <section class="kpi-grid" id="adminKpis"></section>
+
+      <section class="admin-card">
+        <div class="metric-tabs" id="metricTabs" role="tablist"></div>
+        <div class="chart-controls">
+          <div class="seg" id="chartTypeSeg">
+            <button class="chip active" type="button" data-type="bars">Bars</button>
+            <button class="chip" type="button" data-type="line">Line</button>
+          </div>
+          <label class="check-row"><input type="checkbox" id="compareToggle"><span>Compare with the previous period</span></label>
+        </div>
+        <svg class="chart-svg" id="adminChart" viewBox="0 0 640 240" role="img" aria-label="Daily chart"></svg>
+        <p class="chart-detail" id="chartDetail"></p>
+        <button class="btn-quiet" id="csvBtn" type="button">Download daily numbers (CSV)</button>
+      </section>
+
+      <section class="admin-card">
+        <h2>Busiest times</h2>
+        <p class="admin-note">Messages, tasks and files by day and hour, in your local time. Tap a square to read it.</p>
+        <svg class="chart-svg" id="heatmap" viewBox="0 0 640 200" role="img" aria-label="Busiest times"></svg>
+        <p class="chart-detail" id="heatDetail"></p>
+      </section>
+
+      <section class="admin-card">
+        <h2>Devices people used</h2>
+        <div class="bar-list" id="adminDevices"></div>
+        <h2>How people sign in</h2>
+        <div class="bar-list" id="adminMethods"></div>
+      </section>
+
+      <section class="admin-card">
+        <h2>Busiest groups</h2>
+        <table class="admin-table">
+          <thead><tr id="topGroupsHead">
+            <th><button class="sort-btn" type="button" data-sort="name">Group</button></th>
+            <th><button class="sort-btn" type="button" data-sort="members">Members</button></th>
+            <th><button class="sort-btn" type="button" data-sort="messages">Messages</button></th>
+          </tr></thead>
+          <tbody id="topGroupsBody"></tbody>
+        </table>
+      </section>
+
+      <section class="admin-card">
+        <h2>Newest members</h2>
+        <ul class="newest-list" id="newestMembers"></ul>
+      </section>
     </section>
 
-    <section class="admin-card">
-      <h2>Devices people used</h2>
-      <div class="bar-list" id="adminDevices"></div>
-      <h2>How people sign in</h2>
-      <div class="bar-list" id="adminMethods"></div>
+    <section class="admin-pane hidden" id="pane-people">
+      <div class="toolbar">
+        <input class="auth-input" id="peopleSearch" type="search" placeholder="Search name, email or phone" autocomplete="off">
+        <select class="auth-input" id="peopleSort" aria-label="Sort people">
+          <option value="newest">Newest first</option>
+          <option value="active">Recently active</option>
+          <option value="messages">Most messages</option>
+          <option value="name">Name A to Z</option>
+        </select>
+      </div>
+      <div class="toolbar-note"><span id="peopleCount"></span><button class="btn-quiet" id="peopleCsv" type="button">Download CSV</button></div>
+      <div class="row-list" id="peopleList"></div>
+      <button class="btn-quiet wide hidden" id="peopleMore" type="button">Load more</button>
     </section>
 
-    <section class="admin-card">
-      <h2>Busiest groups</h2>
-      <table class="admin-table">
-        <thead><tr id="topGroupsHead">
-          <th><button class="sort-btn" type="button" data-sort="name">Group</button></th>
-          <th><button class="sort-btn" type="button" data-sort="members">Members</button></th>
-          <th><button class="sort-btn" type="button" data-sort="messages">Messages</button></th>
-        </tr></thead>
-        <tbody id="topGroupsBody"></tbody>
-      </table>
+    <section class="admin-pane hidden" id="pane-groups">
+      <div class="toolbar">
+        <input class="auth-input" id="groupsSearch" type="search" placeholder="Search groups by name" autocomplete="off">
+      </div>
+      <div class="toolbar-note"><span id="groupsCount"></span><button class="btn-quiet" id="groupsCsv" type="button">Download CSV</button></div>
+      <div class="row-list" id="groupsList"></div>
     </section>
 
-    <section class="admin-card">
-      <h2>Newest members</h2>
-      <ul class="newest-list" id="newestMembers"></ul>
+    <section class="admin-pane hidden" id="pane-posts">
+      <div class="admin-card">
+        <h2 id="postFormTitle">New announcement or event</h2>
+        <div class="seg" id="postKind">
+          <button class="chip active" type="button" data-kind="announcement">Announcement</button>
+          <button class="chip" type="button" data-kind="event">Event</button>
+        </div>
+        <label class="field-label" for="postTitle">Title</label>
+        <input class="auth-input" id="postTitle" type="text" maxlength="80" placeholder="What is it about?">
+        <label class="field-label" for="postBody">Message (optional)</label>
+        <textarea class="auth-input" id="postBody" rows="3" maxlength="1000" placeholder="Details people should know"></textarea>
+        <div class="hidden" id="postEventRow">
+          <label class="field-label" for="postEventAt">Event date and time</label>
+          <input class="auth-input" id="postEventAt" type="datetime-local">
+        </div>
+        <div class="two-col">
+          <div><label class="field-label" for="postPublishAt">Show from (empty = now)</label><input class="auth-input" id="postPublishAt" type="datetime-local"></div>
+          <div><label class="field-label" for="postExpiresAt">Hide after (optional)</label><input class="auth-input" id="postExpiresAt" type="datetime-local"></div>
+        </div>
+        <label class="check-row"><input type="checkbox" id="postPinned"><span>Pin to the top</span></label>
+        <div class="form-actions">
+          <button class="btn-accent" id="postSaveBtn" type="button">Post</button>
+          <button class="btn-quiet hidden" id="postCancelBtn" type="button">Cancel editing</button>
+        </div>
+        <p class="hint-text hidden" id="postMsg"></p>
+      </div>
+      <div class="row-list" id="postList"></div>
+    </section>
+
+    <section class="admin-pane hidden" id="pane-log">
+      <div class="toolbar"><input class="auth-input" id="logFilter" type="search" placeholder="Filter the log" autocomplete="off"></div>
+      <div class="row-list" id="logList"></div>
     </section>
   </main>
+
+  <div class="modal-overlay hidden" id="adminDrawer"><div class="modal-sheet" id="adminDrawerBody"></div></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1916,6 +2135,227 @@
   settingsBtn.addEventListener("click", openAccount);
   accountCloseBtn.addEventListener("click", closeAccount);
   accountOverlay.addEventListener("click", function (e) { if (e.target === accountOverlay) closeAccount(); });
+
+  // ---------- Attendance (manual entry, no portal login) ----------
+  var attendanceOverlay = document.getElementById("attendanceOverlay");
+  var attendanceCloseBtn = document.getElementById("attendanceCloseBtn");
+  var statAttendanceTile = document.getElementById("statAttendanceTile");
+  var statAttendance = document.getElementById("statAttendance");
+  var attAlerts = document.getElementById("attAlerts");
+  var attSummaryWrap = document.getElementById("attSummaryWrap");
+  var attOverallStat = document.getElementById("attOverallStat");
+  var attOverallFill = document.getElementById("attOverallFill");
+  var attPeriodLabel = document.getElementById("attPeriodLabel");
+  var attCourseList = document.getElementById("attCourseList");
+  var attPasteInput = document.getElementById("attPasteInput");
+  var attParseBtn = document.getElementById("attParseBtn");
+  var attParseMsg = document.getElementById("attParseMsg");
+  var attAbsentPasteInput = document.getElementById("attAbsentPasteInput");
+  var attAbsentParseBtn = document.getElementById("attAbsentParseBtn");
+  var attAbsentParseMsg = document.getElementById("attAbsentParseMsg");
+  var attHistoryWrap = document.getElementById("attHistoryWrap");
+  var attHistoryList = document.getElementById("attHistoryList");
+  var ATT_MIN_PCT = 75;
+  var ATT_ALERT_DAYS = 7;
+  var ATT_ALERT_COUNT = 3;
+
+  function attSplitCells(line) {
+    var parts = line.split(/\t+/);
+    if (parts.length < 2) parts = line.split(/ {2,}/);
+    return parts.map(function (p) { return p.replace(/\u00a0/g, " ").trim(); }).filter(function (p) { return p !== ""; });
+  }
+  var ATT_MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function attParseDMonY(s) {
+    var m = /^(\d{1,2})\/([A-Za-z]{3,})\/(\d{4})$/.exec(String(s || "").trim());
+    if (!m) return null;
+    var mi = ATT_MONTHS[m[2].slice(0, 3).toLowerCase()];
+    if (mi === undefined) return null;
+    return { y: +m[3], mo: mi, d: +m[1] };
+  }
+  function attToISO(o) { return o.y + "-" + String(o.mo + 1).padStart(2, "0") + "-" + String(o.d).padStart(2, "0"); }
+
+  function parseAttendanceText(raw) {
+    var lines = String(raw || "").split(/\r\n|\r|\n/).map(function (l) { return l.trim(); }).filter(function (l) { return l !== ""; });
+    var result = { periodStart: null, periodEnd: null, courses: [], totals: null };
+    var section = null;
+    lines.forEach(function (line) {
+      var pm = /During the Period:\s*([0-9]{1,2}\/[A-Za-z]{3,}\/[0-9]{4})\s*To\s*([0-9]{1,2}\/[A-Za-z]{3,}\/[0-9]{4})/i.exec(line);
+      if (pm) {
+        var s = attParseDMonY(pm[1]), e = attParseDMonY(pm[2]);
+        if (s) result.periodStart = attToISO(s);
+        if (e) result.periodEnd = attToISO(e);
+        return;
+      }
+      if (/^code(\s{2,}|\t)description/i.test(line) || /^code\tdescription/i.test(line)) { section = "courses"; return; }
+      if (/^month\s*\/\s*year/i.test(line)) { section = "cumulative"; return; }
+      if (/^absent details$/i.test(line) || line === "\u00d7" || /^close$/i.test(line)) { section = null; return; }
+      var cells = attSplitCells(line);
+      if (section === "courses") {
+        if (cells.length === 7 && /^total$/i.test(cells[0])) {
+          var nums = cells.slice(1).map(Number);
+          if (nums.every(function (n) { return !isNaN(n); })) {
+            result.totals = { maxHours: nums[0], attHours: nums[1], absentHours: nums[2], averagePct: nums[3], odMlPct: nums[4], totalPct: nums[5] };
+          }
+          return;
+        }
+        if (cells.length === 8) {
+          var nums2 = cells.slice(2).map(Number);
+          if (nums2.every(function (n) { return !isNaN(n); })) {
+            result.courses.push({ code: cells[0], description: cells[1], maxHours: nums2[0], attHours: nums2[1], absentHours: nums2[2], averagePct: nums2[3], odMlPct: nums2[4], totalPct: nums2[5] });
+          }
+        }
+      }
+    });
+    return result;
+  }
+
+  function parseAbsentDetailsText(raw) {
+    var lines = String(raw || "").split(/\r\n|\r|\n/).map(function (l) { return l.trim(); }).filter(function (l) { return l !== ""; });
+    var out = [];
+    lines.forEach(function (line) {
+      if (/^date\b/i.test(line)) return;
+      var cells = attSplitCells(line);
+      if (cells.length !== 2) return;
+      var dm = /^(\d{1,2})-(\d{1,2})-(\d{4})$/.exec(cells[0]);
+      var hrs = Number(cells[1]);
+      if (dm && !isNaN(hrs)) out.push({ date: dm[3] + "-" + dm[2].padStart(2, "0") + "-" + dm[1].padStart(2, "0"), hours: hrs });
+    });
+    return out;
+  }
+
+  function openAttendance() { attendanceOverlay.classList.remove("hidden"); loadAttendance(); }
+  function closeAttendance() { attendanceOverlay.classList.add("hidden"); }
+  statAttendanceTile.addEventListener("click", openAttendance);
+  attendanceCloseBtn.addEventListener("click", closeAttendance);
+  attendanceOverlay.addEventListener("click", function (e) { if (e.target === attendanceOverlay) closeAttendance(); });
+
+  function renderAttendance(latestUpdate, courses, absences, history) {
+    emptyEl(attAlerts);
+    var alerts = [];
+    if (latestUpdate && latestUpdate.total_percentage !== null && Number(latestUpdate.total_percentage) < ATT_MIN_PCT) {
+      alerts.push("Your overall attendance is " + latestUpdate.total_percentage + "% \u2014 below " + ATT_MIN_PCT + "%.");
+    }
+    (courses || []).forEach(function (c) {
+      if (c.total_percentage !== null && Number(c.total_percentage) < ATT_MIN_PCT) {
+        alerts.push(c.description + " is at " + c.total_percentage + "% \u2014 below " + ATT_MIN_PCT + "%.");
+      }
+    });
+    var cutoff = new Date(Date.now() - ATT_ALERT_DAYS * 86400000);
+    var recentAbsenceDays = (absences || []).filter(function (a) { return new Date(a.absence_date + "T00:00:00") >= cutoff; });
+    if (recentAbsenceDays.length >= ATT_ALERT_COUNT) {
+      alerts.push("You\u2019ve been marked absent on " + recentAbsenceDays.length + " days in the last " + ATT_ALERT_DAYS + " days.");
+    }
+    if (alerts.length) {
+      attAlerts.classList.remove("hidden");
+      alerts.forEach(function (msg) { attAlerts.appendChild(mk("div", { class: "card", text: "\u26a0\ufe0f " + msg })); });
+    } else {
+      attAlerts.classList.add("hidden");
+    }
+
+    if (latestUpdate) {
+      attSummaryWrap.classList.remove("hidden");
+      var pct = latestUpdate.total_percentage !== null ? Number(latestUpdate.total_percentage) : 0;
+      attOverallStat.textContent = (latestUpdate.total_percentage !== null ? latestUpdate.total_percentage : "\u2014") + "%";
+      attOverallFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+      attPeriodLabel.textContent = (latestUpdate.period_start && latestUpdate.period_end)
+        ? ("Period: " + latestUpdate.period_start + " to " + latestUpdate.period_end)
+        : "Updated " + fmtDateTime(latestUpdate.created_at);
+      emptyEl(attCourseList);
+      (courses || []).forEach(function (c) {
+        attCourseList.appendChild(mk("li", { class: "member-row" }, [
+          mk("span", { class: "member-name", text: c.description + " (" + c.code + ")" }),
+          mk("span", { class: "mono-stat", text: (c.total_percentage !== null ? c.total_percentage : "\u2014") + "%" })
+        ]));
+      });
+    } else {
+      attSummaryWrap.classList.add("hidden");
+    }
+
+    statAttendance.textContent = latestUpdate && latestUpdate.total_percentage !== null ? (latestUpdate.total_percentage + "%") : "\u2014";
+
+    emptyEl(attHistoryList);
+    if ((history || []).length) {
+      attHistoryWrap.classList.remove("hidden");
+      history.forEach(function (h) {
+        attHistoryList.appendChild(mk("li", { class: "member-row" }, [
+          mk("span", { class: "member-name", text: fmtDateTime(h.created_at) }),
+          mk("span", { class: "mono-stat", text: (h.total_percentage !== null ? h.total_percentage : "\u2014") + "%" }),
+          mk("button", { class: "btn-ghost", type: "button", text: "Delete", onclick: function () {
+            sb.from("attendance_updates").delete().eq("id", h.id).then(function () { loadAttendance(); });
+          } })
+        ]));
+      });
+    } else {
+      attHistoryWrap.classList.add("hidden");
+    }
+  }
+
+  function loadAttendance() {
+    if (!me) return;
+    Promise.all([
+      sb.from("attendance_updates").select("*").order("created_at", { ascending: false }).limit(20),
+      sb.from("attendance_absences").select("*").order("absence_date", { ascending: false }).limit(60)
+    ]).then(function (results) {
+      var updates = (results[0].data || []);
+      var absences = (results[1].data || []);
+      var latest = updates[0] || null;
+      if (!latest) { renderAttendance(null, [], absences, []); return; }
+      sb.from("attendance_courses").select("*").eq("update_id", latest.id).then(function (r) {
+        renderAttendance(latest, r.data || [], absences, updates);
+      });
+    });
+  }
+
+  attParseBtn.addEventListener("click", function () {
+    var parsed = parseAttendanceText(attPasteInput.value);
+    if (!parsed.courses.length && !parsed.totals) {
+      attParseMsg.textContent = "Couldn\u2019t find an attendance table in that \u2014 try copying the whole page again.";
+      attParseMsg.classList.remove("hidden");
+      return;
+    }
+    attParseBtn.disabled = true;
+    var t = parsed.totals || {};
+    sb.from("attendance_updates").insert({
+      period_start: parsed.periodStart, period_end: parsed.periodEnd,
+      max_hours: t.maxHours != null ? t.maxHours : null,
+      att_hours: t.attHours != null ? t.attHours : null,
+      absent_hours: t.absentHours != null ? t.absentHours : null,
+      total_percentage: t.totalPct != null ? t.totalPct : null
+    }).select().single().then(function (res) {
+      attParseBtn.disabled = false;
+      if (res.error || !res.data) { attParseMsg.textContent = "Couldn\u2019t save that. Try again."; attParseMsg.classList.remove("hidden"); return; }
+      var rows = parsed.courses.map(function (c) {
+        return { update_id: res.data.id, code: c.code, description: c.description, max_hours: c.maxHours, att_hours: c.attHours, absent_hours: c.absentHours, average_percentage: c.averagePct, od_ml_percentage: c.odMlPct, total_percentage: c.totalPct };
+      });
+      (rows.length ? sb.from("attendance_courses").insert(rows) : Promise.resolve()).then(function () {
+        attPasteInput.value = "";
+        attParseMsg.classList.add("hidden");
+        showToast("Attendance saved.");
+        loadAttendance();
+      });
+    });
+  });
+
+  attAbsentParseBtn.addEventListener("click", function () {
+    var rows = parseAbsentDetailsText(attAbsentPasteInput.value);
+    if (!rows.length) {
+      attAbsentParseMsg.textContent = "Couldn\u2019t find any dates in that.";
+      attAbsentParseMsg.classList.remove("hidden");
+      return;
+    }
+    attAbsentParseBtn.disabled = true;
+    sb.from("attendance_absences").upsert(
+      rows.map(function (r) { return { absence_date: r.date, absent_hours: r.hours }; }),
+      { onConflict: "user_id,absence_date" }
+    ).then(function (res) {
+      attAbsentParseBtn.disabled = false;
+      if (res.error) { attAbsentParseMsg.textContent = "Couldn\u2019t save that. Try again."; attAbsentParseMsg.classList.remove("hidden"); return; }
+      attAbsentPasteInput.value = "";
+      attAbsentParseMsg.classList.add("hidden");
+      showToast("Absence dates added.");
+      loadAttendance();
+    });
+  });
 
   accountSaveBtn.addEventListener("click", function () {
     var name = (accountNameInput.value || "").trim();
@@ -2751,6 +3191,8 @@
     paintAvatar(convoAvatar, g);
     convoName.textContent = g.name;
     convoMeta.textContent = convoMetaText(gid);
+    applyLockState(g);
+    refreshGroupMeta(gid);
     markRead(gid);
     updateNavBadge();
     renderMessages();
@@ -2825,6 +3267,7 @@
       }
       chatLoadError = null;
       groups = res.data || [];
+      if (openGroupId) { var og = findGroup(openGroupId); if (og) { convoName.textContent = og.name; applyLockState(og); } }
       sb.from("messages").select("*").order("created_at", { ascending: false }).limit(500).then(function (r2) {
         if (!r2.error) {
           var byGroup = {};
@@ -2878,6 +3321,7 @@
       if (res.error) {
         chatInput.value = text;
         showToast("Couldn\u2019t send that message.");
+        refreshGroupMeta(gid, true);
         return;
       }
       addMessage(res.data);
@@ -3224,42 +3668,110 @@
     loadTasks(); subscribeTasks();
     loadFiles(); subscribeFiles();
     loadLastRead(); loadChatData(); subscribeChat();
+    loadAnnouncements(); subscribeAnnouncements();
     loadMemberCount();
+    loadAttendance();
   }
 
-  // ---- Admin dashboard ----
+  // ---- Admin console ----
+  var ADMIN_TABS = ["overview", "people", "groups", "posts", "log"];
+  var adminTab = "overview";
+  var tabLoaded = {};
   var adminData = null;
   var adminDays = 30;
   var adminMetric = "active";
+  var chartKind = "bars";
+  var compareOn = false;
   var adminSelected = -1;
+  var liveTimer = null;
   var topSort = { key: "messages", dir: -1 };
+  var peopleState = { search: "", sort: "newest", rows: [], total: 0, timer: null };
+  var groupsState = { search: "", rows: [], timer: null };
+  var postsState = { rows: [], editing: null, kind: "announcement" };
+  var logRows = [];
   var SVG_NS = "http://www.w3.org/2000/svg";
   var METRICS = [
     { id: "active", label: "Active people", field: "active" },
     { id: "signups", label: "New sign-ups", field: "new_users" },
+    { id: "total", label: "Total people", field: "" },
     { id: "messages", label: "Messages", field: "messages" },
     { id: "tasks", label: "Tasks created", field: "tasks" },
     { id: "files", label: "Files shared", field: "files" }
   ];
   var DEVICE_LABELS = { android: "Android phones", ios: "iPhone / iPad", computer: "Computers", other: "Not recorded" };
+  var WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   var adminUpdated = document.getElementById("adminUpdated");
   var adminRefreshBtn = document.getElementById("adminRefreshBtn");
   var adminSignOutBtn = document.getElementById("adminSignOutBtn");
-  var adminRange = document.getElementById("adminRange");
+  var adminLive = document.getElementById("adminLive");
+  var adminTabs = document.getElementById("adminTabs");
   var adminError = document.getElementById("adminError");
+  var adminRange = document.getElementById("adminRange");
   var adminKpis = document.getElementById("adminKpis");
   var metricTabs = document.getElementById("metricTabs");
+  var chartTypeSeg = document.getElementById("chartTypeSeg");
+  var compareToggle = document.getElementById("compareToggle");
   var adminChart = document.getElementById("adminChart");
   var chartDetail = document.getElementById("chartDetail");
   var csvBtn = document.getElementById("csvBtn");
+  var heatmap = document.getElementById("heatmap");
+  var heatDetail = document.getElementById("heatDetail");
   var adminDevices = document.getElementById("adminDevices");
   var adminMethods = document.getElementById("adminMethods");
   var topGroupsHead = document.getElementById("topGroupsHead");
   var topGroupsBody = document.getElementById("topGroupsBody");
   var newestMembers = document.getElementById("newestMembers");
+  var peopleSearch = document.getElementById("peopleSearch");
+  var peopleSort = document.getElementById("peopleSort");
+  var peopleCount = document.getElementById("peopleCount");
+  var peopleCsv = document.getElementById("peopleCsv");
+  var peopleList = document.getElementById("peopleList");
+  var peopleMore = document.getElementById("peopleMore");
+  var groupsSearch = document.getElementById("groupsSearch");
+  var groupsCount = document.getElementById("groupsCount");
+  var groupsCsv = document.getElementById("groupsCsv");
+  var groupsList = document.getElementById("groupsList");
+  var postFormTitle = document.getElementById("postFormTitle");
+  var postKind = document.getElementById("postKind");
+  var postTitle = document.getElementById("postTitle");
+  var postBody = document.getElementById("postBody");
+  var postEventRow = document.getElementById("postEventRow");
+  var postEventAt = document.getElementById("postEventAt");
+  var postPublishAt = document.getElementById("postPublishAt");
+  var postExpiresAt = document.getElementById("postExpiresAt");
+  var postPinned = document.getElementById("postPinned");
+  var postSaveBtn = document.getElementById("postSaveBtn");
+  var postCancelBtn = document.getElementById("postCancelBtn");
+  var postMsg = document.getElementById("postMsg");
+  var postList = document.getElementById("postList");
+  var logFilter = document.getElementById("logFilter");
+  var logList = document.getElementById("logList");
+  var adminDrawer = document.getElementById("adminDrawer");
+  var adminDrawerBody = document.getElementById("adminDrawerBody");
 
-  function metricById(id) { for (var i = 0; i < METRICS.length; i++) if (METRICS[i].id === id) return METRICS[i]; return METRICS[0]; }
+  // ---- small helpers ----
+  function mk(tag, attrs, kids) {
+    var el = document.createElement(tag);
+    if (attrs) {
+      for (var k in attrs) {
+        var v = attrs[k];
+        if (k === "class") el.className = v;
+        else if (k === "text") el.textContent = v;
+        else if (k === "value") el.value = v;
+        else if (k === "checked") el.checked = !!v;
+        else if (k.slice(0, 2) === "on") el.addEventListener(k.slice(2), v);
+        else if (v === true) el.setAttribute(k, "");
+        else if (v !== false && v != null) el.setAttribute(k, v);
+      }
+    }
+    (kids || []).forEach(function (c) {
+      if (c == null || c === false) return;
+      el.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return el;
+  }
+  function emptyEl(el) { while (el.firstChild) el.removeChild(el.firstChild); }
   function fmtNum(n) { return Number(n || 0).toLocaleString(); }
   function fmtAdminBytes(b) {
     b = Number(b || 0);
@@ -3270,6 +3782,8 @@
   }
   function fmtDay(iso) { return new Date(iso + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); }
   function fmtDayShort(iso) { return new Date(iso + "T00:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", timeZone: "UTC" }); }
+  function fmtDate(iso) { return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }); }
+  function fmtDateTime(iso) { return new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
   function niceCeil(max) {
     var p = Math.pow(10, Math.floor(Math.log(max) / Math.LN10));
     var f = max / p;
@@ -3280,12 +3794,69 @@
     for (var k in attrs) el.setAttribute(k, attrs[k]);
     return el;
   }
-  function adminSetupText(err) {
-    var t = setupText(err, "supabase-admin.sql");
-    if (/isn\u2019t set up yet/.test(t)) return "The admin dashboard isn\u2019t set up yet. Run supabase-admin.sql in your Supabase SQL Editor.";
+  function avatarFor(id, name, size) {
+    var a = mk("span", { class: "group-avatar" + (size ? " " + size : ""), text: initials(name) });
+    a.style.background = colorFor(String(id || name || "x"));
+    return a;
+  }
+  function csvCell(v) {
+    var s = String(v == null ? "" : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function downloadCsv(filename, rows) {
+    var csv = rows.map(function (r) { return r.map(csvCell).join(","); }).join("\n") + "\n";
+    var url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+  function adminErrText(err) {
+    var t = setupText(err, "supabase-admin-plus.sql");
+    if (/isn\u2019t set up yet/.test(t)) return "That admin feature isn\u2019t set up yet. Run supabase-admin-plus.sql in your Supabase SQL Editor.";
     return /Admins only/i.test(t) ? "This account isn\u2019t an admin." : t;
   }
+  function showAdminError(msg) { adminError.textContent = msg; adminError.classList.remove("hidden"); }
+  // Every admin action goes through the database, which checks the account is an admin and writes the activity log.
+  function adminCall(name, args, quiet) {
+    return sb.rpc(name, args || {}).then(function (res) {
+      if (res.error) { if (!quiet) showToast(adminErrText(res.error)); return { ok: false, error: res.error }; }
+      return { ok: true, data: res.data };
+    }, function () {
+      if (!quiet) showToast(OFFLINE_MSG);
+      return { ok: false, error: { message: "offline" } };
+    });
+  }
 
+  // ---- drawer (a sheet that slides over the page) ----
+  function openDrawer(build) {
+    emptyEl(adminDrawerBody);
+    adminDrawerBody.appendChild(mk("div", { class: "modal-handle" }));
+    adminDrawerBody.appendChild(mk("div", { class: "modal-head" }, [
+      mk("h2", { class: "modal-title", text: "Details" }),
+      mk("button", { class: "modal-close", type: "button", "aria-label": "Close", text: "\u2715", onclick: closeDrawer })
+    ]));
+    build(adminDrawerBody);
+    adminDrawer.classList.remove("hidden");
+  }
+  function closeDrawer() { adminDrawer.classList.add("hidden"); }
+  adminDrawer.addEventListener("click", function (e) { if (e.target === adminDrawer) closeDrawer(); });
+  function drawerHead(avatar, title, sub) {
+    return mk("div", { class: "drawer-head" }, [avatar, mk("div", null, [mk("h3", { text: title }), mk("p", { text: sub })])]);
+  }
+  function section(title, kids) { return mk("div", { class: "drawer-section" }, [mk("h3", { text: title })].concat(kids)); }
+  // A destructive action that needs the exact phrase typed first
+  function dangerBox(text, phrase, buttonLabel, onConfirm) {
+    var input = mk("input", { class: "auth-input", type: "text", placeholder: "Type " + phrase, autocomplete: "off" });
+    var btn = mk("button", { class: "btn-danger", type: "button", disabled: true, text: buttonLabel, onclick: function () { if (input.value === phrase) onConfirm(); } });
+    input.addEventListener("input", function () { btn.disabled = input.value !== phrase; });
+    return mk("div", { class: "danger-box" }, [mk("p", { text: text }), mk("div", { class: "sheet-field-row" }, [input, btn])]);
+  }
+
+  // ---- entering and leaving the console ----
   // After sign-in as admin: ask the database whether this account is on the admin list. The database decides, not this page.
   function enterAdmin() {
     adminChecking = true;
@@ -3299,105 +3870,177 @@
       setAuthMsg(OFFLINE_MSG, true);
     });
   }
+  function adminSetupText(err) {
+    var t = setupText(err, "supabase-admin.sql");
+    if (/isn\u2019t set up yet/.test(t)) return "The admin dashboard isn\u2019t set up yet. Run supabase-admin.sql in your Supabase SQL Editor.";
+    return /Admins only/i.test(t) ? "This account isn\u2019t an admin." : t;
+  }
   function startAdmin() {
     adminStarted = true;
     try { localStorage.setItem(MODE_KEY, "admin"); } catch (e) {}
     authScreen.classList.add("hidden");
     appShell.classList.add("hidden");
     adminShell.classList.remove("hidden");
-    loadAdmin();
+    showAdminTab("overview");
   }
-  function loadAdmin() {
-    adminUpdated.textContent = "Loading\u2026";
+  function stopLive() { if (liveTimer) { clearInterval(liveTimer); liveTimer = null; } }
+  function startLive() {
+    stopLive();
+    liveTimer = setInterval(function () { if (adminTab === "overview") loadOverview(true); }, 30000);
+  }
+  function loadTab(name) {
+    if (name === "overview") loadOverview(false);
+    else if (name === "people") loadPeople(true);
+    else if (name === "groups") loadGroups();
+    else if (name === "posts") loadPosts();
+    else if (name === "log") loadLog();
+  }
+  function showAdminTab(name) {
+    adminTab = name;
+    stopLive();
+    ADMIN_TABS.forEach(function (t) { document.getElementById("pane-" + t).classList.toggle("hidden", t !== name); });
+    var btns = adminTabs.querySelectorAll(".admin-tab");
+    for (var i = 0; i < btns.length; i++) {
+      var on = btns[i].getAttribute("data-tab") === name;
+      btns[i].classList.toggle("active", on);
+      btns[i].setAttribute("aria-selected", on ? "true" : "false");
+    }
+    adminError.classList.add("hidden");
+    adminShell.scrollTop = 0;
+    if (!tabLoaded[name]) loadTab(name);
+    if (name === "overview" && adminLive.checked) startLive();
+  }
+  adminTabs.addEventListener("click", function (e) { var b = e.target.closest("[data-tab]"); if (b) showAdminTab(b.getAttribute("data-tab")); });
+  adminRefreshBtn.addEventListener("click", function () { loadTab(adminTab); });
+  adminLive.addEventListener("change", function () { if (adminLive.checked && adminTab === "overview") { startLive(); loadOverview(true); } else stopLive(); });
+  adminSignOutBtn.addEventListener("click", function () {
+    try { localStorage.removeItem(MODE_KEY); } catch (e) {}
+    sb.auth.signOut().then(function () { location.reload(); });
+  });
+
+  // ================= Overview =================
+  function loadOverview(silent) {
+    if (!silent) adminUpdated.textContent = "Loading\u2026";
     adminRefreshBtn.disabled = true;
-    sb.rpc("admin_dashboard", { days: adminDays }).then(function (res) {
+    var tz = -new Date().getTimezoneOffset();
+    adminCall("admin_dashboard", { days: adminDays, tz_minutes: tz }, true).then(function (r) {
       adminRefreshBtn.disabled = false;
-      if (res.error || !res.data) {
-        adminError.textContent = adminSetupText(res.error);
-        adminError.classList.remove("hidden");
-        adminUpdated.textContent = "Couldn\u2019t load";
-        return;
-      }
+      if (!r.ok || !r.data) { showAdminError(r.ok ? "The dashboard came back empty. Please refresh." : adminErrText(r.error)); adminUpdated.textContent = "Couldn\u2019t load"; return; }
       adminError.classList.add("hidden");
-      adminData = res.data;
-      adminSelected = -1;
+      adminData = r.data;
+      tabLoaded.overview = true;
+      if (!silent) adminSelected = -1;
       adminUpdated.textContent = "Updated " + new Date(adminData.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " \u00B7 signed in as " + (me.email || me.phone || "admin");
-      renderAdmin();
-    }, function () {
-      adminRefreshBtn.disabled = false;
-      adminError.textContent = OFFLINE_MSG;
-      adminError.classList.remove("hidden");
+      renderOverview();
     });
   }
 
+  function series(metricId, which) {
+    var m = metricById(metricId);
+    var cur = adminData.daily || [];
+    if (metricId === "total") {
+      var out = new Array(cur.length), run = Number(adminData.totals.users);
+      for (var i = cur.length - 1; i >= 0; i--) { out[i] = run; run -= Number(cur[i].new_users) || 0; }
+      return out;
+    }
+    return (which === "prev" ? (adminData.daily_prev || []) : cur).map(function (d) { return Number(d[m.field]) || 0; });
+  }
+  function metricById(id) { for (var i = 0; i < METRICS.length; i++) if (METRICS[i].id === id) return METRICS[i]; return METRICS[0]; }
+
+  function deltaEl(cur, prev) {
+    cur = Number(cur) || 0; prev = Number(prev) || 0;
+    var span = mk("span", { class: "delta flat" });
+    var label = "vs the previous " + adminData.days + " days";
+    if (cur === prev) { span.textContent = "no change " + label; return span; }
+    if (prev === 0) { span.className = "delta up"; span.textContent = "\u25B2 new " + label; return span; }
+    var p = Math.round(100 * (cur - prev) / prev);
+    span.className = "delta " + (p > 0 ? "up" : "down");
+    span.textContent = (p > 0 ? "\u25B2 " : "\u25BC ") + Math.abs(p) + "% " + label;
+    return span;
+  }
   function renderKpis() {
-    var t = adminData.totals, a = adminData.active;
+    var t = adminData.totals, a = adminData.active, w = adminData.window, p = adminData.previous;
     function pct(n) { return t.users ? Math.round(100 * n / t.users) + "% of everyone" : "\u2014"; }
     var tiles = [
-      { label: "People signed up", value: t.users, sub: t.email_users + " by email \u00B7 " + t.phone_users + " by phone", metric: "signups" },
+      { label: "Active people", value: w.active_people, sub: "of " + fmtNum(t.users) + " people", delta: [w.active_people, p.active_people], metric: "active" },
       { label: "Active today", value: a.today, sub: pct(a.today), metric: "active" },
-      { label: "Active in 7 days", value: a.last7, sub: pct(a.last7), metric: "active" },
-      { label: "Active in 30 days", value: a.last30, sub: pct(a.last30), metric: "active" },
-      { label: "Chat groups", value: t.groups, sub: t.pending_requests + (t.pending_requests === 1 ? " join request waiting" : " join requests waiting") },
-      { label: "Messages sent", value: t.messages, sub: "all time", metric: "messages" },
-      { label: "Tasks created", value: t.tasks, sub: t.tasks_done + " done", metric: "tasks" },
-      { label: "Files shared", value: t.files, sub: fmtAdminBytes(t.file_bytes), metric: "files" }
+      { label: "Came back", value: w.returning_people, sub: "opened Planner on 2+ days", delta: [w.returning_people, p.returning_people] },
+      { label: "New sign-ups", value: w.new_users, sub: fmtNum(t.users) + " people in total", delta: [w.new_users, p.new_users], metric: "signups" },
+      { label: "Messages", value: w.messages, sub: fmtNum(t.messages) + " all time", delta: [w.messages, p.messages], metric: "messages" },
+      { label: "Tasks created", value: w.tasks, sub: fmtNum(t.tasks_done) + " of " + fmtNum(t.tasks) + " done", delta: [w.tasks, p.tasks], metric: "tasks" },
+      { label: "Files shared", value: w.files, sub: fmtNum(t.files) + " files \u00B7 " + fmtAdminBytes(t.file_bytes), delta: [w.files, p.files], metric: "files" },
+      { label: "Chat groups", value: t.groups, sub: t.locked_groups + " locked \u00B7 " + t.pending_requests + (t.pending_requests === 1 ? " request waiting" : " requests waiting"), go: "groups" },
+      { label: "People", value: t.users, sub: t.admins + (t.admins === 1 ? " admin" : " admins") + " \u00B7 " + t.suspended + " suspended", go: "people" },
+      { label: "Live announcements", value: t.live_posts, sub: "shown on Home right now", go: "posts" }
     ];
-    adminKpis.innerHTML = "";
+    emptyEl(adminKpis);
     tiles.forEach(function (tile) {
-      var el = document.createElement(tile.metric ? "button" : "div");
-      el.className = "kpi" + (tile.metric && tile.metric === adminMetric ? " on" : "");
+      var clickable = tile.metric || tile.go;
+      var el = mk(clickable ? "button" : "div", { class: "kpi" + (tile.metric && tile.metric === adminMetric ? " on" : "") }, [
+        mk("span", { text: tile.label }), mk("strong", { text: fmtNum(tile.value) }), mk("small", { text: tile.sub }),
+        tile.delta ? deltaEl(tile.delta[0], tile.delta[1]) : null
+      ]);
       if (tile.metric) { el.type = "button"; el.setAttribute("data-metric", tile.metric); }
-      var l = document.createElement("span"); l.textContent = tile.label;
-      var v = document.createElement("strong"); v.textContent = fmtNum(tile.value);
-      var s = document.createElement("small"); s.textContent = tile.sub;
-      el.appendChild(l); el.appendChild(v); el.appendChild(s);
+      if (tile.go) { el.type = "button"; el.setAttribute("data-goto", tile.go); }
       adminKpis.appendChild(el);
     });
   }
   function renderMetricTabs() {
-    metricTabs.innerHTML = "";
+    emptyEl(metricTabs);
     METRICS.forEach(function (m) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "chip" + (m.id === adminMetric ? " active" : "");
-      b.setAttribute("data-metric", m.id);
-      b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", m.id === adminMetric ? "true" : "false");
-      b.textContent = m.label;
-      metricTabs.appendChild(b);
+      metricTabs.appendChild(mk("button", { type: "button", class: "chip" + (m.id === adminMetric ? " active" : ""), "data-metric": m.id, role: "tab", "aria-selected": m.id === adminMetric ? "true" : "false", text: m.label }));
     });
+    compareToggle.disabled = adminMetric === "total";
   }
+  function comparing() { return compareOn && adminMetric !== "total"; }
   function updateChartDetail() {
     var daily = adminData.daily || [];
     var mt = metricById(adminMetric);
+    var vals = series(adminMetric, "cur");
     if (adminSelected >= 0 && daily[adminSelected]) {
       var d = daily[adminSelected];
-      chartDetail.textContent = fmtDay(d.day) + " \u2014 " + METRICS.map(function (m) { return m.label + " " + fmtNum(d[m.field]); }).join(" \u00B7 ");
+      var text = fmtDay(d.day) + " \u2014 " + METRICS.filter(function (m) { return m.id !== "total"; }).map(function (m) { return m.label + " " + fmtNum(d[m.field]); }).join(" \u00B7 ");
+      if (comparing()) {
+        var pd = (adminData.daily_prev || [])[adminSelected];
+        if (pd) text += ". Same day of the previous period (" + fmtDayShort(pd.day) + "): " + mt.label + " " + fmtNum(series(adminMetric, "prev")[adminSelected]);
+      }
+      chartDetail.textContent = text;
       return;
     }
-    var vals = daily.map(function (d) { return Number(d[mt.field]) || 0; });
     var peak = Math.max.apply(null, vals.concat([0]));
     var total = vals.reduce(function (a, b) { return a + b; }, 0);
-    var peakAt = vals.indexOf(peak);
-    chartDetail.textContent = (mt.id === "active"
-      ? (peak ? "Busiest day: " + fmtNum(peak) + (peak === 1 ? " person" : " people") + " on " + fmtDay(daily[peakAt].day) + "." : "Nobody opened Planner in this period yet.")
-      : "Total: " + fmtNum(total) + " in the last " + adminData.days + " days.") + " Hover or tap a bar to see a day.";
+    var at = vals.indexOf(peak);
+    var summary;
+    if (mt.id === "total") summary = "Grew from " + fmtNum(vals[0]) + " to " + fmtNum(vals[vals.length - 1]) + " people in " + adminData.days + " days.";
+    else if (mt.id === "active") summary = peak ? "Busiest day: " + fmtNum(peak) + (peak === 1 ? " person" : " people") + " on " + fmtDay(daily[at].day) + "." : "Nobody opened Planner in this period yet.";
+    else summary = "Total: " + fmtNum(total) + " in the last " + adminData.days + " days.";
+    chartDetail.textContent = summary + " Hover or tap the chart to see a day.";
   }
+  var chartGeom = null;
   function selectDay(i) {
     adminSelected = i;
     var bars = adminChart.querySelectorAll(".bar");
     for (var k = 0; k < bars.length; k++) bars[k].setAttribute("class", "bar" + (k === i ? " sel" : ""));
+    var guide = adminChart.querySelector(".guide"), dot = adminChart.querySelector(".dot");
+    if (chartGeom && guide) {
+      var x = chartGeom.L + i * chartGeom.slot + chartGeom.slot / 2;
+      guide.setAttribute("x1", x); guide.setAttribute("x2", x); guide.setAttribute("visibility", "visible");
+      if (dot) { dot.setAttribute("cx", x); dot.setAttribute("cy", chartGeom.yOf(chartGeom.vals[i])); dot.setAttribute("visibility", chartKind === "line" ? "visible" : "hidden"); }
+    }
     updateChartDetail();
   }
   function renderChart() {
     var daily = adminData.daily || [];
     var mt = metricById(adminMetric);
-    var vals = daily.map(function (d) { return Number(d[mt.field]) || 0; });
+    var vals = series(adminMetric, "cur");
+    var prev = comparing() ? series(adminMetric, "prev") : null;
     var W = 640, H = 240, L = 34, R = 8, T = 12, B = 26, n = Math.max(1, daily.length);
-    var top = niceCeil(Math.max.apply(null, vals.concat([1])));
+    var top = niceCeil(Math.max.apply(null, vals.concat(prev || []).concat([1])));
     var plotH = H - T - B;
-    while (adminChart.firstChild) adminChart.removeChild(adminChart.firstChild);
+    var slot = (W - L - R) / n;
+    function yOf(v) { return T + plotH - (v / top) * plotH; }
+    chartGeom = { L: L, slot: slot, vals: vals, yOf: yOf };
+    emptyEl(adminChart);
     [0, 0.5, 1].forEach(function (f) {
       var y = T + plotH * (1 - f);
       adminChart.appendChild(svgEl("line", { "class": "grid", x1: L, x2: W - R, y1: y, y2: y }));
@@ -3405,13 +4048,20 @@
       lab.textContent = fmtNum(Math.round(top * f));
       adminChart.appendChild(lab);
     });
-    var slot = (W - L - R) / n;
-    var gap = Math.min(3, slot * 0.25);
-    daily.forEach(function (d, i) {
-      var h = (vals[i] / top) * plotH;
-      var x = L + i * slot;
-      adminChart.appendChild(svgEl("rect", { "class": "bar" + (i === adminSelected ? " sel" : ""), x: x + gap / 2, y: T + plotH - h, width: Math.max(1, slot - gap), height: vals[i] > 0 ? Math.max(h, 1) : 0, rx: 2 }));
-    });
+    if (chartKind === "line") {
+      var pts = vals.map(function (v, i) { return (L + i * slot + slot / 2) + "," + yOf(v); });
+      adminChart.appendChild(svgEl("polygon", { "class": "area", points: (L + slot / 2) + "," + (T + plotH) + " " + pts.join(" ") + " " + (L + (n - 1) * slot + slot / 2) + "," + (T + plotH) }));
+      adminChart.appendChild(svgEl("polyline", { "class": "line", points: pts.join(" ") }));
+    } else {
+      var gap = Math.min(3, slot * 0.25);
+      daily.forEach(function (d, i) {
+        var hgt = (vals[i] / top) * plotH;
+        adminChart.appendChild(svgEl("rect", { "class": "bar" + (i === adminSelected ? " sel" : ""), x: L + i * slot + gap / 2, y: T + plotH - hgt, width: Math.max(1, slot - gap), height: vals[i] > 0 ? Math.max(hgt, 1) : 0, rx: 2 }));
+      });
+    }
+    if (prev) adminChart.appendChild(svgEl("polyline", { "class": "prev-line", points: prev.map(function (v, i) { return (L + i * slot + slot / 2) + "," + yOf(v); }).join(" ") }));
+    adminChart.appendChild(svgEl("line", { "class": "guide", x1: 0, x2: 0, y1: T, y2: T + plotH, visibility: "hidden" }));
+    adminChart.appendChild(svgEl("circle", { "class": "dot", r: 4, cx: 0, cy: 0, visibility: "hidden" }));
     daily.forEach(function (d, i) {
       var hit = svgEl("rect", { "class": "bar-hit", x: L + i * slot, y: T, width: slot, height: plotH, tabindex: "0", role: "button", "aria-label": fmtDay(d.day) + ": " + fmtNum(vals[i]) + " " + mt.label.toLowerCase() });
       hit.addEventListener("pointerenter", function () { selectDay(i); });
@@ -3425,68 +4075,88 @@
       t.textContent = fmtDayShort(daily[i].day);
       adminChart.appendChild(t);
     });
-    updateChartDetail();
+    if (adminSelected >= 0 && daily[adminSelected]) selectDay(adminSelected); else updateChartDetail();
   }
+
+  // Busiest times: day of week x hour of day
+  function heatText(dow, hour, n) {
+    var name = WEEKDAYS[(dow + 6) % 7];
+    var h2 = function (x) { return (x < 10 ? "0" : "") + x + ":00"; };
+    return name + " " + h2(hour) + "\u2013" + h2((hour + 1) % 24) + " \u2014 " + fmtNum(n) + (n === 1 ? " action" : " actions");
+  }
+  function renderHeatmap() {
+    var cells = {}, max = 0, best = null;
+    (adminData.heatmap || []).forEach(function (c) {
+      cells[c.dow + "-" + c.hour] = Number(c.n);
+      if (Number(c.n) > max) { max = Number(c.n); best = c; }
+    });
+    emptyEl(heatmap);
+    var L = 78, T = 6, cw = (640 - L - 6) / 24, ch = 22, order = [1, 2, 3, 4, 5, 6, 0];
+    order.forEach(function (dow, row) {
+      var lab = svgEl("text", { x: L - 8, y: T + row * ch + 15, "text-anchor": "end" });
+      lab.textContent = WEEKDAYS[row].slice(0, 3);
+      heatmap.appendChild(lab);
+      for (var hr = 0; hr < 24; hr++) {
+        (function (hr2) {
+          var n = cells[dow + "-" + hr2] || 0;
+          var rect = svgEl("rect", { "class": "heat-cell", x: L + hr2 * cw + 1, y: T + row * ch + 1, width: cw - 2, height: ch - 2, rx: 3, "fill-opacity": n ? (0.15 + 0.85 * n / max).toFixed(2) : "0.06", "data-dow": dow, "data-hour": hr2, tabindex: "0", role: "button", "aria-label": heatText(dow, hr2, n) });
+          var pick = function () {
+            var old = heatmap.querySelector(".heat-cell.sel"); if (old) old.setAttribute("class", "heat-cell");
+            rect.setAttribute("class", "heat-cell sel");
+            heatDetail.textContent = heatText(dow, hr2, n);
+          };
+          rect.addEventListener("pointerenter", pick);
+          rect.addEventListener("click", pick);
+          rect.addEventListener("focus", pick);
+          heatmap.appendChild(rect);
+        })(hr);
+      }
+    });
+    [0, 6, 12, 18, 23].forEach(function (hr) {
+      var t = svgEl("text", { x: L + hr * cw + cw / 2, y: T + 7 * ch + 14, "text-anchor": "middle" });
+      t.textContent = (hr < 10 ? "0" : "") + hr + "h";
+      heatmap.appendChild(t);
+    });
+    heatDetail.textContent = best ? "Busiest slot: " + heatText(Number(best.dow), Number(best.hour), max) + "." : "No activity in this period yet.";
+  }
+
   function renderBars(el, rows) {
-    el.innerHTML = "";
+    emptyEl(el);
     var max = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
-    var any = rows.some(function (r) { return r.value > 0; });
-    if (!any) { var p = document.createElement("p"); p.className = "admin-empty"; p.textContent = "Nothing recorded yet."; el.appendChild(p); return; }
+    if (!rows.some(function (r) { return r.value > 0; })) { el.appendChild(mk("p", { class: "admin-empty", text: "Nothing recorded yet." })); return; }
     rows.forEach(function (r) {
-      var row = document.createElement("div"); row.className = "bar-row";
-      var l = document.createElement("span"); l.textContent = r.label;
-      var track = document.createElement("span"); track.className = "bar-track";
-      var fill = document.createElement("span"); fill.className = "bar-fill"; fill.style.width = Math.round(100 * r.value / max) + "%";
-      track.appendChild(fill);
-      var v = document.createElement("b"); v.textContent = fmtNum(r.value);
-      row.appendChild(l); row.appendChild(track); row.appendChild(v);
-      el.appendChild(row);
+      var fill = mk("span", { class: "bar-fill" });
+      fill.style.width = Math.round(100 * r.value / max) + "%";
+      el.appendChild(mk("div", { class: "bar-row" }, [mk("span", { text: r.label }), mk("span", { class: "bar-track" }, [fill]), mk("b", { text: fmtNum(r.value) })]));
     });
   }
   function renderTopGroups() {
     var rows = (adminData.top_groups || []).slice();
     var key = topSort.key, dir = topSort.dir;
-    rows.sort(function (a, b) {
-      var x = a[key], y = b[key];
-      if (key === "name") return dir * String(x).localeCompare(String(y));
-      return dir * (Number(x) - Number(y));
-    });
+    rows.sort(function (a, b) { return key === "name" ? dir * String(a[key]).localeCompare(String(b[key])) : dir * (Number(a[key]) - Number(b[key])); });
     var heads = topGroupsHead.querySelectorAll(".sort-btn");
     var labels = { name: "Group", members: "Members", messages: "Messages" };
     for (var i = 0; i < heads.length; i++) {
       var k = heads[i].getAttribute("data-sort");
       heads[i].textContent = labels[k] + (k === key ? (dir < 0 ? " \u25BE" : " \u25B4") : "");
     }
-    topGroupsBody.innerHTML = "";
-    if (!rows.length) {
-      var tr = document.createElement("tr"), td = document.createElement("td");
-      td.colSpan = 3; td.textContent = "No groups yet."; tr.appendChild(td); topGroupsBody.appendChild(tr);
-      return;
-    }
-    rows.forEach(function (g) {
-      var tr = document.createElement("tr");
-      [g.name, fmtNum(g.members), fmtNum(g.messages)].forEach(function (text) { var td = document.createElement("td"); td.textContent = text; tr.appendChild(td); });
-      topGroupsBody.appendChild(tr);
-    });
+    emptyEl(topGroupsBody);
+    if (!rows.length) { topGroupsBody.appendChild(mk("tr", null, [mk("td", { colspan: "3", text: "No groups yet." })])); return; }
+    rows.forEach(function (g) { topGroupsBody.appendChild(mk("tr", null, [mk("td", { text: g.name }), mk("td", { text: fmtNum(g.members) }), mk("td", { text: fmtNum(g.messages) })])); });
   }
   function renderNewest() {
-    newestMembers.innerHTML = "";
+    emptyEl(newestMembers);
     var list = adminData.newest || [];
-    if (!list.length) { var li0 = document.createElement("li"); li0.textContent = "Nobody yet."; newestMembers.appendChild(li0); return; }
+    if (!list.length) { newestMembers.appendChild(mk("li", { text: "Nobody yet." })); return; }
     list.forEach(function (m) {
-      var li = document.createElement("li");
-      var av = document.createElement("span"); av.className = "chat-avatar"; av.textContent = initials(m.name);
-      var nm = document.createElement("span"); nm.textContent = m.name;
-      var when = document.createElement("small");
-      when.textContent = (m.method === "email" ? "email" : "phone") + " \u00B7 " + new Date(m.joined).toLocaleDateString(undefined, { day: "numeric", month: "short" });
-      li.appendChild(av); li.appendChild(nm); li.appendChild(when);
-      newestMembers.appendChild(li);
+      newestMembers.appendChild(mk("li", null, [mk("span", { class: "chat-avatar", text: initials(m.name) }), mk("span", { text: m.name }), mk("small", { text: (m.method === "email" ? "email" : "phone") + " \u00B7 " + new Date(m.joined).toLocaleDateString(undefined, { day: "numeric", month: "short" }) })]));
     });
   }
-  function renderAdmin() {
+  function renderOverview() {
     renderKpis();
     renderMetricTabs();
     renderChart();
+    renderHeatmap();
     renderBars(adminDevices, (adminData.devices || []).map(function (d) { return { label: DEVICE_LABELS[d.platform] || d.platform, value: Number(d.people) }; }));
     renderBars(adminMethods, [{ label: "Email", value: Number(adminData.totals.email_users) }, { label: "Phone number", value: Number(adminData.totals.phone_users) }]);
     renderTopGroups();
@@ -3500,17 +4170,29 @@
     renderMetricTabs();
     renderChart();
   }
-
   adminRange.addEventListener("click", function (e) {
     var b = e.target.closest("[data-days]");
     if (!b) return;
     adminDays = Number(b.getAttribute("data-days"));
     var chips = adminRange.querySelectorAll("[data-days]");
     for (var i = 0; i < chips.length; i++) chips[i].classList.toggle("active", chips[i] === b);
-    loadAdmin();
+    loadOverview(false);
   });
   metricTabs.addEventListener("click", function (e) { var b = e.target.closest("[data-metric]"); if (b) chooseMetric(b.getAttribute("data-metric")); });
-  adminKpis.addEventListener("click", function (e) { var b = e.target.closest("[data-metric]"); if (b) chooseMetric(b.getAttribute("data-metric")); });
+  adminKpis.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-metric],[data-goto]");
+    if (!b) return;
+    if (b.getAttribute("data-goto")) showAdminTab(b.getAttribute("data-goto")); else chooseMetric(b.getAttribute("data-metric"));
+  });
+  chartTypeSeg.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-type]");
+    if (!b || !adminData) return;
+    chartKind = b.getAttribute("data-type");
+    var chips = chartTypeSeg.querySelectorAll("[data-type]");
+    for (var i = 0; i < chips.length; i++) chips[i].classList.toggle("active", chips[i] === b);
+    renderChart();
+  });
+  compareToggle.addEventListener("change", function () { compareOn = compareToggle.checked; if (adminData) renderChart(); });
   topGroupsHead.addEventListener("click", function (e) {
     var b = e.target.closest("[data-sort]");
     if (!b || !adminData) return;
@@ -3518,26 +4200,460 @@
     topSort = { key: key, dir: topSort.key === key ? -topSort.dir : (key === "name" ? 1 : -1) };
     renderTopGroups();
   });
-  adminRefreshBtn.addEventListener("click", loadAdmin);
   csvBtn.addEventListener("click", function () {
     if (!adminData) return;
-    var rows = [["date", "active_people", "new_signups", "messages", "tasks_created", "files_shared"]].concat((adminData.daily || []).map(function (d) {
+    downloadCsv("planner-daily-numbers.csv", [["date", "active_people", "new_signups", "messages", "tasks_created", "files_shared"]].concat((adminData.daily || []).map(function (d) {
       return [d.day, d.active, d.new_users, d.messages, d.tasks, d.files];
-    }));
-    var csv = rows.map(function (r) { return r.join(","); }).join("\n") + "\n";
-    var url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "planner-daily-numbers.csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    })));
   });
-  adminSignOutBtn.addEventListener("click", function () {
-    try { localStorage.removeItem(MODE_KEY); } catch (e) {}
-    sb.auth.signOut().then(function () { location.reload(); });
+
+  // ================= People =================
+  function loadPeople(reset) {
+    var skip = reset ? 0 : peopleState.rows.length;
+    return adminCall("admin_users", { p_search: peopleState.search, p_sort: peopleState.sort, p_limit: 25, p_offset: skip }).then(function (r) {
+      if (!r.ok) { showAdminError(adminErrText(r.error)); return; }
+      adminError.classList.add("hidden");
+      peopleState.total = Number(r.data.total);
+      peopleState.rows = reset ? r.data.rows : peopleState.rows.concat(r.data.rows);
+      tabLoaded.people = true;
+      renderPeople();
+    });
+  }
+  function contactOf(p) { return p.email || (p.phone ? "+" + p.phone : "no contact details"); }
+  function personRow(p) {
+    var title = mk("span", { class: "rc-title" }, [p.name]);
+    if (p.is_admin) title.appendChild(mk("span", { class: "badge", text: "Admin" }));
+    if (p.suspended) title.appendChild(mk("span", { class: "badge bad", text: "Suspended" }));
+    var meta = "Joined " + fmtDate(p.created_at) + " \u00B7 " + (p.last_active ? "last active " + fmtDay(p.last_active) : "hasn\u2019t opened the app") + " \u00B7 " + p.messages + (p.messages === 1 ? " message" : " messages") + " \u00B7 " + p.groups + (p.groups === 1 ? " group" : " groups");
+    return mk("button", { class: "row-card", type: "button", "data-user": p.id, onclick: function () { openPerson(p.id); } }, [
+      avatarFor(p.id, p.name),
+      mk("span", { class: "rc-body" }, [title, mk("span", { class: "rc-sub", text: contactOf(p) }), mk("span", { class: "rc-meta", text: meta })])
+    ]);
+  }
+  function renderPeople() {
+    peopleCount.textContent = peopleState.total + (peopleState.total === 1 ? " person" : " people") + (peopleState.search ? " match" : "");
+    emptyEl(peopleList);
+    if (!peopleState.rows.length) peopleList.appendChild(mk("p", { class: "admin-empty", text: peopleState.search ? "Nobody matches that search." : "No people yet." }));
+    peopleState.rows.forEach(function (p) { peopleList.appendChild(personRow(p)); });
+    peopleMore.classList.toggle("hidden", peopleState.rows.length >= peopleState.total);
+  }
+  peopleSearch.addEventListener("input", function () {
+    clearTimeout(peopleState.timer);
+    peopleState.timer = setTimeout(function () { peopleState.search = peopleSearch.value.trim(); loadPeople(true); }, 300);
   });
+  peopleSort.addEventListener("change", function () { peopleState.sort = peopleSort.value; loadPeople(true); });
+  peopleMore.addEventListener("click", function () { loadPeople(false); });
+  peopleCsv.addEventListener("click", function () {
+    downloadCsv("planner-people.csv", [["name", "email", "phone", "joined", "last_active", "active_days_30", "messages", "tasks", "files", "groups", "admin", "suspended"]].concat(peopleState.rows.map(function (p) {
+      return [p.name, p.email || "", p.phone || "", p.created_at, p.last_active || "", p.active_days, p.messages, p.tasks, p.files, p.groups, p.is_admin ? "yes" : "no", p.suspended ? "yes" : "no"];
+    })));
+  });
+  var DEVICE_SHORT = { android: "Android", ios: "iPhone/iPad", computer: "Computer", other: "Other" };
+  function reopenPerson(id) { loadPeople(true).then(function () { openPerson(id); }); }
+  function openPerson(id) {
+    var p = peopleState.rows.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    var self = !!me && p.id === me.id;
+    openDrawer(function (body) {
+      body.appendChild(drawerHead(avatarFor(p.id, p.name, "big"), p.name, contactOf(p)));
+      var badges = mk("div", { class: "chip-row" });
+      if (p.is_admin) badges.appendChild(mk("span", { class: "badge", text: "Admin" }));
+      if (p.suspended) badges.appendChild(mk("span", { class: "badge bad", text: "Suspended" }));
+      if (self) badges.appendChild(mk("span", { class: "badge good", text: "This is you" }));
+      if (badges.firstChild) body.appendChild(badges);
+      var devices = (p.platforms || []).map(function (x) { return DEVICE_SHORT[x] || x; }).join(", ") || "none yet";
+      body.appendChild(section("Activity", [mk("div", { class: "stat-list" }, [
+        mk("div", null, ["Joined", mk("b", { text: fmtDate(p.created_at) })]),
+        mk("div", null, ["Last active", mk("b", { text: p.last_active ? fmtDay(p.last_active) : "never" })]),
+        mk("div", null, ["Active days (last 30)", mk("b", { text: String(p.active_days) })]),
+        mk("div", null, ["Devices", mk("b", { text: devices })]),
+        mk("div", null, ["Messages", mk("b", { text: fmtNum(p.messages) })]),
+        mk("div", null, ["Tasks", mk("b", { text: fmtNum(p.tasks) })]),
+        mk("div", null, ["Files shared", mk("b", { text: fmtNum(p.files) })]),
+        mk("div", null, ["Groups", mk("b", { text: fmtNum(p.groups) })])
+      ])]));
+      var groupBox = mk("div", { class: "chip-row" }, [mk("span", { class: "admin-empty", text: "Loading\u2026" })]);
+      body.appendChild(section("Groups they are in", [groupBox]));
+      var addSel = mk("select", { class: "auth-input", "aria-label": "Group to add to" });
+      var addBtn = mk("button", { class: "btn-accent", type: "button", text: "Add", disabled: true });
+      body.appendChild(section("Add to a group", [mk("div", { class: "sheet-field-row" }, [addSel, addBtn])]));
+      var memberOf = {};
+      adminCall("admin_user_groups", { p_user: p.id }).then(function (r) {
+        emptyEl(groupBox);
+        if (!r.ok) return;
+        if (!r.data.length) groupBox.appendChild(mk("span", { class: "admin-empty", text: "Not in any group." }));
+        r.data.forEach(function (g) { memberOf[g.id] = true; groupBox.appendChild(mk("span", { class: "badge", text: g.name + (g.role === "admin" ? " (admin)" : "") })); });
+        return adminCall("admin_groups", { p_search: "" }, true);
+      }).then(function (r) {
+        if (!r || !r.ok) return;
+        var free = r.data.filter(function (g) { return !memberOf[g.id]; });
+        addSel.appendChild(mk("option", { value: "", text: free.length ? "Choose a group\u2026" : "Already in every group" }));
+        free.forEach(function (g) { addSel.appendChild(mk("option", { value: g.id, text: g.name })); });
+        addBtn.disabled = !free.length;
+      });
+      addBtn.addEventListener("click", function () {
+        if (!addSel.value) { showToast("Choose a group first."); return; }
+        adminCall("admin_add_member", { p_group: addSel.value, p_user: p.id }).then(function (r) { if (r.ok) { showToast(p.name + " was added to the group."); reopenPerson(p.id); } });
+      });
+      var actions = mk("div", { class: "rc-actions" });
+      actions.appendChild(mk("button", { class: "btn-quiet", type: "button", text: p.is_admin ? "Remove admin rights" : "Make admin", onclick: function () {
+        if (!confirm(p.is_admin ? "Remove admin rights from " + p.name + "?" : "Make " + p.name + " an admin? They will be able to see and change everything in this console.")) return;
+        adminCall("admin_set_admin", { p_user: p.id, p_make: !p.is_admin }).then(function (r) { if (r.ok) { showToast(p.is_admin ? "Admin rights removed." : p.name + " is now an admin."); reopenPerson(p.id); } });
+      } }));
+      actions.appendChild(mk("button", { class: "btn-quiet", type: "button", text: p.suspended ? "Unsuspend" : "Suspend", disabled: self || p.is_admin, onclick: function () {
+        if (!p.suspended && !confirm("Suspend " + p.name + "? They will be signed out and can\u2019t sign in again until you unsuspend them. Their data stays.")) return;
+        adminCall("admin_set_user_suspended", { p_user: p.id, p_suspend: !p.suspended }).then(function (r) { if (r.ok) { showToast(p.suspended ? p.name + " can sign in again." : p.name + " was suspended."); reopenPerson(p.id); } });
+      } }));
+      body.appendChild(section("Actions", [actions, (self || p.is_admin) ? mk("p", { class: "admin-note", text: self ? "You can\u2019t suspend or delete your own account." : "Remove this person\u2019s admin rights before suspending or deleting them." }) : null]));
+      if (!self && !p.is_admin) {
+        body.appendChild(section("Danger zone", [dangerBox("Deleting an account permanently removes the person and everything they made: tasks, messages, memberships and file records. Files they uploaded may stay in Supabase Storage until you remove them there.", "DELETE", "Delete account", function () {
+          adminCall("admin_delete_user", { p_user: p.id }).then(function (r) { if (r.ok) { closeDrawer(); showToast(p.name + "\u2019s account was deleted."); loadPeople(true); } });
+        })]));
+      }
+    });
+  }
+
+  // ================= Groups =================
+  function loadGroups() {
+    return adminCall("admin_groups", { p_search: groupsState.search }).then(function (r) {
+      if (!r.ok) { showAdminError(adminErrText(r.error)); return; }
+      adminError.classList.add("hidden");
+      groupsState.rows = r.data;
+      tabLoaded.groups = true;
+      renderGroups();
+    });
+  }
+  function groupRow(g) {
+    var title = mk("span", { class: "rc-title" }, [g.name]);
+    if (g.locked) title.appendChild(mk("span", { class: "badge warn", text: "Locked" }));
+    if (!g.searchable) title.appendChild(mk("span", { class: "badge", text: "Hidden from search" }));
+    if (g.pending_requests > 0) title.appendChild(mk("span", { class: "badge warn", text: g.pending_requests + (g.pending_requests === 1 ? " request" : " requests") }));
+    return mk("button", { class: "row-card", type: "button", "data-group": g.id, onclick: function () { openGroupAdmin(g.id); } }, [
+      avatarFor(g.id, g.name),
+      mk("span", { class: "rc-body" }, [title, mk("span", { class: "rc-sub", text: g.members + (g.members === 1 ? " member" : " members") + " \u00B7 " + g.messages + (g.messages === 1 ? " message" : " messages") }), mk("span", { class: "rc-meta", text: "Created " + fmtDate(g.created_at) + " by " + g.creator + " \u00B7 last active " + fmtDate(g.last_activity) })])
+    ]);
+  }
+  function renderGroups() {
+    groupsCount.textContent = groupsState.rows.length + (groupsState.rows.length === 1 ? " group" : " groups") + (groupsState.search ? " match" : "");
+    emptyEl(groupsList);
+    if (!groupsState.rows.length) groupsList.appendChild(mk("p", { class: "admin-empty", text: groupsState.search ? "No group matches that search." : "No groups yet." }));
+    groupsState.rows.forEach(function (g) { groupsList.appendChild(groupRow(g)); });
+  }
+  groupsSearch.addEventListener("input", function () {
+    clearTimeout(groupsState.timer);
+    groupsState.timer = setTimeout(function () { groupsState.search = groupsSearch.value.trim(); loadGroups(); }, 300);
+  });
+  groupsCsv.addEventListener("click", function () {
+    downloadCsv("planner-groups.csv", [["name", "members", "messages", "created", "creator", "findable_by_name", "locked", "waiting_requests", "last_activity"]].concat(groupsState.rows.map(function (g) {
+      return [g.name, g.members, g.messages, g.created_at, g.creator, g.searchable ? "yes" : "no", g.locked ? "yes" : "no", g.pending_requests, g.last_activity];
+    })));
+  });
+  function reopenGroup(id) { loadGroups().then(function () { openGroupAdmin(id); }); }
+  function openGroupAdmin(id) {
+    var g = groupsState.rows.filter(function (x) { return x.id === id; })[0];
+    if (!g) return;
+    openDrawer(function (body) {
+      body.appendChild(drawerHead(avatarFor(g.id, g.name, "big"), g.name, "Created " + fmtDate(g.created_at) + " by " + g.creator));
+      body.appendChild(mk("div", { class: "stat-list" }, [
+        mk("div", null, ["Members", mk("b", { text: fmtNum(g.members) })]),
+        mk("div", null, ["Messages", mk("b", { text: fmtNum(g.messages) })]),
+        mk("div", null, ["Join requests waiting", mk("b", { text: fmtNum(g.pending_requests) })]),
+        mk("div", null, ["Last active", mk("b", { text: fmtDate(g.last_activity) })])
+      ]));
+      var nameInput = mk("input", { class: "auth-input", type: "text", maxlength: "40", value: g.name, "aria-label": "Group name" });
+      body.appendChild(section("Name", [mk("div", { class: "sheet-field-row" }, [nameInput, mk("button", { class: "btn-accent", type: "button", text: "Save", onclick: function () {
+        var v = nameInput.value.trim();
+        if (!v || v === g.name) { showToast(v ? "That\u2019s already the name." : "Enter a name."); return; }
+        adminCall("admin_update_group", { p_group: g.id, p_name: v }).then(function (r) { if (r.ok) { showToast("Group renamed."); reopenGroup(g.id); } });
+      } })])]));
+      function toggle(label, hint, checked, field) {
+        var box = mk("input", { type: "checkbox", checked: checked });
+        box.addEventListener("change", function () {
+          var args = { p_group: g.id }; args[field] = box.checked;
+          adminCall("admin_update_group", args).then(function (r) { if (r.ok) { showToast("Saved."); reopenGroup(g.id); } else box.checked = !box.checked; });
+        });
+        return mk("label", { class: "check-row" }, [box, mk("span", null, [label, mk("small", { class: "admin-note", text: " " + hint })])]);
+      }
+      body.appendChild(section("Controls", [
+        toggle("Findable by name", "People can search for it and ask to join.", g.searchable, "p_searchable"),
+        toggle("Locked", "Everyone can read, nobody can send.", g.locked, "p_locked")
+      ]));
+      body.appendChild(section("Invite link", [
+        mk("div", { class: "invite-box" }, [mk("span", { class: "invite-code", text: g.invite_code })]),
+        mk("div", { class: "invite-actions" }, [
+          mk("button", { class: "btn-ghost", type: "button", text: "Copy invite link", onclick: function () { copyText(inviteLink(g), "Invite link copied"); } }),
+          mk("button", { class: "btn-ghost", type: "button", text: "Reset invite link", onclick: function () {
+            if (!confirm("Reset the invite link? The old link will stop working.")) return;
+            adminCall("admin_reset_group_invite", { p_group: g.id }).then(function (r) { if (r.ok) { showToast("New invite link ready."); reopenGroup(g.id); } });
+          } })
+        ])
+      ]));
+      var memberBox = mk("ul", { class: "member-list" }, [mk("li", { class: "admin-empty", text: "Loading\u2026" })]);
+      body.appendChild(section("Members", [memberBox]));
+      adminCall("admin_group_members", { p_group: g.id }).then(function (r) {
+        emptyEl(memberBox);
+        if (!r.ok) return;
+        r.data.forEach(function (m) {
+          var isAdminRole = m.role === "admin";
+          memberBox.appendChild(mk("li", { class: "member-row" }, [
+            mk("span", { class: "chat-avatar", text: initials(m.name) }),
+            mk("span", { text: m.name }),
+            isAdminRole ? mk("span", { class: "role-tag", text: "Admin" }) : null,
+            mk("span", { class: "req-actions" }, [
+              mk("button", { class: "btn-quiet", type: "button", text: isAdminRole ? "Make member" : "Make admin", onclick: function () {
+                adminCall("admin_set_member_role", { p_group: g.id, p_user: m.user_id, p_role: isAdminRole ? "member" : "admin" }).then(function (r2) { if (r2.ok) reopenGroup(g.id); });
+              } }),
+              mk("button", { class: "btn-quiet", type: "button", text: "Remove", onclick: function () {
+                if (!confirm("Remove " + m.name + " from " + g.name + "?")) return;
+                adminCall("admin_remove_member", { p_group: g.id, p_user: m.user_id }).then(function (r2) { if (r2.ok) { showToast(m.name + " was removed."); reopenGroupOrClose(g.id); } });
+              } })
+            ])
+          ]));
+        });
+      });
+      var msgBox = mk("div", { class: "admin-chat-view", style: "max-height:320px;overflow:auto" }, [mk("p", { class: "admin-empty", text: "Loading\u2026" })]);
+      body.appendChild(section("Messages", [msgBox]));
+      adminCall("admin_group_messages", { p_group: g.id, p_limit: 300 }, true).then(function (r) {
+        emptyEl(msgBox);
+        if (!r.ok) { msgBox.appendChild(mk("p", { class: "admin-empty", text: "Couldn\u2019t load messages." })); return; }
+        var rows = (r.data || []).slice().reverse();
+        if (!rows.length) { msgBox.appendChild(mk("p", { class: "admin-empty", text: "No messages yet." })); return; }
+        rows.forEach(function (m) {
+          msgBox.appendChild(mk("div", { class: "chat-row" }, [
+            mk("span", { class: "chat-avatar", text: initials(m.name) }),
+            mk("div", { class: "chat-bubble-wrap" }, [
+              mk("div", { class: "chat-row-head" }, [mk("span", { class: "chat-name", text: m.name || "Someone" }), mk("span", { class: "chat-time", text: fmtDateTime(m.created_at) })]),
+              mk("div", { class: "chat-text", text: m.body })
+            ])
+          ]));
+        });
+      });
+      body.appendChild(section("Danger zone", [
+        dangerBox("Clear all " + fmtNum(g.messages) + " messages in this group. People stay in the group.", "CLEAR", "Clear chat history", function () {
+          adminCall("admin_clear_group_messages", { p_group: g.id }).then(function (r) { if (r.ok) { showToast("Chat history cleared."); reopenGroup(g.id); } });
+        }),
+        dangerBox("Delete this group, its messages and its join requests for good.", "DELETE", "Delete group", function () {
+          adminCall("admin_delete_group", { p_group: g.id }).then(function (r) { if (r.ok) { closeDrawer(); showToast("Group deleted."); loadGroups(); } });
+        })
+      ]));
+    });
+  }
+  function reopenGroupOrClose(id) {
+    loadGroups().then(function () {
+      if (groupsState.rows.some(function (x) { return x.id === id; })) openGroupAdmin(id); else closeDrawer();
+    });
+  }
+
+  // ================= Announcements and events =================
+  function toLocalInput(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+  function fromLocalInput(v) { return v ? new Date(v).toISOString() : null; }
+  function setPostKind(kind) {
+    postsState.kind = kind;
+    var chips = postKind.querySelectorAll("[data-kind]");
+    for (var i = 0; i < chips.length; i++) chips[i].classList.toggle("active", chips[i].getAttribute("data-kind") === kind);
+    postEventRow.classList.toggle("hidden", kind !== "event");
+  }
+  function resetPostForm() {
+    postsState.editing = null;
+    postFormTitle.textContent = "New announcement or event";
+    postTitle.value = ""; postBody.value = ""; postEventAt.value = ""; postPublishAt.value = ""; postExpiresAt.value = ""; postPinned.checked = false;
+    postSaveBtn.textContent = "Post";
+    postCancelBtn.classList.add("hidden");
+    postMsg.classList.add("hidden");
+    setPostKind("announcement");
+  }
+  function postStatus(a) {
+    var now = Date.now();
+    if (new Date(a.publish_at).getTime() > now) return { text: "Scheduled", cls: "warn" };
+    if (a.expires_at && new Date(a.expires_at).getTime() <= now) return { text: "Ended", cls: "" };
+    return { text: "Live", cls: "good" };
+  }
+  function loadPosts() {
+    return sb.from("announcements").select("*").order("created_at", { ascending: false }).then(function (res) {
+      if (res.error) { showAdminError(adminErrText(res.error)); return; }
+      adminError.classList.add("hidden");
+      postsState.rows = res.data || [];
+      tabLoaded.posts = true;
+      renderPosts();
+    });
+  }
+  function savePost(a, overrides) {
+    var v = Object.assign({ p_id: a ? a.id : null, p_kind: a.kind, p_title: a.title, p_body: a.body, p_event_at: a.event_at, p_pinned: a.pinned, p_publish_at: a.publish_at, p_expires_at: a.expires_at }, overrides || {});
+    return adminCall("admin_save_announcement", v);
+  }
+  function renderPosts() {
+    emptyEl(postList);
+    if (!postsState.rows.length) postList.appendChild(mk("p", { class: "admin-empty", text: "Nothing posted yet. Whatever you post shows on everyone\u2019s Home screen while it is live." }));
+    postsState.rows.forEach(function (a) {
+      var st = postStatus(a);
+      var title = mk("span", { class: "rc-title" }, [a.title, mk("span", { class: "badge " + st.cls, text: st.text }), mk("span", { class: "badge", text: a.kind === "event" ? "Event" : "Announcement" })]);
+      if (a.pinned) title.appendChild(mk("span", { class: "badge warn", text: "Pinned" }));
+      var when = [];
+      if (a.kind === "event" && a.event_at) when.push("Event: " + fmtDateTime(a.event_at));
+      when.push("Shows from " + fmtDateTime(a.publish_at) + (a.expires_at ? " until " + fmtDateTime(a.expires_at) : ""));
+      postList.appendChild(mk("div", { class: "row-card", "data-post": a.id }, [mk("div", { class: "rc-body" }, [
+        title,
+        a.body ? mk("span", { class: "rc-sub", text: a.body }) : null,
+        mk("span", { class: "rc-meta", text: when.join(" \u00B7 ") }),
+        mk("div", { class: "rc-actions" }, [
+          mk("button", { class: "btn-quiet", type: "button", text: "Edit", onclick: function () { editPost(a); } }),
+          mk("button", { class: "btn-quiet", type: "button", text: a.pinned ? "Unpin" : "Pin to top", onclick: function () { savePost(a, { p_pinned: !a.pinned }).then(function (r) { if (r.ok) loadPosts(); }); } }),
+          mk("button", { class: "btn-quiet", type: "button", text: "Delete", onclick: function () {
+            if (!confirm("Delete \u201C" + a.title + "\u201D?")) return;
+            adminCall("admin_delete_announcement", { p_id: a.id }).then(function (r) { if (r.ok) { showToast("Deleted."); if (postsState.editing === a.id) resetPostForm(); loadPosts(); } });
+          } })
+        ])
+      ])]));
+    });
+  }
+  function editPost(a) {
+    postsState.editing = a.id;
+    postFormTitle.textContent = "Edit " + (a.kind === "event" ? "event" : "announcement");
+    postTitle.value = a.title; postBody.value = a.body || "";
+    postEventAt.value = toLocalInput(a.event_at); postPublishAt.value = toLocalInput(a.publish_at); postExpiresAt.value = toLocalInput(a.expires_at);
+    postPinned.checked = !!a.pinned;
+    setPostKind(a.kind);
+    postSaveBtn.textContent = "Save changes";
+    postCancelBtn.classList.remove("hidden");
+    adminShell.scrollTop = 0;
+  }
+  postKind.addEventListener("click", function (e) { var b = e.target.closest("[data-kind]"); if (b) setPostKind(b.getAttribute("data-kind")); });
+  postCancelBtn.addEventListener("click", resetPostForm);
+  postSaveBtn.addEventListener("click", function () {
+    var title = postTitle.value.trim();
+    function problem(t) { postMsg.textContent = t; postMsg.classList.remove("hidden"); }
+    if (!title) { problem("Give it a title."); return; }
+    if (postsState.kind === "event" && !postEventAt.value) { problem("Choose the event\u2019s date and time."); return; }
+    var pub = fromLocalInput(postPublishAt.value), exp = fromLocalInput(postExpiresAt.value);
+    if (exp && new Date(exp).getTime() <= new Date(pub || Date.now()).getTime()) { problem("The end time must be after the start time."); return; }
+    postMsg.classList.add("hidden");
+    postSaveBtn.disabled = true;
+    adminCall("admin_save_announcement", {
+      p_id: postsState.editing, p_kind: postsState.kind, p_title: title, p_body: postBody.value.trim(),
+      p_event_at: postsState.kind === "event" ? fromLocalInput(postEventAt.value) : null,
+      p_pinned: postPinned.checked, p_publish_at: pub, p_expires_at: exp
+    }).then(function (r) {
+      postSaveBtn.disabled = false;
+      if (!r.ok) { problem(adminErrText(r.error)); return; }
+      showToast(postsState.editing ? "Changes saved." : "Posted.");
+      resetPostForm();
+      loadPosts();
+    });
+  });
+
+  // ================= Activity log =================
+  function loadLog() {
+    return adminCall("admin_audit_log", { p_limit: 300 }).then(function (r) {
+      if (!r.ok) { showAdminError(adminErrText(r.error)); return; }
+      adminError.classList.add("hidden");
+      logRows = r.data;
+      tabLoaded.log = true;
+      renderLog();
+    });
+  }
+  function renderLog() {
+    var q = logFilter.value.trim().toLowerCase();
+    var rows = logRows.filter(function (l) { return !q || (l.admin + " " + l.action + " " + l.target).toLowerCase().indexOf(q) !== -1; });
+    emptyEl(logList);
+    if (!rows.length) logList.appendChild(mk("p", { class: "admin-empty", text: q ? "Nothing in the log matches that." : "Nothing has been done yet. Every admin action will be recorded here." }));
+    rows.forEach(function (l) {
+      logList.appendChild(mk("div", { class: "row-card log-row" }, [mk("div", { class: "rc-body" }, [
+        mk("span", { class: "rc-title", text: l.action + (l.target ? " \u2014 " + l.target : "") }),
+        mk("span", { class: "rc-meta", text: l.admin + " \u00B7 " + fmtDateTime(l.at) })
+      ])]));
+    });
+  }
+  logFilter.addEventListener("input", renderLog);
+
+  // ---- Announcements and events (shown on Home while they are live) ----
+  var homeUpdates = document.getElementById("homeUpdates");
+  var lockNote = document.getElementById("lockNote");
+  var announcements = [];
+  var annChannel = null;
+
+  function dismissedKey() { return "plannerDismissedPosts:" + (me ? me.id : ""); }
+  function dismissedIds() { try { return JSON.parse(localStorage.getItem(dismissedKey()) || "[]") || []; } catch (e) { return []; } }
+  function dismissPost(id) {
+    var d = dismissedIds();
+    if (d.indexOf(id) === -1) d.push(id);
+    try { localStorage.setItem(dismissedKey(), JSON.stringify(d.slice(-200))); } catch (e) {}
+    renderUpdates();
+  }
+  function postIsLive(a) {
+    var now = Date.now();
+    return new Date(a.publish_at).getTime() <= now && (!a.expires_at || new Date(a.expires_at).getTime() > now);
+  }
+  function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+  function eventWhen(a) {
+    var t = new Date(a.event_at);
+    if (isNaN(t.getTime())) return "";
+    var text = t.toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    var days = Math.round((startOfDay(t) - startOfDay(new Date())) / 86400000);
+    var rel = t.getTime() < Date.now() ? "ended" : (days === 0 ? "today" : (days === 1 ? "tomorrow" : "in " + days + " days"));
+    return text + " \u00B7 " + rel;
+  }
+  function renderUpdates() {
+    var hidden = dismissedIds();
+    var list = announcements.filter(function (a) { return hidden.indexOf(a.id) === -1; }).sort(function (a, b) {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return new Date(b.publish_at).getTime() - new Date(a.publish_at).getTime();
+    }).slice(0, 5);
+    emptyEl(homeUpdates);
+    homeUpdates.classList.toggle("hidden", list.length === 0);
+    list.forEach(function (a) {
+      homeUpdates.appendChild(mk("div", { class: "update-card" + (a.pinned ? " pinned" : ""), "data-post": a.id }, [
+        mk("span", { text: a.kind === "event" ? "\uD83D\uDCC5" : "\uD83D\uDCE3" }),
+        mk("div", { class: "update-body" }, [
+          mk("div", { class: "update-title", text: a.title }),
+          a.body ? mk("div", { class: "update-text", text: a.body }) : null,
+          a.kind === "event" && a.event_at ? mk("div", { class: "update-when", text: eventWhen(a) }) : null
+        ]),
+        mk("button", { class: "update-x", type: "button", "aria-label": "Dismiss", text: "\u2715", onclick: function () { dismissPost(a.id); } })
+      ]));
+    });
+  }
+  function loadAnnouncements() {
+    sb.from("announcements").select("*").then(function (res) {
+      if (res.error) return;                                   // before supabase-admin-plus.sql is run there is simply nothing to show
+      announcements = (res.data || []).filter(postIsLive);    // admins in user mode also receive drafts: only show what is live
+      renderUpdates();
+    });
+  }
+  function subscribeAnnouncements() {
+    annChannel = sb.channel("announcements-feed")
+      .on("postgres_changes", { event: "*", schema: "public", table: "announcements" }, function (payload) {
+        if (payload.eventType === "INSERT" && payload.new && postIsLive(payload.new)) showToast("New: " + payload.new.title);
+        loadAnnouncements();
+      })
+      .subscribe();
+    setInterval(loadAnnouncements, 120000);                    // also picks up posts whose start time arrives, and ones that have ended
+  }
+
+  // ---- A group an admin has locked is read-only ----
+  function applyLockState(g) {
+    var locked = !!(g && g.locked);
+    chatInput.disabled = locked;
+    chatSendBtn.disabled = locked;
+    chatInput.placeholder = locked ? "Locked by an admin" : "Message";
+    lockNote.classList.toggle("hidden", !locked);
+  }
+  function refreshGroupMeta(gid, afterSendError) {
+    sb.from("chat_groups").select("*").eq("id", gid).then(function (res) {
+      if (res.error) return;
+      var row = (res.data || [])[0];
+      var g = findGroup(gid);
+      if (!g) return;
+      if (!row) { showToast("That group is no longer available."); loadChatData(); return; }
+      Object.assign(g, row);
+      if (openGroupId === gid) { convoName.textContent = g.name; applyLockState(g); }
+      if (afterSendError && g.locked) showToast("This group is locked by an admin.");
+    });
+  }
 
   function init() {
     capturePendingJoin();
